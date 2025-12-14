@@ -4,20 +4,36 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-const dbUrl = process.env.DATABASE_URL;
-if (!dbUrl) {
-  const msg =
-    "Missing required environment variable DATABASE_URL.\n" +
-    "Add a `DATABASE_URL` to your `.env.local` (or set it in your environment).\n" +
-    "Example (Postgres): postgres://USER:PASSWORD@HOST:PORT/DATABASE";
-  if (process.env.NODE_ENV === "production") {
-    throw new Error(msg);
-  } else {
-    console.warn(msg);
-  }
+type PrismaClientInit =
+  | (ConstructorParameters<typeof PrismaClient>[0] & {
+      engine?: { type: string };
+      accelerateUrl?: string;
+    })
+  | undefined;
+
+const prismaOptions: PrismaClientInit = {
+  log: process.env.NODE_ENV === "development" ? ["query", "error"] : ["error"],
+};
+
+if (process.env.PRISMA_ACCELERATE_URL) {
+  prismaOptions.accelerateUrl = process.env.PRISMA_ACCELERATE_URL;
+} else {
+  prismaOptions.engine = { type: "binary" };
 }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+if (process.env.NODE_ENV === "development") {
+  console.info(
+    `[prisma] using engine: ${
+      process.env.PRISMA_ACCELERATE_URL ? "accelerate" : "binary (local)"
+    }`
+  );
+}
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient(
+    prismaOptions as unknown as ConstructorParameters<typeof PrismaClient>[0]
+  );
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;

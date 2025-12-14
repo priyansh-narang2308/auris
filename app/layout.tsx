@@ -11,7 +11,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Auris",
+  title: "auris",
   description:
     "An AI-Based Notetaker + Meeting Bot similar to Fireflies.ai and Otter.ai",
 };
