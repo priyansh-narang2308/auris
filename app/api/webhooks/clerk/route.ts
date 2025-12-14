@@ -1,3 +1,4 @@
+import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { Webhook } from "svix";
 
@@ -23,10 +24,7 @@ export async function POST(request: NextRequest) {
     try {
       wh.verify(payload, headers);
     } catch {
-      return NextResponse.json(
-        { error: "Invalid signature" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
     const event = JSON.parse(payload);
@@ -46,13 +44,13 @@ export async function POST(request: NextRequest) {
           email.id === primary_email_address_id
       )?.email_address;
 
-      const name =
-        [first_name, last_name].filter(Boolean).join(" ") || null;
+      const name = [first_name, last_name].filter(Boolean).join(" ") || null;
 
       const newUser = await prisma.user.create({
         data: {
+          id: id,
           clerkId: id,
-          email: primaryEmail||null,
+          email: primaryEmail || null,
           name,
         },
       });
