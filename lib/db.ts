@@ -1,39 +1,25 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-type PrismaClientInit =
-  | (ConstructorParameters<typeof PrismaClient>[0] & {
-      engine?: { type: string };
-      accelerateUrl?: string;
-    })
-  | undefined;
+const connectionString = process.env.DATABASE_URL;
+const pool = new Pool({ connectionString });
 
-const prismaOptions: PrismaClientInit = {
-  log: process.env.NODE_ENV === "development" ? ["query", "error"] : ["error"],
-};
-
-if (process.env.PRISMA_ACCELERATE_URL) {
-  prismaOptions.accelerateUrl = process.env.PRISMA_ACCELERATE_URL;
-} else {
-  prismaOptions.engine = { type: "binary" };
-}
-
-if (process.env.NODE_ENV === "development") {
-  console.info(
-    `[prisma] using engine: ${
-      process.env.PRISMA_ACCELERATE_URL ? "accelerate" : "binary (local)"
-    }`
-  );
-}
+const adapter = new PrismaPg(pool);
 
 export const prisma =
   globalForPrisma.prisma ??
-  new PrismaClient(
-    prismaOptions as unknown as ConstructorParameters<typeof PrismaClient>[0]
-  );
+  new PrismaClient({
+    adapter: adapter,
+    log:
+      process.env.NODE_ENV === "development"
+        ? ["query", "error", "warn"]
+        : ["error"],
+  });
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;

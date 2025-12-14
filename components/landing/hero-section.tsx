@@ -1,14 +1,13 @@
-import React from "react";
+"use client";
+
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { AnimatedGroup } from "@/components/motion-primitives/animated-group";
 import { HeroHeader } from "./header";
 import { ShinyButton } from "../ui/shiny-button";
-import TextHighlighter from "../ui/text-highlighter";
-import { SignedIn, SignedOut, SignUpButton } from "@clerk/nextjs";
+import { SignUpButton, useAuth } from "@clerk/nextjs";
 
 const transitionVariants = {
   item: {
@@ -31,6 +30,8 @@ const transitionVariants = {
 };
 
 export default function HeroSection() {
+  const { isSignedIn } = useAuth();
+
   return (
     <>
       <HeroHeader />
@@ -129,59 +130,70 @@ export default function HeroSection() {
                   }}
                   className="mt-12 flex flex-col items-center justify-center gap-2 md:flex-row"
                 >
-                  <SignedOut>
-                    <div
-                      key="signup"
-                      className="rounded-[calc(var(--radius-xl)+0.125rem)] border bg-foreground/10 p-0.5"
-                    >
-                      <SignUpButton mode="modal">
-                        <Button size="lg" className="rounded-xl px-5 text-base cursor-pointer">
-                          <span className="text-nowrap">Get Started</span>
-                        </Button>
-                      </SignUpButton>
-                    </div>
-
-                    <Button
-                      key="demo"
-                      asChild
-                      size="lg"
-                      variant="outline"
-                      className="h-10.5 rounded-xl px-5 cursor-pointer"
-                    >
-                      <Link href="/demo">
-                        <span className="text-nowrap">See how it works</span>
-                      </Link>
-                    </Button>
-                  </SignedOut>
-
-                  <SignedIn>
-                    <div
-                      key="dashboard"
-                      className="rounded-[calc(var(--radius-xl)+0.125rem)] border bg-foreground/10 p-0.5"
-                    >
+                  <div
+                    className={`rounded-[calc(var(--radius-xl)+0.125rem)] border bg-foreground/10 p-0.5 transition-opacity duration-300 ${
+                      !isSignedIn
+                        ? "opacity-100"
+                        : "opacity-0 pointer-events-none absolute"
+                    }`}
+                  >
+                    <SignUpButton mode="modal">
                       <Button
-                        asChild
                         size="lg"
                         className="rounded-xl px-5 text-base cursor-pointer"
                       >
-                        <Link href="/dashboard">
-                          <span className="text-nowrap">Go to Dashboard</span>
-                        </Link>
+                        <span className="text-nowrap">Get Started</span>
                       </Button>
-                    </div>
+                    </SignUpButton>
+                  </div>
 
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className={`h-10.5 rounded-xl px-5 cursor-pointer transition-opacity duration-300 ${
+                      !isSignedIn
+                        ? "opacity-100"
+                        : "opacity-0 pointer-events-none absolute"
+                    }`}
+                  >
+                    <Link href="/demo">
+                      <span className="text-nowrap">See how it works</span>
+                    </Link>
+                  </Button>
+
+                  <div
+                    className={`rounded-[calc(var(--radius-xl)+0.125rem)] border bg-foreground/10 p-0.5 transition-opacity duration-300 ${
+                      isSignedIn
+                        ? "opacity-100"
+                        : "opacity-0 pointer-events-none absolute"
+                    }`}
+                  >
                     <Button
-                      key="demo-auth"
                       asChild
                       size="lg"
-                      variant="ghost"
-                      className="h-10.5 rounded-xl px-5 cursor-pointer"
+                      className="rounded-xl px-5 text-base cursor-pointer"
                     >
-                      <Link href="/demo">
-                        <span className="text-nowrap">See how it works</span>
+                      <Link href="/dashboard">
+                        <span className="text-nowrap">Go to Dashboard</span>
                       </Link>
                     </Button>
-                  </SignedIn>
+                  </div>
+
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="ghost"
+                    className={`h-10.5 rounded-xl px-5 cursor-pointer transition-opacity duration-300 ${
+                      isSignedIn
+                        ? "opacity-100"
+                        : "opacity-0 pointer-events-none absolute"
+                    }`}
+                  >
+                    <Link href="/demo">
+                      <span className="text-nowrap">See how it works</span>
+                    </Link>
+                  </Button>
                 </AnimatedGroup>
               </div>
             </div>
