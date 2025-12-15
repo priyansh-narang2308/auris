@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function IntegrationsSection() {
   return (
     <section>
-      <div className=" dark:bg-background py-18 md:py-12 md:mr-20">
+      <div className=" dark:bg-background py-18 md:py-12 ">
         <div className="mx-auto max-w-5xl px-6">
           <div className="relative mx-auto flex max-w-sm items-center justify-between">
             <div className="space-y-6">
