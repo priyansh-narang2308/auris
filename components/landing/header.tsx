@@ -16,9 +16,9 @@ import {
 } from "@clerk/nextjs";
 
 const menuItems = [
-  { name: "Features", href: "#link" },
-  { name: "Pricing", href: "#link" },
-  { name: "About", href: "#link" },
+  { name: "Features", href: "#features" },
+  { name: "Pricing", href: "#pricing" },
+  { name: "How It Works", href: "#howitworks" },
 ];
 
 export const HeroHeader = () => {
