@@ -46,7 +46,7 @@ export default function FeaturesSection() {
   return (
     <section
       id="features"
-      className="bg-zinc-50 py-32 md:py-36 dark:bg-transparent"
+      className=" py-32 md:py-36 dark:bg-transparent"
     >
       <motion.div
         className="@container mx-auto max-w-6xl px-6"
@@ -86,7 +86,7 @@ export default function FeaturesSection() {
           <FeatureCard
             icon={<MailIcon className="size-6 text-purple-400" />}
             title="Automated Email Reports"
-            desc="Delivers structured meeting summaries and follow-ups directly to your inbox."
+            desc="Delivers structured meeting summaries and follow-ups directly to your inbox without any delay."
           />
 
           <FeatureCard
