@@ -13,6 +13,7 @@ interface UsageData {
   currentPlan: string;
   subscriptionStatus: string; //active or inactive
   meetingsThisMonth: number; //to check how many meetings attented here
+  chatMessagesToday: number;
   billingPeriodStart: string | null;
 }
 
@@ -59,5 +60,56 @@ export function UsageProvider({ children }: { children: ReactNode }) {
       (limits.meetings === -1 || usage.meetingsThisMonth < limits.meetings)
     : false;
 
-  const fetchUsage = {};
+  // Fetching the user from the database
+  const fetchUsage = async () => {
+    if (!userId) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/user/usage");
+      if (response.ok) {
+        const dataa = await response.json();
+        setUsage(dataa);
+      }
+    } catch (error) {
+      console.error("Failed to fetch the user usage: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // increment the chat usage by the user
+  const incrementChatUsage = async () => {
+    if (!canChat) {
+      // todo:add toast
+      return;
+    }
+    try {
+      const resp = await fetch("/api/user/increment-chat", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+      });
+
+      if (resp.ok) {
+        setUsage((prev) =>
+          prev
+            ? {
+                ...prev,
+                chatMessagesToday: prev.chatMessagesToday + 1,
+              }
+            : null
+        );
+      } else {
+        const dataa = await resp.json();
+        if (dataa.upgradeRequired) {
+          console.log(dataa.error);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to increment the chat usage: ", error);
+    }
+  };
 }
