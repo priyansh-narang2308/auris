@@ -15,7 +15,7 @@ export default function CallToAction() {
 
           <div className="mt-8 md:mt-12 flex flex-col sm:flex-row justify-center gap-4">
             <Button asChild size="lg" className="w-full sm:w-auto">
-              <Link href="/dashboard">
+              <Link href="/home">
                 <span>Get Started</span>
               </Link>
             </Button>

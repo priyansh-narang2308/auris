@@ -138,7 +138,7 @@ export default function HeroSection() {
                       size="lg"
                       className="rounded-xl px-5 text-base cursor-pointer"
                     >
-                      <Link href="/dashboard">
+                      <Link href="/home">
                         <span className="text-nowrap">Go to Dashboard</span>
                       </Link>
                     </Button>

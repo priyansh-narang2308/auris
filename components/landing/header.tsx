@@ -127,7 +127,7 @@ export const HeroHeader = () => {
                         isScrolled ? "lg:inline-flex" : "hidden sm:inline-flex"
                       )}
                     >
-                      <Link href="/dashboard">Dashboard</Link>
+                      <Link href="/home">Dashboard</Link>
                     </Button>
 
                     <div className="flex justify-center sm:justify-start">

@@ -7,3 +7,14 @@
 
 # Usage Plan
 ## First the useeffect in the usage context will hit the fetchUsage route in that it will check for the current plan the status the meetings this month and all and then store it in the setusage hook and on the basis of that identigy is user can chat or he can make meetings and all
+
+
+  const meetingProgress =
+    usage && limits.meetings !== -1
+      ? Math.min((usage.meetingsThisMonth / limits.meetings) * 100, 100) //check with the total number of the meetings to be there in a month
+      : 0;
+
+  const chatProgress =
+    usage && limits.chatMessages !== -1
+      ? Math.min((usage.chatMessagesToday / limits.chatMessages) * 100, 100) //total number of chats that can be done in a meeting today
+      : 0;
