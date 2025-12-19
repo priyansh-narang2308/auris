@@ -23,12 +23,12 @@ const features = [
 
 const MoreFeaturesSection = () => {
   return (
-    <section className="py-20 md:py-28">
+    <section className="py-20 md:py-28 bg-white dark:bg-zinc-950">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-16 md:mb-20 text-center">
           <h2 className="text-4xl md:text-5xl font-semibold text-slate-950 dark:text-white">
             Plus{" "}
-            <span className="text-blue-600 dark:text-blue-500">
+            <span className="text-blue-600 dark:text-blue-400">
               More Features
             </span>
           </h2>
@@ -43,10 +43,10 @@ const MoreFeaturesSection = () => {
               key={i}
               animateOnHover
               glowEffect
-              className="h-full rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-linear-to-b dark:from-white/4 dark:to-white/[0.02] p-8 shadow-sm dark:shadow-none"
+              className="h-full rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 shadow-sm dark:shadow-none"
             >
               <div className="flex flex-col gap-6">
-                <div className="flex size-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400">
                   <feature.icon className="size-6" />
                 </div>
 
