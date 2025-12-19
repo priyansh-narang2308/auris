@@ -3,7 +3,7 @@
 import { useAuth } from "@clerk/nextjs";
 import { createContext, ReactNode, useState } from "react";
 
-interface PlanLimits {
+export interface PlanLimits {
   meetings: number;
   chatMessages: number;
 }

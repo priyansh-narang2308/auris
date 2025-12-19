@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { prisma } from "@/lib/db";
+import { canUserChat, incrementChatUsage } from "@/lib/usage";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -29,23 +31,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const chattingChecking=await canUserChat(user.id)
+    const chattingChecking = await canUserChat(user.id);
 
     if (!chattingChecking.allowed) {
-            return NextResponse.json({
-                error: chattingChecking.reason,
-                upgradeRequired: true
-            }, { status: 403 })
-        }
+      return NextResponse.json(
+        {
+          error: chattingChecking.reason,
+          upgradeRequired: true,
+        },
+        { status: 403 }
+      );
+    }
 
-       await incrementChatUsage(user.id)
+    await incrementChatUsage(user.id);
 
-        return NextResponse.json({ success: true })
-
-
-
+    return NextResponse.json({ success: true });
   } catch (error) {
-            return NextResponse.json({ error: 'Failed to increment chat of user.' }, { status: 500 })
-
+    return NextResponse.json(
+      { error: "Failed to increment chat of user " },
+      { status: 500 }
+    );
   }
 }
