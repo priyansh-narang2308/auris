@@ -1,7 +1,13 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import { createContext, ReactNode, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 export interface PlanLimits {
   meetings: number;
@@ -109,7 +115,77 @@ export function UsageProvider({ children }: { children: ReactNode }) {
         }
       }
     } catch (error) {
-      console.error("Failed to increment the chat usage: ", error);
+      console.error("Failed to increment the chat usage of the user: ", error);
     }
   };
+
+  const incrementMeetingUsage = async () => {
+    if (!canScheduleMeeting) {
+      // todo:add toast
+      return;
+    }
+
+    try {
+      const repsonse = await fetch("/api/user/increment-meeting", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+      });
+
+      if (repsonse.ok) {
+        setUsage((prev) =>
+          prev
+            ? {
+                ...prev,
+                meetingsThisMonth: prev.meetingsThisMonth + 1,
+              }
+            : null
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Failed to increment the meeting usage of the user: ",
+        error
+      );
+    }
+  };
+
+  const refreshUsage = async () => {
+    await fetchUsage();
+  };
+
+  useEffect(() => {
+    if (isLoaded && userId) {
+      fetchUsage();
+    } else if (isLoaded && !userId) {
+      setLoading(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, isLoaded]);
+
+  return (
+    <UsageContext.Provider
+      value={{
+        usage,
+        loading,
+        canChat,
+        canScheduleMeeting,
+        limits,
+        incrementChatUsage,
+        incrementMeetingUsage,
+        refreshUsage,
+      }}
+    >
+      {children}
+    </UsageContext.Provider>
+  );
+}
+
+export function useUsage() {
+  const context = useContext(UsageContext);
+
+  if (context === undefined) {
+    throw new Error("UseUsage must be defined");
+  }
+
+  return context;
 }

@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to increment chat of user " },
+      { error: "Failed to increment chat usage of user" },
       { status: 500 }
     );
   }
