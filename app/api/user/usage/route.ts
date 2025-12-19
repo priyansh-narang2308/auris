@@ -28,7 +28,21 @@ export async function GET(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      const created = await prisma.user.create({
+        data: {
+          id: userId,
+          clerkId: userId,
+        },
+        select: {
+          currentPlan: true,
+          subscriptionStatus: true,
+          meetingsThisMonth: true,
+          chatMessagesToday: true,
+          billingPeriodStart: true,
+        },
+      });
+
+      return NextResponse.json(created);
     }
 
     return NextResponse.json(user);

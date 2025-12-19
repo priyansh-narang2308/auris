@@ -1,5 +1,13 @@
 import { useUsage } from "@/app/contexts/usage-context";
-import { Bot, DollarSign, Home, Layers3, Settings } from "lucide-react";
+import {
+  Bot,
+  Crown,
+  DollarSign,
+  Home,
+  Layers3,
+  Settings,
+  Zap,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
   Sidebar,
@@ -11,10 +19,19 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "./ui/sidebar";
 import { Logo } from "./logo";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "./ui/dropdown-menu";
 
 const ITEMS = [
   {
@@ -50,12 +67,12 @@ const AppSidebar = () => {
 
   const meetingProgress =
     usage && limits.meetings !== -1
-      ? Math.min((usage.meetingsThisMonth / limits.meetings) * 100, 100) //check with the total number of the meetings to be there in a month
+      ? Math.min((usage.meetingsThisMonth / limits.meetings) * 100, 100)
       : 0;
 
   const chatProgress =
     usage && limits.chatMessages !== -1
-      ? Math.min((usage.chatMessagesToday / limits.chatMessages) * 100, 100) //total number of chats that can be done in a meeting today
+      ? Math.min((usage.chatMessagesToday / limits.chatMessages) * 100, 100)
       : 0;
 
   const getTheUpgradeInfo = () => {
@@ -103,17 +120,33 @@ const AppSidebar = () => {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r border-sidebar-border h-screen"
+      className="
+        h-screen
+        border-r
+        border-white/10
+        bg-linear-to-b
+        from-[#0e1117]
+        to-[#0b0e14]
+      "
     >
       {/* Header */}
-      <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center gap-2">
-          <Logo />
+      <SidebarHeader className="border-b border-white/10 px-3 py-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 overflow-hidden">
+            <Logo />
+          </div>
+          <SidebarTrigger
+            className="
+              text-white/60
+              hover:text-white cursor-pointer
+              transition
+            "
+          />
         </div>
       </SidebarHeader>
 
       {/* Content */}
-      <SidebarContent className="flex-1 p-4 ">
+      <SidebarContent className="flex-1 py-5">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-2">
@@ -122,11 +155,29 @@ const AppSidebar = () => {
                   <SidebarMenuButton
                     asChild
                     isActive={pathName === item.url}
-                    className="w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground"
+                    className="
+                      group
+                      w-full
+                      justify-start
+                      gap-3
+                      rounded-lg
+                      px-3
+                      py-2.5
+                      text-sm
+                      text-white/70
+                      transition-all
+                      hover:bg-white/5
+                      hover:text-white
+                      data-[active=true]:bg-orange-500/15
+                      data-[active=true]:text-orange-400
+                      group-data-[state=collapsed]:justify-center
+                    "
                   >
                     <Link href={item.url}>
-                      <item.icon className="w-4 h-4" />
-                      <span>{item.title}</span>
+                      <item.icon className="w-5 h-5 shrink-0" />
+                      <span className="truncate group-data-[state=collapsed]:hidden">
+                        {item.title}
+                      </span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -136,104 +187,201 @@ const AppSidebar = () => {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Footer */}
-      <SidebarFooter className="p-4 mt-auto">
-        {usage && (
-          <div className="rounded-lg bg-sidebar-accent/50 p-3 mb-3">
-            <p className="text-xs font-medium text-sidebar-accent-foreground mb-3">
-              Current Plan: {usage.currentPlan.toUpperCase()}
-            </p>
-            <div className="space-y-2 mb-3">
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-sidebar-accent-foreground/70">
-                  Meetings
-                </span>
-                <span className="text-xs text-sidebar-accent-foreground/70">
-                  {usage.meetingsThisMonth}/
-                  {limits.meetings === -1 ? "∞" : limits.meetings}
-                </span>
-              </div>
-
-              {limits.meetings !== -1 && (
-                <div className="w-full bg-sidebar-accent/30 rounded-full h-2">
-                  <div
-                    className="bg-sidebar-primary h-2 rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${meetingProgress}%` }}
+      <SidebarFooter className="mt-auto px-3 pb-8">
+        <div className="hidden group-data-[state=collapsed]:flex flex-col items-center gap-3 py-2">
+          {usage && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-10 w-10 rounded-lg border border-white/10 bg-white/5 hover:bg-white/6 transition-colors cursor-pointer"
+                      aria-label="Current plan and usage"
+                    >
+                      <Crown className="h-5 w-5 text-orange-400" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    side="right"
+                    align="start"
+                    className="w-64 rounded-xl border border-white/10 bg-[#0b0b0b] text-white p-3"
                   >
-                    {" "}
-                  </div>
-                </div>
-              )}
+                    <div className="space-y-3">
+                      <p className="text-sm font-semibold text-orange-400">
+                        Current Plan: {usage.currentPlan.toUpperCase()}
+                      </p>
+                      <div className="space-y-3 text-xs">
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-white/70">
+                            <span>Meetings</span>
+                            <span>
+                              {usage.meetingsThisMonth}/
+                              {limits.meetings === -1 ? "∞" : limits.meetings}
+                            </span>
+                          </div>
+                          {limits.meetings !== -1 && (
+                            <div className="h-2 w-full rounded-full bg-white/10">
+                              <div
+                                className="h-2 rounded-full bg-orange-400 transition-all"
+                                style={{ width: `${meetingProgress}%` }}
+                              />
+                            </div>
+                          )}
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-white/70">
+                            <span>Chat Messages</span>
+                            <span>
+                              {usage.chatMessagesToday}/
+                              {limits.chatMessages === -1
+                                ? "∞"
+                                : limits.chatMessages}
+                            </span>
+                          </div>
+                          {limits.chatMessages !== -1 && (
+                            <div className="h-2 w-full rounded-full bg-white/10">
+                              <div
+                                className="h-2 rounded-full bg-orange-300 transition-all"
+                                style={{ width: `${chatProgress}%` }}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </TooltipTrigger>
+              <TooltipContent side="right">Current plan & usage</TooltipContent>
+            </Tooltip>
+          )}
 
-              {limits.meetings === -1 && (
-                <div className="text-xs text-sidebar-accent-foreground/50 italic">
-                  Unlimited
-                </div>
-              )}
-            </div>
+          {upgradeInfo && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      size="icon"
+                      className="h-10 w-10 rounded-lg bg-orange-500 text-black hover:bg-orange-400 transition-colors cursor-pointer"
+                      aria-label="Upgrade plan"
+                    >
+                      <Zap className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    <div className="p-2">
+                      <div className="px-2 py-1">
+                        <p className="text-sm font-medium text-white">
+                          {upgradeInfo.title}
+                        </p>
+                        <p className="text-xs text-white/60">
+                          {upgradeInfo.description}
+                        </p>
+                      </div>
+                      <div className="mt-2">
+                        {upgradeInfo.showButton ? (
+                          <DropdownMenuItem asChild>
+                            <Link
+  href="/pricing"
+  className="block w-full rounded-md bg-orange-500 text-black text-center text-xs font-semibold py-2 hover:bg-orange-400 transition"
+>
+  {upgradeInfo.title}
+</Link>
 
-            <div className="space-y-2 mb-3">
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-sidebar-accent-foreground/70">
-                  Chat Messages
+                          </DropdownMenuItem>
+                        ) : (
+                          <div className="px-2 py-1 text-center text-xs text-white/50">
+                            Thank you for your support 🙌
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TooltipTrigger>
+              <TooltipContent side="right">Upgrade plan</TooltipContent>
+            </Tooltip>
+          )}
+        </div>
+
+        <div className="group-data-[state=collapsed]:hidden space-y-3">
+          {usage && (
+            <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-md p-3">
+              <p className="mb-3 text-xs font-medium text-white/80">
+                Current Plan:{" "}
+                <span className="text-orange-400">
+                  {usage.currentPlan.toUpperCase()}
                 </span>
-                <span className="text-xs text-sidebar-accent-foreground/70">
-                  {usage.chatMessagesToday}/
-                  {limits.chatMessages === -1 ? "∞" : limits.chatMessages}
-                </span>
-              </div>
+              </p>
 
-              {limits.chatMessages !== -1 && (
-                <div className="w-full bg-sidebar-accent/30 rounded-full h-2">
-                  <div
-                    className="bg-sidebar-primary h-2 rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${chatProgress}%` }}
-                  >
-                    {" "}
-                  </div>
-                </div>
-              )}
-
-              {limits.chatMessages === -1 && (
-                <div className="text-xs text-sidebar-accent-foreground/50 italic">
-                  Unlimited
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Upgrade Information  */}
-        {upgradeInfo && (
-          <div className="rounded-lg bg-sidebar-accent p-4">
-            <div className="space-y-3">
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-sidebar-accent-foreground">
-                  {upgradeInfo.title}
-                </p>
-                <p className="text-xs text-sidebar-accent-foreground/70">
-                  {upgradeInfo.description}
-                </p>
-              </div>
-
-              {upgradeInfo.showButton && (
-                <Link href="/pricing">
-                  <Button className="w-full rounded-md bg-sidebar-primary px-3 py-2 text-xs font-medium text-sidebar-primary-foreground transition-colors hover:bg-sidebar-primary/90 cursor-pointer">
-                    {upgradeInfo.title}
-                  </Button>
-                </Link>
-              )}
-
-              {!upgradeInfo.showButton && (
-                <div className="text-center py-2">
-                  <span className="text-xs text-sidebar-accent-foreground/60">
-                    🎉 Thank you for your support!
+              <div className="space-y-2 mb-3">
+                <div className="flex justify-between text-xs text-white/60">
+                  <span>Meetings</span>
+                  <span>
+                    {usage.meetingsThisMonth}/
+                    {limits.meetings === -1 ? "∞" : limits.meetings}
                   </span>
                 </div>
-              )}
+                {limits.meetings !== -1 && (
+                  <div className="h-2 w-full rounded-full bg-white/10">
+                    <div
+                      className="h-2 rounded-full bg-orange-400 transition-all duration-500"
+                      style={{ width: `${meetingProgress}%` }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs text-white/60">
+                  <span>Chat Messages</span>
+                  <span>
+                    {usage.chatMessagesToday}/
+                    {limits.chatMessages === -1 ? "∞" : limits.chatMessages}
+                  </span>
+                </div>
+                {limits.chatMessages !== -1 && (
+                  <div className="h-2 w-full rounded-full bg-white/10">
+                    <div
+                      className="h-2 rounded-full bg-orange-300 transition-all duration-500"
+                      style={{ width: `${chatProgress}%` }}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+
+          {upgradeInfo && (
+            <div className="rounded-xl border border-orange-500/20 bg-linear-to-br from-orange-500/10 to-orange-500/5 p-4">
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-white">
+                    {upgradeInfo.title}
+                  </p>
+                  <p className="text-xs text-white/60">
+                    {upgradeInfo.description}
+                  </p>
+                </div>
+                {upgradeInfo.showButton && (
+                  <Link href="/pricing">
+                    <Button className="w-full rounded-md cursor-pointer bg-orange-500 text-black text-xs font-semibold hover:bg-orange-400">
+                      {upgradeInfo.title}
+                    </Button>
+                  </Link>
+                )}
+                {!upgradeInfo.showButton && (
+                  <div className="py-2 text-center text-xs text-white/50">
+                    Thank you for your support 🙌
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </SidebarFooter>
     </Sidebar>
   );
