@@ -285,12 +285,11 @@ const AppSidebar = () => {
                         {upgradeInfo.showButton ? (
                           <DropdownMenuItem asChild>
                             <Link
-  href="/pricing"
-  className="block w-full rounded-md bg-orange-500 text-black text-center text-xs font-semibold py-2 hover:bg-orange-400 transition"
->
-  {upgradeInfo.title}
-</Link>
-
+                              href="/pricing"
+                              className="block w-full rounded-md bg-orange-500 text-black text-center text-xs font-semibold py-2 hover:bg-orange-400 transition"
+                            >
+                              {upgradeInfo.title}
+                            </Link>
                           </DropdownMenuItem>
                         ) : (
                           <div className="px-2 py-1 text-center text-xs text-white/50">
