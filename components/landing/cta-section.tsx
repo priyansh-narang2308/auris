@@ -10,7 +10,7 @@ export default function CallToAction() {
             Ready to revolutionize your meetings?
           </h2>
           <p className="mt-4 text-sm md:text-base text-muted-foreground">
-            Join thousands of teams already using MeetingBot to save time.
+            Join thousands of teams already using auris to save time.
           </p>
 
           <div className="mt-8 md:mt-12 flex flex-col sm:flex-row justify-center gap-4">

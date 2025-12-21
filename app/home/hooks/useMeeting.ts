@@ -46,27 +46,33 @@ export function useMeetings() {
   const [error, setError] = useState<string>("");
 
   const [botToggles, setBotToggles] = useState<{ [key: string]: boolean }>({}); //this key is a pointer to see if sceheduled or not
-  
-  useEffect(()=>{
-    if(userId){
-      fetchUpcomingEvents()
-      fetchPastMeetings()
+
+  useEffect(() => {
+    if (userId) {
+      fetchUpcomingEvents();
+      fetchPastMeetings();
     }
-  },[userId])
+  }, [userId]);
 
-  const fetchUpcomingEvents=async()=>
-  {
-setLoading(true)
-setError("")
+  const fetchUpcomingEvents = async () => {
+    setLoading(true);
+    setError("");
 
-try {
-  const statusResponse=await fetch("/api/user/calendar-status")
-} catch (error) {
-  
-}
-  }
+    try {
+      const statusResponse = await fetch("/api/user/calendar-status");
+      const statusData=await statusResponse.json()
 
+      // if the user is not connected
+      if(!statusData.connected){
+        setConnected(false)
+        setUpcomingMeetings([])
+        setError("Calendar not connected for auto-sync. Connect your google calendar for auto-syncing.")
+        setLoading(false)
+        setInitialLoading(false)
+        return
+      }
 
-
-
+      const response=await fetch("/api/meetings/upcoming-meetings")
+    } catch (error) {}
+  };
 }

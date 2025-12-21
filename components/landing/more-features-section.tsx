@@ -41,8 +41,8 @@ const MoreFeaturesSection = () => {
           {features.map((feature, i) => (
             <VercelCard
               key={i}
-              animateOnHover
-              glowEffect
+               animateOnHover
+               glowEffect
               className="h-full rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 shadow-sm dark:shadow-none"
             >
               <div className="flex flex-col gap-6">
