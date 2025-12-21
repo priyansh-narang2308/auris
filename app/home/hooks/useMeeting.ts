@@ -10,6 +10,10 @@ export interface CalendarEvent {
     dateTime?: string;
     date?: string;
   };
+  end?: {
+    dateTime?: string;
+    date?: string;
+  };
   attendees?: Array<{ email: string }>;
   location?: string;
   hangoutLink?: string;
