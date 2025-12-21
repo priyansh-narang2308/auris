@@ -1,5 +1,5 @@
+/* eslint-disable react-hooks/immutability */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
@@ -37,7 +37,7 @@ export interface PastMeeting {
 
 export function useMeetings() {
   const { userId } = useAuth();
-  const [upcomingMeetings, setUpcomingMeetings] = useState<CalendarEvent[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<CalendarEvent[]>([]);
   const [pastMeetings, setPastMeetings] = useState<PastMeeting[]>([]);
 
   const [loading, setLoading] = useState(false);
@@ -64,19 +64,74 @@ export function useMeetings() {
 
     try {
       const statusResponse = await fetch("/api/user/calendar-status");
-      const statusData=await statusResponse.json()
+      const statusData = await statusResponse.json();
 
       // if the user is not connected
-      if(!statusData.connected){
-        setConnected(false)
-        setUpcomingMeetings([])
-        setError("Calendar not connected for auto-sync. Connect your google calendar for auto-syncing.")
-        setLoading(false)
-        setInitialLoading(false)
-        return
+      if (!statusData.connected) {
+        setConnected(false);
+        setUpcomingEvents([]);
+        setError(
+          "Calendar not connected for auto-sync. Connect your google calendar for auto-syncing."
+        );
+        setLoading(false);
+        setInitialLoading(false);
+        return;
       }
 
-      const response=await fetch("/api/meetings/upcoming-meetings")
-    } catch (error) {}
+      const response = await fetch("/api/meetings/upcoming-meetings");
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.error || "Failed to fetch user meetings!");
+        setConnected(false);
+        setInitialLoading(false);
+        return;
+      }
+
+      setUpcomingEvents(result.events as CalendarEvent[]);
+      setConnected(result.connected);
+
+      // Create a toggles object to track whether the bot is scheduled for each event
+      const toggles: { [key: string]: boolean } = {};
+      result.events.forEach((event: CalendarEvent) => {
+        // For each event, set the toggle value based on the botScheduled property (default to true if undefined)
+        toggles[event.id] = event.botScheduled ?? true;
+      });
+
+      setBotToggles(toggles);
+    } catch (error) {
+      console.error(`Failed to fetch user calendar events: ${error}`);
+      setError("Failed to fetch calendar events. Please try again later.");
+      setConnected(false);
+    }
+
+    setLoading(false);
+    setInitialLoading(false);
+  };
+
+  const fetchPastMeetings = async () => {
+    setPastLoading(true);
+
+    try {
+      const response = await fetch("/api/meetings/past-meetings");
+      const result = await response.json();
+      if (!response.ok) {
+        console.error(
+          "Failed to fetch the past meetings of the user:",
+          result.error
+        );
+        return;
+      }
+
+      if (result.error) {
+        return;
+      }
+
+      setPastMeetings(result.meetings as PastMeeting[]);
+    } catch (error) {
+      console.error("Failed to fetch the past meetings of the user: ", error);
+    }
+
+    setPastLoading(false);
   };
 }
