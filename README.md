@@ -18,3 +18,5 @@
     usage && limits.chatMessages !== -1
       ? Math.min((usage.chatMessagesToday / limits.chatMessages) * 100, 100) //total number of chats that can be done in a meeting today
       : 0;
+
+## Using google calendar as well for checking if its connected or not 
