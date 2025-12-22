@@ -113,23 +113,22 @@ const AppSidebar = () => {
           showButton: true,
         };
     }
-  };
+  }
 
   const upgradeInfo = getTheUpgradeInfo();
 
   return (
     <Sidebar collapsible="icon" className="h-screen border-r border-border">
-      {/* Header */}
       <SidebarHeader className="border-b border-border px-3 py-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 overflow-hidden">
-            <Logo />
-          </div>
+          <Link href="/" className="flex items-center gap-2 overflow-hidden">
+  <Logo />
+</Link>
           <SidebarTrigger className="text-muted-foreground hover:text-foreground cursor-pointer transition" />
         </div>
       </SidebarHeader>
 
-      {/* Content */}
+
       <SidebarContent className="flex-1 py-5">
         <SidebarGroup>
           <SidebarGroupContent>

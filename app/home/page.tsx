@@ -2,10 +2,9 @@
 
 import { useMeetings } from "./hooks/useMeeting";
 import { useRouter } from "next/navigation";
-import { SignInButton } from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
 import PastMeetings from "./_components/past-meetings";
 import UpcomingMeetings from "./_components/upcoming-meetings";
+import { Loader } from "@/components/ui/loader";
 
 const Home = () => {
   const {
@@ -34,17 +33,7 @@ const Home = () => {
   if (!userId) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="flex max-w-sm flex-col items-center gap-4 text-center">
-          <h1 className="text-lg font-semibold">Authentication required</h1>
-
-          <p className="text-sm text-muted-foreground">
-            Please sign in to access this page.
-          </p>
-
-          <SignInButton>
-            <Button className="mt-2">Sign in</Button>
-          </SignInButton>
-        </div>
+        <Loader variant="default"></Loader>
       </div>
     );
   }
@@ -53,7 +42,7 @@ const Home = () => {
     <div className="min-h-screen bg-background">
       <div className="flex flex-col gap-8 p-4 sm:p-6 lg:flex-row">
         <div className="flex-1">
-          <div className="mb-4 sm:mb-2 mt-9">
+          <div className="mb-4 sm:mb-5 mt-9">
             <h2 className="text-xl sm:text-2xl font-bold text-foreground">
               Past Meetings
             </h2>

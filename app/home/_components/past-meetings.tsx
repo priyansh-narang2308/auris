@@ -36,7 +36,7 @@ const PastMeetings = ({
 }: PastMeetingsProps) => {
   if (pastLoading) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-8 mt-2">
         {[1, 2, 3].map((i) => (
           <div
             key={i}
