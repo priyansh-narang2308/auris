@@ -174,6 +174,7 @@ export function useMeetings() {
     }
   };
 
+  // To make a new refresh token
   const directOAuth = async () => {
     setLoading(true);
     try {
