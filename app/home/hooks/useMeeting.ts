@@ -134,4 +134,43 @@ export function useMeetings() {
 
     setPastLoading(false);
   };
+
+  const toggleBot = async (eventId: string) => {
+    try {
+      // find the event and then change the api response
+      const event = upcomingEvents.find((e) => e.id === eventId);
+      if (!event) {
+        return;
+      }
+
+      setBotToggles((prev) => ({
+        ...prev,
+        [eventId]: !prev[eventId], //negate it
+      }));
+
+      const response = await fetch(
+        `/api/meetings/${event.meetingId}/bot-toggle-api`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            botScheduled: !botToggles[eventId],
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        setBotToggles((prev) => ({
+          ...prev,
+          [eventId]: !prev[eventId],
+        }));
+      }
+    } catch (error) {
+      console.error("Error in toggling bot: ", error);
+      setBotToggles((prev) => ({
+        ...prev,
+        [eventId]: !prev[eventId],
+      }));
+    }
+  };
 }
