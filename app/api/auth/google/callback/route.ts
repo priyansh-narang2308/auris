@@ -47,6 +47,12 @@ export async function GET(request: Request) {
       );
     }
 
+    // Fetch user info from Google
+    const googleUserRes = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+      headers: { Authorization: `Bearer ${tokens.access_token}` },
+    });
+    const googleUser = await googleUserRes.json();
+
     const user = await prisma.user.findUnique({
       where: {
         clerkId: userId,
@@ -68,6 +74,9 @@ export async function GET(request: Request) {
         googleAccessToken: tokens.access_token,
         googleRefreshToken: tokens.refresh_token,
         calendarConnected: true,
+        // Update name and email if they are missing
+        name: user.name || googleUser.name,
+        email: user.email || googleUser.email,
         // this gives the time in milliseconds thats why mutlipllying with token.expires_in
         googleTokenExpiry: new Date(Date.now() + tokens.expires_in * 1000),
       },

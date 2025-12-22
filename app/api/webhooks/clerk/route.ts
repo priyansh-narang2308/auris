@@ -46,8 +46,13 @@ export async function POST(request: NextRequest) {
 
       const name = [first_name, last_name].filter(Boolean).join(" ") || null;
 
-      const newUser = await prisma.user.create({
-        data: {
+      const newUser = await prisma.user.upsert({
+        where: { clerkId: id },
+        update: {
+          email: primaryEmail || null,
+          name,
+        },
+        create: {
           id: id,
           clerkId: id,
           email: primaryEmail || null,
@@ -55,7 +60,7 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      console.log("User created:", newUser.id);
+      console.log("User upserted:", newUser.id);
       return NextResponse.json({ message: "User created successfully" });
     }
 

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
+import { auth, createClerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Fetching the user fromt the database
+    // Fetching the user from the database
     const user = await prisma.user.findUnique({
       where: {
         clerkId: userId,
@@ -24,14 +24,24 @@ export async function GET(request: NextRequest) {
         meetingsThisMonth: true,
         chatMessagesToday: true,
         billingPeriodStart: true,
+        name: true,
+        email: true,
       },
     });
 
     if (!user) {
+      const clerk = await createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
+      const clerkUser = await clerk.users.getUser(userId);
+      
+      const email = clerkUser.emailAddresses[0]?.emailAddress;
+      const name = `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() || null;
+
       const created = await prisma.user.create({
         data: {
           id: userId,
           clerkId: userId,
+          email,
+          name,
         },
         select: {
           currentPlan: true,
