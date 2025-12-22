@@ -173,4 +173,15 @@ export function useMeetings() {
       }));
     }
   };
+
+  const directOAuth = async () => {
+    setLoading(true);
+    try {
+      window.location.href = "/api/auth/google/direct-connect";
+    } catch (error) {
+      console.error("Failed to start the authentication: ", error);
+      setError("Failed to start direct OAuth");
+      setLoading(false);
+    }
+  };
 }
