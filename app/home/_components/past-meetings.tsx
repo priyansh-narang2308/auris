@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/empty";
 import { PastMeeting } from "../hooks/useMeeting";
 import AttendeeAvatars from "./attendee-avatars";
-import { Clock, ExternalLink } from "lucide-react";
+import { Clock, ExternalLink, RefreshCw } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,6 +20,7 @@ interface PastMeetingsProps {
   pastMeetings: PastMeeting[];
   pastLoading: boolean;
   onMeetingClick: (id: string) => void;
+  onRefresh?: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getAttendeeList: (attendees: any) => string[];
   getInitialsOfTheUser: (name: string) => string;
@@ -29,6 +30,7 @@ const PastMeetings = ({
   pastMeetings,
   pastLoading,
   onMeetingClick,
+  onRefresh,
   getAttendeeList,
   getInitialsOfTheUser,
 }: PastMeetingsProps) => {
@@ -63,33 +65,67 @@ const PastMeetings = ({
 
   if (pastMeetings.length === 0) {
     return (
-      <Empty className="rounded-xl border border-border bg-card">
-        <EmptyHeader>
-          <EmptyMedia variant="icon" className="text-orange-500/80">
-            <IconCalendarOff />
-          </EmptyMedia>
-          <EmptyTitle>No past meetings</EmptyTitle>
-          <EmptyDescription>
-            Meetings you&apos;ve already attended will appear here.
-          </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <p className="text-sm text-muted-foreground">
-            Once you start or join meetings, we&apos;ll keep a record here for
-            quick access.
-          </p>
-        </EmptyContent>
-      </Empty>
+      <div className="space-y-3">
+        <div className="flex items-center justify-end">
+          {onRefresh && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onRefresh}
+              className="text-white/80 cursor-pointer hover:bg-white/5"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+
+        <Empty className="rounded-xl border border-border bg-card">
+          <EmptyHeader>
+            <EmptyMedia variant="icon" className="text-orange-500/80">
+              <IconCalendarOff />
+            </EmptyMedia>
+            <EmptyTitle>No past meetings</EmptyTitle>
+            <EmptyDescription>
+              Meetings you&apos;ve already attended will appear here.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <p className="text-sm text-muted-foreground">
+              Once you start or join meetings, we&apos;ll keep a record here for
+              quick access.
+            </p>
+          </EmptyContent>
+        </Empty>
+      </div>
     );
   }
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-end">
+        {onRefresh && (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={onRefresh}
+            className="text-white/80 hover:bg-white/5"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
       {pastMeetings.map((meeting) => (
         <Card
           key={meeting.id}
           onClick={() => onMeetingClick(meeting.id)}
-          className="group cursor-pointer rounded-xl transition-all hover:border-orange-500/30 hover:bg-orange-500/3"
+          className="
+  group cursor-pointer rounded-xl border border-border
+  transition-all
+  hover:border-orange-500/40
+  hover:bg-orange-500/5
+"
+
         >
           <CardContent className="p-5 space-y-4">
             <div className="flex items-start justify-between gap-4">

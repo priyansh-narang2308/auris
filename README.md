@@ -21,3 +21,6 @@
 
 ## Using google calendar as well for checking if its connected or not 
 ## taking only the first 20 events to reducd ugliness in upcoming meetings route
+
+# Flow
+## Take all the fucntions frrom the usemeeting.ts like fetchupcoming meetings pastmeetings oauth for calendar bottoggling and all and using in the home page

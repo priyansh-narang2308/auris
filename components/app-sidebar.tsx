@@ -118,30 +118,14 @@ const AppSidebar = () => {
   const upgradeInfo = getTheUpgradeInfo();
 
   return (
-    <Sidebar
-      collapsible="icon"
-      className="
-        h-screen
-        border-r
-        border-white/10
-        bg-linear-to-b
-        from-[#0e1117]
-        to-[#0b0e14]
-      "
-    >
+    <Sidebar collapsible="icon" className="h-screen border-r border-border">
       {/* Header */}
-      <SidebarHeader className="border-b border-white/10 px-3 py-3">
+      <SidebarHeader className="border-b border-border px-3 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 overflow-hidden">
             <Logo />
           </div>
-          <SidebarTrigger
-            className="
-              text-white/60
-              hover:text-white cursor-pointer
-              transition
-            "
-          />
+          <SidebarTrigger className="text-muted-foreground hover:text-foreground cursor-pointer transition" />
         </div>
       </SidebarHeader>
 
@@ -155,23 +139,7 @@ const AppSidebar = () => {
                   <SidebarMenuButton
                     asChild
                     isActive={pathName === item.url}
-                    className="
-                      group
-                      w-full
-                      justify-start
-                      gap-3
-                      rounded-lg
-                      px-3
-                      py-2.5
-                      text-sm
-                      text-white/70
-                      transition-all
-                      hover:bg-white/5
-                      hover:text-white
-                      data-[active=true]:bg-orange-500/15
-                      data-[active=true]:text-orange-400
-                      group-data-[state=collapsed]:justify-center
-                    "
+                    className="group w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-all hover:bg-muted hover:text-foreground data-[active=true]:bg-orange-500/15 data-[active=true]:text-orange-400 group-data-[state=collapsed]:justify-center"
                   >
                     <Link href={item.url}>
                       <item.icon className="w-5 h-5 shrink-0" />
@@ -197,7 +165,7 @@ const AppSidebar = () => {
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-10 w-10 rounded-lg border border-white/10 bg-white/5 hover:bg-white/6 transition-colors cursor-pointer"
+                      className="h-10 w-10 rounded-lg border border-border bg-card hover:bg-muted transition-colors cursor-pointer"
                       aria-label="Current plan and usage"
                     >
                       <Crown className="h-5 w-5 text-orange-400" />
@@ -206,7 +174,7 @@ const AppSidebar = () => {
                   <PopoverContent
                     side="right"
                     align="start"
-                    className="w-64 rounded-xl border border-white/10 bg-[#0b0b0b] text-white p-3"
+                    className="w-64 rounded-xl border border-border bg-card text-foreground p-3"
                   >
                     <div className="space-y-3">
                       <p className="text-sm font-semibold text-orange-400">
@@ -214,7 +182,7 @@ const AppSidebar = () => {
                       </p>
                       <div className="space-y-3 text-xs">
                         <div className="space-y-1">
-                          <div className="flex justify-between text-white/70">
+                          <div className="flex justify-between text-muted-foreground">
                             <span>Meetings</span>
                             <span>
                               {usage.meetingsThisMonth}/
@@ -222,7 +190,7 @@ const AppSidebar = () => {
                             </span>
                           </div>
                           {limits.meetings !== -1 && (
-                            <div className="h-2 w-full rounded-full bg-white/10">
+                            <div className="h-2 w-full rounded-full bg-muted">
                               <div
                                 className="h-2 rounded-full bg-orange-400 transition-all"
                                 style={{ width: `${meetingProgress}%` }}
@@ -231,7 +199,7 @@ const AppSidebar = () => {
                           )}
                         </div>
                         <div className="space-y-1">
-                          <div className="flex justify-between text-white/70">
+                          <div className="flex justify-between text-muted-foreground">
                             <span>Chat Messages</span>
                             <span>
                               {usage.chatMessagesToday}/
@@ -241,7 +209,7 @@ const AppSidebar = () => {
                             </span>
                           </div>
                           {limits.chatMessages !== -1 && (
-                            <div className="h-2 w-full rounded-full bg-white/10">
+                            <div className="h-2 w-full rounded-full bg-muted">
                               <div
                                 className="h-2 rounded-full bg-orange-300 transition-all"
                                 style={{ width: `${chatProgress}%` }}
@@ -274,10 +242,10 @@ const AppSidebar = () => {
                   <DropdownMenuContent className="w-56">
                     <div className="p-2">
                       <div className="px-2 py-1">
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-foreground">
                           {upgradeInfo.title}
                         </p>
-                        <p className="text-xs text-white/60">
+                        <p className="text-xs text-muted-foreground">
                           {upgradeInfo.description}
                         </p>
                       </div>
@@ -292,7 +260,7 @@ const AppSidebar = () => {
                             </Link>
                           </DropdownMenuItem>
                         ) : (
-                          <div className="px-2 py-1 text-center text-xs text-white/50">
+                          <div className="px-2 py-1 text-center text-xs text-muted-foreground">
                             Thank you for your support 🙌
                           </div>
                         )}
@@ -308,8 +276,8 @@ const AppSidebar = () => {
 
         <div className="group-data-[state=collapsed]:hidden space-y-3">
           {usage && (
-            <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-md p-3">
-              <p className="mb-3 text-xs font-medium text-white/80">
+            <div className="rounded-xl border border-border bg-card backdrop-blur-md p-3">
+              <p className="mb-3 text-xs font-medium text-foreground/80">
                 Current Plan:{" "}
                 <span className="text-orange-400">
                   {usage.currentPlan.toUpperCase()}
@@ -325,7 +293,7 @@ const AppSidebar = () => {
                   </span>
                 </div>
                 {limits.meetings !== -1 && (
-                  <div className="h-2 w-full rounded-full bg-white/10">
+                  <div className="h-2 w-full rounded-full bg-muted">
                     <div
                       className="h-2 rounded-full bg-orange-400 transition-all duration-500"
                       style={{ width: `${meetingProgress}%` }}
@@ -343,7 +311,7 @@ const AppSidebar = () => {
                   </span>
                 </div>
                 {limits.chatMessages !== -1 && (
-                  <div className="h-2 w-full rounded-full bg-white/10">
+                  <div className="h-2 w-full rounded-full bg-muted">
                     <div
                       className="h-2 rounded-full bg-orange-300 transition-all duration-500"
                       style={{ width: `${chatProgress}%` }}

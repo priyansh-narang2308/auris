@@ -1,8 +1,11 @@
-import React from "react";
+"use client";
+
 import { useMeetings } from "./hooks/useMeeting";
 import { useRouter } from "next/navigation";
 import { SignInButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import PastMeetings from "./_components/past-meetings";
+import UpcomingMeetings from "./_components/upcoming-meetings";
 
 const Home = () => {
   const {
@@ -48,22 +51,39 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="flex gap-6 p-6">
+      <div className="flex flex-col gap-8 p-4 sm:p-6 lg:flex-row">
         <div className="flex-1">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-foreground">
+          <div className="mb-4 sm:mb-2 mt-9">
+            <h2 className="text-xl sm:text-2xl font-bold text-foreground">
               Past Meetings
             </h2>
           </div>
 
-          {/* Past Meeting component */}
+          <PastMeetings
+            pastMeetings={pastMeetings}
+            pastLoading={pastLoading}
+            onMeetingClick={handleMeetingClick}
+            onRefresh={fetchPastMeetings}
+            getAttendeeList={getAttendeeList}
+            getInitialsOfTheUser={getInitialsOfTheUser}
+          />
         </div>
 
-        <div className="w-px bg-border self-stretch" />
+        <div className="hidden lg:block w-px bg-border self-stretch" />
 
-        <div className="w-96">
-          <div className="sticky top-6">
-            {/* Upcoming meetings component */}
+        <div className="w-full lg:w-96">
+          <div className="lg:sticky lg:top-6">
+            <UpcomingMeetings
+              upcomingEvents={upcomingEvents}
+              connected={connected}
+              error={error}
+              loading={loading}
+              initialLoading={initialLoading}
+              botToggles={botToggles}
+              onRefresh={fetchUpcomingEvents}
+              onToggleBot={toggleBot}
+              onConnectCalendar={directOAuth}
+            />
           </div>
         </div>
       </div>
