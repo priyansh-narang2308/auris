@@ -184,4 +184,65 @@ export function useMeetings() {
       setLoading(false);
     }
   };
+
+  const getAttendeeList = (attendees: unknown): string[] => {
+    if (!attendees) return [];
+
+    if (Array.isArray(attendees)) {
+      return attendees
+        .map(String)
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
+
+    if (typeof attendees === "string") {
+      try {
+        const parsed = JSON.parse(attendees);
+        if (Array.isArray(parsed)) {
+          return parsed
+            .map(String)
+            .map((s) => s.trim())
+            .filter(Boolean);
+        }
+      } catch {}
+
+      return attendees
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
+
+    return [String(attendees).trim()].filter(Boolean);
+  };
+
+  // for getting hthe name to display
+  const getInitialsOfTheUser = (name: string): string => {
+    if (!name.trim()) return "";
+
+    const words = name.trim().split(/\s+/);
+
+    if (words.length === 1) {
+      return words[0].slice(0, 2).toUpperCase();
+    }
+
+    return (words[0][0] + words[1][0]).toUpperCase();
+  };
+
+  return {
+    userId,
+    upcomingEvents,
+    pastMeetings,
+    loading,
+    pastLoading,
+    connected,
+    error,
+    botToggles,
+    initialLoading,
+    fetchUpcomingEvents,
+    fetchPastMeetings,
+    toggleBot,
+    directOAuth,
+    getAttendeeList,
+    getInitialsOfTheUser,
+  };
 }
