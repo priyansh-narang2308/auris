@@ -186,7 +186,7 @@ export function useMeetings() {
     }
   };
 
-  const getAttendeeList = (attendees: unknown): string[] => {
+  const getAttendeeList = (attendees: any): string[] => {
     if (!attendees) return [];
 
     if (Array.isArray(attendees)) {
@@ -216,7 +216,7 @@ export function useMeetings() {
     return [String(attendees).trim()].filter(Boolean);
   };
 
-  // for getting hthe name to display
+  // for getting the name to display
   const getInitialsOfTheUser = (name: string): string => {
     if (!name.trim()) return "";
 
