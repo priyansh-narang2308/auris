@@ -24,3 +24,5 @@
 
 # Flow
 ## Take all the fucntions frrom the usemeeting.ts like fetchupcoming meetings pastmeetings oauth for calendar bottoggling and all and using in the home page
+
+## Fetching the tokens for the callback of google auth

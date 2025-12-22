@@ -1,3 +1,5 @@
+"use client";
+
 import { useUsage } from "@/app/contexts/usage-context";
 import {
   Bot,
@@ -7,8 +9,23 @@ import {
   Layers3,
   Settings,
   Zap,
+  ChevronsUpDown,
+  LogOut,
+  Moon,
+  Sun,
+  Monitor,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useUser, UserButton, useClerk } from "@clerk/nextjs";
+import { useTheme } from "next-themes";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { 
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuPortal
+} from "./ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -64,6 +81,9 @@ const ITEMS = [
 const AppSidebar = () => {
   const pathName = usePathname();
   const { usage, limits } = useUsage();
+  const { user } = useUser();
+  const { setTheme, theme } = useTheme();
+  const { signOut } = useClerk();
 
   const meetingProgress =
     usage && limits.meetings !== -1
@@ -102,8 +122,8 @@ const AppSidebar = () => {
         };
       case "premium":
         return {
-          title: "You're on Premium broski!",
-          description: "Enjoying unlimited access to all features",
+          title: "Premium Plan Active",
+          description: "You have unlimited access to all features",
           showButton: false,
         };
       default:
@@ -113,7 +133,7 @@ const AppSidebar = () => {
           showButton: true,
         };
     }
-  }
+  };
 
   const upgradeInfo = getTheUpgradeInfo();
 
@@ -122,12 +142,11 @@ const AppSidebar = () => {
       <SidebarHeader className="border-b border-border px-3 py-3">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 overflow-hidden">
-  <Logo />
-</Link>
+            <Logo />
+          </Link>
           <SidebarTrigger className="text-muted-foreground hover:text-foreground cursor-pointer transition" />
         </div>
       </SidebarHeader>
-
 
       <SidebarContent className="flex-1 py-5">
         <SidebarGroup>
@@ -260,7 +279,7 @@ const AppSidebar = () => {
                           </DropdownMenuItem>
                         ) : (
                           <div className="px-2 py-1 text-center text-xs text-muted-foreground">
-                            Thank you for your support 🙌
+                            Premium Plan Active
                           </div>
                         )}
                       </div>
@@ -341,12 +360,135 @@ const AppSidebar = () => {
                 )}
                 {!upgradeInfo.showButton && (
                   <div className="py-2 text-center text-xs text-white/50">
-                    Thank you for your support 🙌
+                    Premium Plan Active
                   </div>
                 )}
               </div>
             </div>
           )}
+        </div>
+
+        <div className="mt-4 border-t border-border pt-4">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <div className="group-data-[state=collapsed]:flex hidden justify-center py-2">
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox: "h-8 w-8 rounded-lg",
+                    },
+                  }}
+                  afterSignOutUrl="/"
+                />
+              </div>
+
+              <div className="group-data-[state=collapsed]:hidden">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton
+                      size="lg"
+                      variant="outline"
+                      className="h-auto w-full justify-start gap-3 rounded-xl border border-border bg-card p-3 shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all hover:bg-accent hover:shadow-[0_6px_16px_rgba(0,0,0,0.08)] active:scale-[0.98]"
+                    >
+                      <Avatar className="h-9 w-9 rounded-lg border border-border">
+                        <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />
+                        <AvatarFallback className="rounded-lg bg-orange-500/10 text-orange-500">
+                          {user?.firstName?.[0]}
+                          {user?.lastName?.[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-1 flex-col truncate text-left leading-tight">
+                        <span className="truncate text-sm font-semibold text-foreground">
+                          {user?.fullName || "User"}
+                        </span>
+                        <span className="truncate text-[11px] text-muted-foreground/70">
+                          {user?.primaryEmailAddress?.emailAddress || ""}
+                        </span>
+                      </div>
+                      <ChevronsUpDown className="ml-auto size-4 text-muted-foreground/40" />
+                    </SidebarMenuButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="right"
+                    align="end"
+                    sideOffset={12}
+                    className="w-64 rounded-xl border border-border bg-popover p-2 shadow-xl"
+                  >
+                    <div className="flex items-center gap-3 px-2 py-2">
+                      <Avatar className="h-10 w-10 rounded-lg border border-border">
+                        <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />
+                        <AvatarFallback className="rounded-lg bg-orange-500/10 text-orange-500">
+                          {user?.firstName?.[0]}
+                          {user?.lastName?.[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col space-y-0.5 truncate">
+                        <p className="truncate text-sm font-bold text-foreground">
+                          {user?.fullName}
+                        </p>
+                        <p className="truncate text-[11px] text-muted-foreground">
+                          {user?.primaryEmailAddress?.emailAddress}
+                        </p>
+                      </div>
+                    </div>
+                    <DropdownMenuSeparator className="my-2" />
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-2 text-sm text-foreground/80 hover:bg-accent hover:text-foreground">
+                        <div className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-muted/50">
+                          {theme === "dark" ? (
+                            <Moon className="size-4 text-orange-400" />
+                          ) : theme === "light" ? (
+                            <Sun className="size-4 text-orange-500" />
+                          ) : (
+                            <Monitor className="size-4 text-blue-400" />
+                          )}
+                        </div>
+                        <span className="flex-1 font-medium">Appearance</span>
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuPortal>
+                        <DropdownMenuSubContent className="w-40 rounded-xl border border-border bg-popover p-1 shadow-xl">
+                          <DropdownMenuItem
+                            onClick={() => setTheme("light")}
+                            className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-accent"
+                          >
+                            <Sun className="size-4 text-orange-500" />
+                            <span>Light</span>
+                            {theme === "light" && <div className="ml-auto size-1.5 rounded-full bg-orange-500" />}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => setTheme("dark")}
+                            className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-accent"
+                          >
+                            <Moon className="size-4 text-orange-400" />
+                            <span>Dark</span>
+                            {theme === "dark" && <div className="ml-auto size-1.5 rounded-full bg-orange-400" />}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => setTheme("system")}
+                            className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-accent"
+                          >
+                            <Monitor className="size-4 text-blue-400" />
+                            <span>System</span>
+                            {theme === "system" && <div className="ml-auto size-1.5 rounded-full bg-blue-400" />}
+                          </DropdownMenuItem>
+                        </DropdownMenuSubContent>
+                      </DropdownMenuPortal>
+                    </DropdownMenuSub>
+                    <DropdownMenuSeparator className="my-2" />
+                    <DropdownMenuItem
+                      onClick={() => signOut()}
+                      className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 dark:hover:bg-destructive/20"
+                    >
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md border border-destructive/20 bg-destructive/5 text-destructive">
+                        <LogOut className="size-4" />
+                      </div>
+                      <span>Logout</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </div>
       </SidebarFooter>
     </Sidebar>

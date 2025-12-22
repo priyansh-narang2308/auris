@@ -37,6 +37,7 @@ export async function GET(request: Request) {
       }),
     });
 
+    // get the all the tokens refresh and access token
     const tokens = await tokenResponse.json();
 
     if (!tokens.access_token) {
@@ -67,6 +68,7 @@ export async function GET(request: Request) {
         googleAccessToken: tokens.access_token,
         googleRefreshToken: tokens.refresh_token,
         calendarConnected: true,
+        // this gives the time in milliseconds thats why mutlipllying with token.expires_in
         googleTokenExpiry: new Date(Date.now() + tokens.expires_in * 1000),
       },
     });
