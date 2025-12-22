@@ -12,6 +12,9 @@ import AttendeeAvatars from "./attendee-avatars";
 import { Clock, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 interface PastMeetingsProps {
   pastMeetings: PastMeeting[];
@@ -35,25 +38,22 @@ const PastMeetings = ({
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="rounded-lg border border-border bg-card p-4 animate-pulse"
+            className="rounded-xl border border-border bg-card p-5 animate-pulse"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="space-y-2">
                 <div className="h-5 w-48 rounded bg-muted" />
                 <div className="h-4 w-32 rounded bg-muted" />
               </div>
-
               <div className="flex gap-2">
                 {[1, 2, 3].map((j) => (
                   <div key={j} className="h-6 w-6 rounded-full bg-muted" />
                 ))}
               </div>
             </div>
-
             <div className="space-y-2">
               <div className="h-4 w-3/4 rounded bg-muted" />
               <div className="h-4 w-1/2 rounded bg-muted" />
-              <div className="h-4 w-2/3 rounded bg-muted" />
             </div>
           </div>
         ))}
@@ -63,23 +63,20 @@ const PastMeetings = ({
 
   if (pastMeetings.length === 0) {
     return (
-      <Empty className="border border-border rounded-lg bg-card">
+      <Empty className="rounded-xl border border-border bg-card">
         <EmptyHeader>
-          <EmptyMedia variant="icon">
+          <EmptyMedia variant="icon" className="text-orange-500/80">
             <IconCalendarOff />
           </EmptyMedia>
-
           <EmptyTitle>No past meetings</EmptyTitle>
-
           <EmptyDescription>
             Meetings you&apos;ve already attended will appear here.
           </EmptyDescription>
         </EmptyHeader>
-
         <EmptyContent>
           <p className="text-sm text-muted-foreground">
             Once you start or join meetings, we&apos;ll keep a record here for
-            quick reference.
+            quick access.
           </p>
         </EmptyContent>
       </Empty>
@@ -89,16 +86,24 @@ const PastMeetings = ({
   return (
     <div className="space-y-4">
       {pastMeetings.map((meeting) => (
-        <div
-          className="bg-card rounded-lg p-4 border-border border hover:shadow-md transition-shadow cursor-pointer"
+        <Card
           key={meeting.id}
           onClick={() => onMeetingClick(meeting.id)}
+          className="group cursor-pointer rounded-xl transition-all hover:border-orange-500/30 hover:bg-orange-500/3"
         >
-          <div className="flex justify-between  items-start mb-3">
-            <div className="flex items-center gap-3 flex-1">
-              <h3 className="font-semibold text-lg text-foreground">
-                {meeting.title}
-              </h3>
+          <CardContent className="p-5 space-y-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h3 className="text-base font-semibold text-foreground">
+                  {meeting.title}
+                </h3>
+                <Badge
+                  variant="outline"
+                  className="border-green-500/40 text-green-500"
+                >
+                  Completed
+                </Badge>
+              </div>
               {meeting.attendees && (
                 <AttendeeAvatars
                   attendees={meeting.attendees}
@@ -107,38 +112,38 @@ const PastMeetings = ({
                 />
               )}
             </div>
-            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full ">
-              Completed
-            </span>
-          </div>
 
-          {meeting.description && (
-            <p className="text-sm text-muted-foreground mb-3">
-              {meeting.description}
-            </p>
-          )}
+            {meeting.description && (
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                {meeting.description}
+              </p>
+            )}
 
-          <div className="text-sm text-muted-foreground mb-3">
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              <span>
-                {format(new Date(meeting.startTime), "PPp")} -{" "}
-                {format(new Date(meeting.endTime), "pp")}
-              </span>
+            <Separator />
+
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                <span>
+                  {format(new Date(meeting.startTime), "PPp")} –{" "}
+                  {format(new Date(meeting.endTime), "pp")}
+                </span>
+              </div>
+
+              <div onClick={(e) => e.stopPropagation()}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-orange-500 hover:text-orange-600 hover:bg-orange-500/10 flex items-center gap-1"
+                  onClick={() => onMeetingClick(meeting.id)}
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  View
+                </Button>
+              </div>
             </div>
-          </div>
-
-          <div className="flex gap-2 mt-4" onClick={(e) => e.stopPropagation()}>
-            <Button
-              variant={"link"}
-              className="flex items-center gap-1 px-3 py-1 bg-primary text-primary-foreground text-xs rounded hover:bg-primary/90 transition-colors h-6 cursor-pointer"
-              onClick={() => onMeetingClick(meeting.id)}
-            >
-              <ExternalLink className="h-3 w-3" />
-              View Details
-            </Button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );
