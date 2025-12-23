@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PrivacyPolicyDialog, TermsDialog } from "./legal-dialogs";
 
 const links = [
-  { title: "Features", href: "#" },
+  { title: "Features", href: "#features" },
   { title: "Solution", href: "#" },
   { title: "Pricing", href: "#" },
 ];
@@ -11,12 +11,12 @@ export default function Footer() {
   return (
     <footer className="py-16 md:py-24 border-t border-slate-200 dark:border-zinc-800">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center w-full">
           <Link href="/" aria-label="go home" className="block size-fit">
             <Logo />
           </Link>
 
-          <nav className="my-8 ml-8 flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm font-medium">
+          <nav className="my-8 flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm font-medium">
             {links.map((link, index) => (
               <Link
                 key={index}
