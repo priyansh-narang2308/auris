@@ -1,3 +1,4 @@
+import "dotenv/config";
 import path from "path";
 import * as fs from "fs";
 import { prisma } from "@/lib/db";
@@ -41,7 +42,9 @@ export async function seedMeetings() {
       "https://auris.s3.eu-north-1.amazonaws.com/test-audio.mp3";
 
     const now = new Date();
+    // start time is 30 mns before the start time
     const startTime = new Date(now.getTime() - 30 * 60 * 1000);
+    // ending after 5 minutes when it has ended
     const endTime = new Date(now.getTime() - 5 * 60 * 1000);
 
     const meetings = [
@@ -70,7 +73,7 @@ export async function seedMeetings() {
           userId: userId,
           title: meeting.title,
           description: meeting.description,
-          meetingUrl: "https://meet.google.com/cug-hszq-vqv",
+          meetingUrl: "https://meet.google.com/drr-seix-gbw",
           startTime: startTime,
           endTime: endTime,
 

@@ -42,7 +42,7 @@ const Home = () => {
     <div className="min-h-screen bg-background">
       <div className="flex flex-col gap-8 p-4 sm:p-6 lg:flex-row">
         <div className="flex-1">
-          <div className="mb-4 sm:mb-5 mt-9">
+          <div className="mb-4 sm:mb-1 md:mt-3 mt-12">
             <h2 className="text-xl sm:text-2xl font-bold text-foreground">
               Past Meetings
             </h2>

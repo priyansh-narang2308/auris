@@ -50,9 +50,13 @@ const UpcomingMeetings = ({
       )}
 
       {initialLoading && (
-        <div className="space-y-3">
+        <div className="space-y-4">
+          <div className="h-10 w-full rounded-md bg-muted animate-pulse flex items-center justify-center">
+            <div className="h-4 w-4 rounded-full bg-muted-foreground/30" />
+          </div>
+
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="animate-pulse rounded-xl border-border">
+            <Card key={i} className="rounded-xl border-border animate-pulse">
               <CardContent className="p-4 space-y-3">
                 <div className="h-4 w-3/4 bg-muted rounded" />
                 <div className="h-3 w-1/2 bg-muted rounded" />
@@ -111,7 +115,7 @@ const UpcomingMeetings = ({
             variant="outline"
             onClick={onRefresh}
             disabled={loading}
-            className="w-full flex items-center gap-2"
+            className="w-full flex items-center gap-2 cursor-pointer"
           >
             <RefreshCcw
               className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
@@ -130,6 +134,7 @@ const UpcomingMeetings = ({
                     checked={!!botToggles[event.id]} //negates the vlaue so give true or false
                     onCheckedChange={() => onToggleBot(event.id)}
                     aria-label="Toggle bot for the meeting"
+                    className="cursor-pointer"
                   />
                 </div>
 
@@ -167,7 +172,8 @@ const UpcomingMeetings = ({
                   >
                     <Button
                       size="sm"
-                      className="w-full bg-orange-500 text-white hover:bg-orange-500/90 flex items-center gap-2"
+                      variant={"default"}
+                      className="w-full cursor-pointer  flex items-center gap-2"
                     >
                       <PlugZap className="h-4 w-4" />
                       Join meeting

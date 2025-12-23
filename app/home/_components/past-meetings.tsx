@@ -36,7 +36,7 @@ const PastMeetings = ({
 }: PastMeetingsProps) => {
   if (pastLoading) {
     return (
-      <div className="space-y-8 mt-2">
+      <div className="space-y-8 md:mt-14 mt-9">
         {[1, 2, 3].map((i) => (
           <div
             key={i}
@@ -45,6 +45,7 @@ const PastMeetings = ({
             <div className="flex items-start justify-between mb-4">
               <div className="space-y-2">
                 <div className="h-5 w-48 rounded bg-muted" />
+                <div className="h-4 w-48 rounded bg-muted" />
                 <div className="h-4 w-32 rounded bg-muted" />
               </div>
               <div className="flex gap-2">
@@ -54,6 +55,7 @@ const PastMeetings = ({
               </div>
             </div>
             <div className="space-y-2">
+              <div className="h-4 w-3/4 rounded bg-muted" />
               <div className="h-4 w-3/4 rounded bg-muted" />
               <div className="h-4 w-1/2 rounded bg-muted" />
             </div>
@@ -108,7 +110,7 @@ const PastMeetings = ({
             size="sm"
             variant="ghost"
             onClick={onRefresh}
-            className="text-white/80 hover:bg-white/5"
+            className="text-white/80 hover:bg-white/5 cursor-pointer"
           >
             <RefreshCw className="h-4 w-4" />
           </Button>
@@ -122,6 +124,7 @@ const PastMeetings = ({
           className="
   group cursor-pointer rounded-xl border border-border
   transition-all
+  
   hover:border-orange-500/40
   hover:bg-orange-500/5
 "
@@ -169,8 +172,8 @@ const PastMeetings = ({
               <div onClick={(e) => e.stopPropagation()}>
                 <Button
                   size="sm"
-                  variant="ghost"
-                  className="text-orange-500 hover:text-orange-600 hover:bg-orange-500/10 flex items-center gap-1"
+                  variant="default"
+                  className="cursor-pointer flex items-center gap-1"
                   onClick={() => onMeetingClick(meeting.id)}
                 >
                   <ExternalLink className="h-4 w-4" />

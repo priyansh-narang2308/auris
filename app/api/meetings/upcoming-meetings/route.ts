@@ -47,9 +47,24 @@ export async function GET() {
         dateTime: meeting.endTime.toISOString(),
       },
       //   in the database it is as a json so we are parsing it
-      attendees: meeting.attendees
-        ? JSON.parse(meeting.attendees as string)
-        : [],
+      attendees: (() => {
+        if (!meeting.attendees) return [];
+
+        if (Array.isArray(meeting.attendees)) {
+          return meeting.attendees;
+        }
+
+        if (typeof meeting.attendees === "string") {
+          try {
+            return JSON.parse(meeting.attendees);
+          } catch {
+            return [meeting.attendees];
+          }
+        }
+
+        return [];
+      })(),
+
       hangoutLink: meeting.meetingUrl,
       conferenceData: meeting.meetingUrl //conference entry points, derived from the `meetingUrl`
         ? { entryPoints: [{ uri: meeting.meetingUrl }] }

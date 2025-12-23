@@ -26,3 +26,7 @@
 ## Take all the fucntions frrom the usemeeting.ts like fetchupcoming meetings pastmeetings oauth for calendar bottoggling and all and using in the home page
 
 ## Fetching the tokens for the callback of google auth
+
+## Tr1: Priyansh Narang and Shivam
+## Tr2: Priyansh Narang and Kaushal
+## Tr3: Priyansh Narang and Paarthu
