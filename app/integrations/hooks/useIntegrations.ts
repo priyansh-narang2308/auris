@@ -68,7 +68,7 @@ export function useIntegrations() {
   const [setupData, setSetupData] = useState<any>(null);
   const [setupLoading, setSetupLoading] = useState(false);
 
-  const fetchIntegration = async () => {
+  const fetchIntegrations = async () => {
     try {
       const [integrationRes, calendarRes] = await Promise.all([
         fetch("/api/integrations/status"),
@@ -151,16 +151,44 @@ export function useIntegrations() {
         });
       }
 
-      fetchIntegration(); //thisis beause to show the disconected and connected on the page
+      fetchIntegrations(); //thisis beause to show the disconected and connected on the page
     } catch (error) {
       console.error(`Error disconnecting the ${platform} platform: `, error);
+    }
+  };
+
+  const handleSetupSubmit = async (
+    platform: "google-calendar" | "trello" | "jira" | "asana" | "slack",
+    config: any
+  ) => {
+    setSetupLoading(true);
+    try {
+      const response = await fetch(`/api/integrations/${platform}/setup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(config),
+      });
+      if (response.ok) {
+        setSetupMode(null);
+
+        setSetupData(null);
+
+        fetchIntegrations();
+        window.history.replaceState({}, "/integrations");
+      }
+    } catch (error) {
+      console.error("Error saving the setup of the user: ", error);
+    } finally {
+      setSetupLoading(false);
     }
   };
 
   useEffect(() => {
     if (!userId) return;
 
-    fetchIntegration();
+    fetchIntegrations();
 
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -177,12 +205,15 @@ export function useIntegrations() {
     integrations,
     loading,
     setupMode,
+    setSetupMode,
     setupData,
+    setSetupData,
     setupLoading,
-    refetchIntegrations: fetchIntegration,
-    clearSetupMode: () => {
-      setSetupMode(null);
-      setSetupData(null);
-    },
+    setSetupLoading,
+    fetchIntegrations,
+    fetchSetupData,
+    handleConnect,
+    handleDisconnect,
+    handleSetupSubmit,
   };
 }
