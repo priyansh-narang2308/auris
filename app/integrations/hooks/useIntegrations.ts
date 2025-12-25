@@ -1,3 +1,6 @@
+"use client";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
@@ -11,6 +14,8 @@ export interface Integration {
   channelName?: string;
   logo: string;
 }
+
+const SETUP_PLATFORMS = ["trello", "jira", "asana", "slack"] as const;
 
 export function useIntegrations() {
   const { userId } = useAuth();
@@ -30,7 +35,6 @@ export function useIntegrations() {
       description:
         "Streamline communication by pushing real-time summaries and action items to your slack team channels.",
       connected: false,
-      channelName: undefined,
       logo: "/slack.png",
     },
     {
@@ -39,7 +43,6 @@ export function useIntegrations() {
       description:
         "Turn meeting insights into visual task cards and organize them across your trello team boards.",
       connected: false,
-      boardName: undefined,
       logo: "/trello.png",
     },
     {
@@ -48,7 +51,6 @@ export function useIntegrations() {
       description:
         "Automate ticket creation and keep your development backlog updated with technical requirements.",
       connected: false,
-      projectName: undefined,
       logo: "/jira.png",
     },
     {
@@ -57,30 +59,130 @@ export function useIntegrations() {
       description:
         "Transform discussion points into trackable tasks and assign them to your team instantly.",
       connected: false,
-      projectName: undefined,
       logo: "/asana.png",
     },
   ]);
 
   const [loading, setLoading] = useState(true);
   const [setupMode, setSetupMode] = useState<string | null>(null);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [setupData, setSetupData] = useState<any>(null);
   const [setupLoading, setSetupLoading] = useState(false);
 
-  useEffect(() => {
-    if (userId) {
-      fetchIntegration();
+  const fetchIntegration = async () => {
+    try {
+      const [integrationRes, calendarRes] = await Promise.all([
+        fetch("/api/integrations/status"),
+        fetch("/api/user/calendar-status"),
+      ]);
+
+      const integrationData = await integrationRes.json();
+      const calendarData = await calendarRes.json();
+
+      setIntegrations((prev) =>
+        prev.map((integration) => {
+          if (integration.platform === "google-calendar") {
+            return {
+              ...integration,
+              connected: Boolean(calendarData?.connected),
+            };
+          }
+
+          const status = integrationData.find(
+            (d: any) => d.platform === integration.platform
+          );
+
+          return {
+            ...integration,
+            connected: Boolean(status?.connected),
+            boardName: status?.boardName,
+            projectName: status?.projectName,
+            channelName: status?.channelName,
+          };
+        })
+      );
+    } catch (err) {
+      console.error("Error fetching integrations:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchSetupData = async (platform: string) => {
+    try {
+      setSetupLoading(true);
+      const res = await fetch(`/api/integrations/${platform}/setup`);
+      const data = await res.json();
+      setSetupData(data);
+    } catch (err) {
+      console.error(`Error fetching ${platform} setup data:`, err);
+      setSetupData(null);
+    } finally {
+      setSetupLoading(false);
+    }
+  };
+
+  const handleConnect = (
+    platform: "google-calendar" | "trello" | "jira" | "asana" | "slack"
+  ) => {
+    if (platform === "slack") {
+      window.location.href = "/api/slack/install?return=integrations";
+      return;
     }
 
-    // we want to redirect to /setup=asana for eg righ
-    const urlParams = new URLSearchParams(window.location.search);
-    const setup = urlParams.get("setup");
-    if (setup && ["trello", "jira", "asana", "slack"].includes(setup)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSetupMode(setup);
-      fetchSetupData(setup);
+    if (platform === "google-calendar") {
+      window.location.href = "/api/auth.google/direct-connect";
+      return;
+    }
+
+    window.location.href = `/api/integrations/${platform}/auth`;
+  };
+
+  const handleDisconnect = async (
+    platform: "google-calendar" | "trello" | "jira" | "asana" | "slack"
+  ) => {
+    try {
+      if (platform === "google-calendar") {
+        await fetch("/api/auth/google/disconnect", {
+          method: "POST",
+        });
+      } else {
+        await fetch(`/api/integrations/${platform}/disconnect`, {
+          method: "POST",
+        });
+      }
+
+      fetchIntegration(); //thisis beause to show the disconected and connected on the page
+    } catch (error) {
+      console.error(`Error disconnecting the ${platform} platform: `, error);
+    }
+  };
+
+  useEffect(() => {
+    if (!userId) return;
+
+    fetchIntegration();
+
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const setup = params.get("setup");
+
+      if (setup && SETUP_PLATFORMS.includes(setup as any)) {
+        setSetupMode(setup);
+        fetchSetupData(setup);
+      }
     }
   }, [userId]);
+
+  return {
+    integrations,
+    loading,
+    setupMode,
+    setupData,
+    setupLoading,
+    refetchIntegrations: fetchIntegration,
+    clearSetupMode: () => {
+      setSetupMode(null);
+      setSetupData(null);
+    },
+  };
 }
