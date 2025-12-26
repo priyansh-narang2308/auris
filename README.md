@@ -27,6 +27,6 @@
 
 ## Fetching the tokens for the callback of google auth
 
-## Tr1: Priyansh Narang and Shivam
-## Tr2: Priyansh Narang and Kaushal
-## Tr3: Priyansh Narang and Paarthu
+## Defining the scopes:   const scope =
+    "projects:read projects:write tasks:read tasks:write users:read workspaces:read";
+## for asana
