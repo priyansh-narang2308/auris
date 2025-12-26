@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     const tokenData = await tokenResp.json();
     await prisma.userIntegration.upsert({
       where: {
-        userId_platform: {
+        userId_platform: { // this came beacause of    @@unique([userId, platform]) in the scheam
           userId,
           platform: "asana",
         },
