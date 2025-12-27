@@ -1,132 +1,217 @@
-import { Gemini } from "@/components/logos";
-import { cn } from "@/lib/utils";
-import { LogoIcon } from "@/components/logo";
-import Image from "next/image";
+"use client"
+
+import { Gemini } from '@/components/logos'
+import { LogoIcon } from '@/components/logo'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import Image from 'next/image'
+import { motion } from 'framer-motion'
+import { Zap, Database, ShieldCheck, Cpu, ArrowRight } from 'lucide-react'
+import { useState, useEffect } from 'react'
+
+const integrations = [
+  { name: 'Jira', icon: '/jira.png', size: 32, category: 'Productivity', delay: 0 },
+  { name: 'Slack', icon: '/slack.png', size: 32, category: 'Communication', delay: 0.1 },
+  { name: 'Asana', icon: '/asana.png', size: 32, category: 'Management', delay: 0.2 },
+  { name: 'Google Calendar', icon: '/gcal.png', size: 36, category: 'Scheduling', delay: 0.3 },
+  { name: 'Trello', icon: '/trello.png', size: 32, category: 'Organization', delay: 0.4 },
+  { name: 'Gemini AI', component: <Gemini />, size: 32, category: 'Intelligence', delay: 0.5 },
+]
 
 export default function IntegrationsSection() {
   return (
-    <section>
-      <div className=" dark:bg-background py-18 md:py-12 ">
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="relative mx-auto flex max-w-sm items-center justify-between">
-            <div className="space-y-6">
-              <IntegrationCard position="left-top">
-                <Image src={"/asana.png"} alt="asana" width={16} height={16} />
-              </IntegrationCard>
-              <IntegrationCard>
-                <Image src={"/jira.png"} alt="jira" width={16} height={16} />
-              </IntegrationCard>
-              <IntegrationCard position="left-bottom">
-                <Gemini />
-              </IntegrationCard>
-            </div>
-            <div className="mx-auto my-2 flex w-fit justify-center gap-2">
-              <div className="bg-muted relative z-20 rounded-2xl border p-1">
-                <IntegrationCard
-                  className="shadow-black-950/10 dark:bg-background size-16 border-black/25 shadow-xl dark:border-white/25 dark:shadow-white/10"
-                  isCenter={true}
-                >
-                  <LogoIcon />
-                </IntegrationCard>
-              </div>
-            </div>
-            <div
-              role="presentation"
-              className="absolute inset-1/3 bg-[radial-gradient(var(--dots-color)_1px,transparent_1px)] opacity-50 [--dots-color:black] bg-size-[16px_16px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] dark:[--dots-color:white]"
-            ></div>
+    <section className="relative w-full overflow-hidden bg-background py-16 md:py-10">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] md:size-[800px] bg-orange-500/5 blur-[80px] md:blur-[120px] rounded-full" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:48px_48px] md:bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+      </div>
 
-            <div className="space-y-6">
-              <IntegrationCard position="right-top">
-                <Image src={"/slack.png"} alt="slack" width={16} height={16} />
-              </IntegrationCard>
-              <IntegrationCard position="right-middle">
-                <Image
-                  src={"/gcal.png"}
-                  alt="calendar"
-                  width={16}
-                  height={16}
-                />
-              </IntegrationCard>
-              <IntegrationCard position="right-bottom">
-                <Image
-                  src={"/trello.png"}
-                  alt="trello"
-                  width={64}
-                  height={64}
-                />
-              </IntegrationCard>
+      <div className="container relative mx-auto px-6">
+        <div className="flex flex-col gap-12 md:gap-24">
+
+
+          <div className="relative z-10 mx-auto max-w-4xl text-center">
+
+
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-balance text-4xl font-bold tracking-tight sm:text-5xl"
+            >
+              Everything your meetings{" "} <br />
+              <span className="bg-linear-to-r from-foreground via-orange-400/60 to-muted-foreground bg-clip-text text-transparent">
+                connect to.
+              </span>
+
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mt-8 text-xl leading-relaxed text-muted-foreground mx-auto max-w-2xl font-medium"
+            >
+              Auris orchestrates your favorite tools, turning every word spoken into
+              actionable tasks, updated documents, and synced calendars.
+            </motion.p>
+          </div>
+
+
+          <div className="relative flex flex-col items-center justify-center min-h-[500px] md:min-h-[700px]">
+
+
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="size-[300px] md:size-[400px] border border-orange-500/10 rounded-full" />
+              <div className="absolute size-[500px] md:size-[650px] border border-foreground/5 rounded-full" />
+              <div className="absolute size-[700px] md:size-[900px] border border-foreground/[0.02] rounded-full" />
+
+
+              <motion.div
+                animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute size-[280px] cursor-pointer md:size-[450px] border-2 border-orange-500/20 rounded-full blur-sm"
+              />
+            </div>
+
+
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8, type: "spring" }}
+              className="group relative z-40 flex size-24 md:size-48 items-center justify-center rounded-2xl md:rounded-[2.5rem] border-2 border-orange-500/50 bg-background shadow-[0_0_80px_rgba(234,88,12,0.25)] backdrop-blur-3xl transition-all duration-700 hover:rotate-6 hover:scale-110 cursor-pointer"
+            >
+              <LogoIcon className="size-12 md:size-24" />
+              <div className="absolute -inset-2 rounded-[2.5rem] bg-orange-500/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              <div className="absolute inset-x-0 top-1/2 -z-10 h-px w-[100vw] bg-linear-to-r from-transparent via-orange-500/20 to-transparent pointer-events-none" />
+              <div className="absolute inset-y-0 left-1/2 -z-10 w-px h-[100vh] bg-linear-to-b from-transparent via-orange-500/10 to-transparent pointer-events-none" />
+            </motion.div>
+
+
+            {integrations.map((item, i) => (
+              <IntegrationNode
+                key={item.name}
+                item={item}
+                index={i}
+                total={integrations.length}
+              />
+            ))}
+
+
+            <div className="hidden lg:block">
+              <FloatingFeature
+                icon={<Database className="size-5 text-orange-600" />}
+                text="Bi-directional Sync"
+                className="top-1/4 left-[10%] cursor-pointer"
+                delay={0}
+              />
+              <FloatingFeature
+                icon={<ShieldCheck className="size-5 text-blue-600" />}
+                text="Enterprise SSO"
+                className="bottom-1/4 right-[10%] cursor-pointer"
+                delay={0.5}
+              />
+              <FloatingFeature
+                icon={<Cpu className="size-5 text-purple-600" />}
+                text="Auto-contextualization"
+                className="top-1/3 right-[5%] cursor-pointer"
+                delay={1}
+              />
             </div>
           </div>
-          <div className="mx-auto mt-12 max-w-lg space-y-6 text-center">
-            <h2 className="text-balance text-3xl font-semibold md:text-4xl">
-              Integrate with your favorite tools
-            </h2>
-            <p className="text-muted-foreground">
-              Connect seamlessly with popular platforms and services to enhance
-              your workflow.
-            </p>
-          </div>
+
+
+
         </div>
       </div>
     </section>
-  );
+  )
 }
 
-const IntegrationCard = ({
-  children,
-  className,
-  position,
-  isCenter = false,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  position?:
-    | "left-top"
-    | "left-middle"
-    | "left-bottom"
-    | "right-top"
-    | "right-middle"
-    | "right-bottom";
-  isCenter?: boolean;
-}) => {
-  return (
-    <div
-      className={cn(
-        "bg-background relative flex size-12 rounded-xl border dark:bg-transparent",
-        "transition-all duration-300 ease-out cursor-pointer ",
-        "hover:-translate-y-0.5 hover:scale-105 hover:shadow-xl ",
-        isCenter && "hover:scale-110 hover:shadow-lg",
-        className
-      )}
-    >
-      <div
-        className={cn(
-          "relative z-20 m-auto size-fit *:size-6 transition-transform duration-300",
-          isCenter && "*:size-8"
-        )}
-      >
-        {children}
-      </div>
+function IntegrationNode({ item, index, total }: { item: any, index: number, total: number }) {
+  const angle = (index / total) * Math.PI * 2
+  const responsiveRadius = typeof window !== 'undefined' && window.innerWidth < 768 ? 130 : 280
+  const [radius, setRadius] = useState(responsiveRadius)
 
-      {position && !isCenter && (
-        <div
-          className={cn(
-            "bg-linear-to-r to-muted-foreground/25 absolute z-10 h-px transition-opacity duration-300",
-            "group-hover:opacity-70",
-            position === "left-top" &&
-              "left-full top-1/2 w-32.5 origin-left rotate-25",
-            position === "left-middle" && "left-full top-1/2 w-30 origin-left",
-            position === "left-bottom" &&
-              "left-full top-1/2 w-32.5 origin-left rotate-[-25deg]",
-            position === "right-top" &&
-              "bg-linear-to-l right-full top-1/2 w-32.5 origin-right rotate-[-25deg]",
-            position === "right-middle" &&
-              "bg-linear-to-l right-full top-1/2 w-32.5 origin-right",
-            position === "right-bottom" &&
-              "bg-linear-to-l right-full top-1/2 w-32.5 origin-right rotate-25"
-          )}
-        />
-      )}
-    </div>
-  );
-};
+  useEffect(() => {
+    const handleResize = () => {
+      setRadius(window.innerWidth < 768 ? 130 : 280)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true }}
+      animate={{
+        x: [Math.cos(angle) * (radius - 10), Math.cos(angle) * (radius + 10), Math.cos(angle) * (radius - 10)],
+        y: [Math.sin(angle) * (radius - 10), Math.sin(angle) * (radius + 10), Math.sin(angle) * (radius - 10)],
+      }}
+      transition={{
+        opacity: { delay: item.delay, duration: 0.6 },
+        scale: { delay: item.delay, duration: 0.6, type: 'spring' },
+        x: { duration: 8 + index, repeat: Infinity, ease: "easeInOut" },
+        y: { duration: 8 + index, repeat: Infinity, ease: "easeInOut" },
+      }}
+      className="absolute z-30"
+      style={{
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)'
+      }}
+    >
+      <motion.div
+        whileHover={{ scale: 1.15, y: -10, rotate: index % 2 === 0 ? 5 : -5 }}
+        className="flex size-14 md:size-24 items-center justify-center rounded-xl md:rounded-[2rem] border bg-background/80 shadow-2xl backdrop-blur-xl cursor-pointer group transition-colors hover:border-orange-500/30"
+      >
+        <div className="absolute -inset-4 scale-125 bg-orange-500/5 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
+
+        {item.component ? (
+          <div className="*:size-7 md:*:size-11">{item.component}</div>
+        ) : (
+          <Image
+            src={item.icon}
+            alt={item.name}
+            width={item.size}
+            height={item.size}
+            className="size-7 md:size-11 object-contain filter transition-all group-hover:drop-shadow-[0_0_15px_rgba(234,88,12,0.4)]"
+          />
+        )}
+
+        {/* Label on Hover */}
+        <div className="absolute -bottom-14 opacity-0 group-hover:opacity-100 transition-all scale-75 group-hover:scale-100 duration-300">
+          <div className="px-3 py-1.5 rounded-full border bg-background shadow-lg text-[11px] font-black uppercase tracking-widest text-orange-600">
+            {item.name}
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+function FloatingFeature({ icon, text, className, delay }: { icon: React.ReactNode, text: string, className: string, delay: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      animate={{ y: [0, -15, 0] }}
+      transition={{
+        opacity: { delay, duration: 1 },
+        x: { delay, duration: 1 },
+        y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay }
+      }}
+      className={cn("absolute z-10 flex items-center gap-3 px-5 py-3 rounded-2xl border bg-background/50 backdrop-blur-md shadow-xl border-foreground/5", className)}
+    >
+      <div className="size-10 rounded-xl border bg-background flex items-center justify-center shadow-inner">
+        {icon}
+      </div>
+      <span className="text-sm font-bold tracking-tight">{text}</span>
+    </motion.div>
+  )
+}

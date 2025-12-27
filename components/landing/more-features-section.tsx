@@ -28,7 +28,7 @@ const MoreFeaturesSection = () => {
         <div className="mb-16 md:mb-20 text-center">
           <h2 className="text-4xl md:text-5xl font-semibold text-slate-950 dark:text-white">
             Plus{" "}
-            <span className="text-blue-600 dark:text-blue-400">
+             <span className="bg-linear-to-r from-foreground via-orange-400/60 to-muted-foreground bg-clip-text text-transparent">
               More Features
             </span>
           </h2>
@@ -46,7 +46,7 @@ const MoreFeaturesSection = () => {
               className="h-full rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 shadow-sm dark:shadow-none"
             >
               <div className="flex flex-col gap-6">
-                <div className="flex size-12 items-center justify-center rounded-xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400">
                   <feature.icon className="size-6" />
                 </div>
 

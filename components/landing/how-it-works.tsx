@@ -47,7 +47,11 @@ const HowItWorks = () => {
       >
         <motion.div variants={item} className="text-center mb-24">
           <h2 className="text-4xl md:text-5xl font-semibold text-white">
-            How It Works
+            How It {" "}
+            <span className="bg-linear-to-r from-foreground via-orange-400/60 to-muted-foreground bg-clip-text text-transparent">
+              Works
+            </span>
+
           </h2>
           <p className="mt-6 text-lg text-zinc-400">
             Get started in minutes with our simple 3-step process
@@ -60,7 +64,7 @@ const HowItWorks = () => {
             whileInView={{ scaleX: 1, opacity: 1 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute left-1/2 top-10 hidden h-px w-[70%] -translate-x-1/2 bg-linear-to-r from-transparent via-blue-500/40 to-transparent md:block origin-center"
+            className="absolute left-1/2 top-10 hidden h-px w-[70%] -translate-x-1/2 bg-linear-to-r from-transparent via-orange-500/40 to-transparent md:block origin-center"
           />
 
           <div className="relative grid grid-cols-1 md:grid-cols-3 gap-20">
@@ -107,10 +111,10 @@ const Step = ({
       <motion.div
         variants={circle}
         whileHover={{ scale: 1.1 }}
-        className="relative mb-8 flex size-20 items-center justify-center rounded-full border border-blue-500/40 text-2xl font-medium text-blue-400 bg-black"
+        className="relative mb-8 flex size-20 items-center justify-center rounded-full border border-orange-500/40 text-2xl font-medium text-orange-400 bg-black"
       >
         <span className="relative z-10">{step}</span>
-        <span className="absolute inset-0 rounded-full bg-blue-500/10 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+        <span className="absolute inset-0 rounded-full bg-orange-500/10 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
       </motion.div>
 
       <h3 className="text-xl font-semibold text-white mb-4">{title}</h3>

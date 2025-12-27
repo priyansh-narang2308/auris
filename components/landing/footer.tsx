@@ -9,10 +9,12 @@ const links = [
 ];
 export default function Footer() {
   return (
-    <footer className="py-16 md:py-24 border-t border-slate-200 dark:border-zinc-800">
+    <footer className="relative py-16 md:py-24 border-t border-slate-200 dark:border-zinc-800 overflow-hidden">
+
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 size-[600px] bg-orange-500/[0.03] blur-[120px] rounded-full pointer-events-none" />
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex flex-col items-center w-full">
-          <Link href="/" aria-label="go home" className="block size-fit">
+          <Link href="/" aria-label="go home" className="block size-fit mr-6">
             <Logo />
           </Link>
 
@@ -65,7 +67,7 @@ export default function Footer() {
             </SocialLink>
           </div>
 
-          <p className="text-muted-foreground text-sm order-3 md:order-2">
+          <p className="text-muted-foreground text-sm order-3 md:order-2 ml-16">
             © {new Date().getFullYear()} auris, All rights reserved
           </p>
           <div className="flex gap-6 order-1 md:order-3">
