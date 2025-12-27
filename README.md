@@ -30,3 +30,8 @@
 ## Defining the scopes:   const scope =
     "projects:read projects:write tasks:read tasks:write users:read workspaces:read";
 ## for asana
+
+## Scope of jira:  const scope =
+    "read:jira-work write:jira-work manage:jira-project manage:jira-configuration read:jira-user offline_access";
+
+
