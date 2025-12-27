@@ -41,7 +41,7 @@ export async function GET() {
     const asana = new AsanaAPI();
 
     const workspaces = await asana.getWorkspaces(validToken); //get the workspace for the current token
-    const workspaceId = workspaces.data[0]?.gid;   //this is the globalId: gid
+    const workspaceId = workspaces.data[0]?.gid;   //this is the globalId: gid that asana holds thats in it workspace itself 
 
 
     if (!workspaceId) {
@@ -99,13 +99,14 @@ export async function POST(request: NextRequest) {
     let finalProjectId = projectId;
     let finalProjectName = projectName;
 
+    // if the user wants to create a new project create it and update the current id and name 
     if (createNew && projectName) {
       const newProject = await asaanaa.createProject(
         validToken,
         workspaceId,
         projectName
       );
-      finalProjectId = newProject.data.gid;
+      finalProjectId = newProject.data.gid;  //gid again as asana uses
       finalProjectName = newProject.data.name;
     }
 
