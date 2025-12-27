@@ -6,6 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { UsageProvider } from "./contexts/usage-context";
 import { ConditionalLayout } from "@/components/conditional-layout";
+import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
   description:
     "An AI-Based Notetaker + Meeting Bot similar to Fireflies.ai and Otter.ai",
 };
+
 
 export default function RootLayout({
   children,
@@ -38,7 +40,9 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <UsageProvider>
-              <ConditionalLayout>{children}</ConditionalLayout>
+              <SmoothScrollProvider>
+                <ConditionalLayout>{children}</ConditionalLayout>
+              </SmoothScrollProvider>
             </UsageProvider>
           </ThemeProvider>
         </body>

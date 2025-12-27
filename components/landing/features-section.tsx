@@ -44,10 +44,7 @@ export const item: Variants = {
 
 export default function FeaturesSection() {
   return (
-    <section
-      id="features"
-      className=" py-32 md:py-36 dark:bg-transparent"
-    >
+    <section id="features" className=" py-32 md:py-36 dark:bg-transparent">
       <motion.div
         className="@container mx-auto max-w-6xl px-6"
         variants={container}
@@ -57,13 +54,14 @@ export default function FeaturesSection() {
       >
         <motion.div variants={item} className="mx-auto max-w-5xl text-center">
           <h2 className="text-balance text-4xl font-semibold lg:text-5xl">
-            A smarter way to capture and run meetings
+            A smarter way to capture and{" "}
+            <span className="bg-linear-to-r from-foreground via-orange-400/60 to-muted-foreground bg-clip-text text-transparent">
+              run meetings.
+            </span>
           </h2>
           <p className="mt-6 text-muted-foreground relative inline-block">
-            <span className="mask-gradient">
-              From AI summaries to seamless integrations, we&apos;ve got every
-              aspect covered.
-            </span>
+            From AI summaries to seamless integrations, we&apos;ve got every
+            aspect covered.
           </p>
         </motion.div>
 

@@ -23,8 +23,8 @@ export default function IntegrationsSection() {
   return (
     <section className="relative w-full overflow-hidden bg-background py-16 md:py-10">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] md:size-[800px] bg-orange-500/5 blur-[80px] md:blur-[120px] rounded-full" />
-        <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:48px_48px] md:bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] md:size-[800px] bg-orange-500/5 blur-[60px] md:blur-[100px] rounded-full will-change-[filter]" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:48px_48px] md:bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-50" />
       </div>
 
       <div className="container relative mx-auto px-6">
@@ -69,9 +69,9 @@ export default function IntegrationsSection() {
 
 
               <motion.div
-                animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute size-[280px] cursor-pointer md:size-[450px] border-2 border-orange-500/20 rounded-full blur-sm"
+                animate={{ scale: [1, 1.05, 1], opacity: [0.05, 0.1, 0.05] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute size-[280px] md:size-[450px] border-2 border-orange-500/10 rounded-full blur-sm"
               />
             </div>
 
@@ -80,13 +80,13 @@ export default function IntegrationsSection() {
               initial={{ scale: 0.8, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8, type: "spring" }}
-              className="group relative z-40 flex size-24 md:size-48 items-center justify-center rounded-2xl md:rounded-[2.5rem] border-2 border-orange-500/50 bg-background shadow-[0_0_80px_rgba(234,88,12,0.25)] backdrop-blur-3xl transition-all duration-700 hover:rotate-6 hover:scale-110 cursor-pointer"
+              className="group relative z-40 flex size-24 md:size-48 items-center justify-center rounded-2xl md:rounded-[2.5rem] border-2 border-orange-500/30 bg-background shadow-[0_0_60px_rgba(234,88,12,0.15)] transition-all duration-700 hover:rotate-6 hover:scale-105 cursor-pointer will-change-transform"
             >
               <LogoIcon className="size-12 md:size-24" />
-              <div className="absolute -inset-2 rounded-[2.5rem] bg-orange-500/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute -inset-2 rounded-[2.5rem] bg-orange-500/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
 
-              <div className="absolute inset-x-0 top-1/2 -z-10 h-px w-[100vw] bg-linear-to-r from-transparent via-orange-500/20 to-transparent pointer-events-none" />
-              <div className="absolute inset-y-0 left-1/2 -z-10 w-px h-[100vh] bg-linear-to-b from-transparent via-orange-500/10 to-transparent pointer-events-none" />
+              <div className="absolute inset-x-0 top-1/2 -z-10 h-px w-[100vw] bg-linear-to-r from-transparent via-orange-500/10 to-transparent pointer-events-none" />
+              <div className="absolute inset-y-0 left-1/2 -z-10 w-px h-[100vh] bg-linear-to-b from-transparent via-orange-500/5 to-transparent pointer-events-none" />
             </motion.div>
 
 
@@ -132,33 +132,20 @@ export default function IntegrationsSection() {
 
 function IntegrationNode({ item, index, total }: { item: any, index: number, total: number }) {
   const angle = (index / total) * Math.PI * 2
-  const responsiveRadius = typeof window !== 'undefined' && window.innerWidth < 768 ? 130 : 280
-  const [radius, setRadius] = useState(responsiveRadius)
+  const [radius, setRadius] = useState(280)
 
   useEffect(() => {
-    const handleResize = () => {
+    const updateRadius = () => {
       setRadius(window.innerWidth < 768 ? 130 : 280)
     }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    updateRadius()
+    window.addEventListener('resize', updateRadius)
+    return () => window.removeEventListener('resize', updateRadius)
   }, [])
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      animate={{
-        x: [Math.cos(angle) * (radius - 10), Math.cos(angle) * (radius + 10), Math.cos(angle) * (radius - 10)],
-        y: [Math.sin(angle) * (radius - 10), Math.sin(angle) * (radius + 10), Math.sin(angle) * (radius - 10)],
-      }}
-      transition={{
-        opacity: { delay: item.delay, duration: 0.6 },
-        scale: { delay: item.delay, duration: 0.6, type: 'spring' },
-        x: { duration: 8 + index, repeat: Infinity, ease: "easeInOut" },
-        y: { duration: 8 + index, repeat: Infinity, ease: "easeInOut" },
-      }}
-      className="absolute z-30"
+    <div
+      className="absolute"
       style={{
         left: '50%',
         top: '50%',
@@ -166,31 +153,48 @@ function IntegrationNode({ item, index, total }: { item: any, index: number, tot
       }}
     >
       <motion.div
-        whileHover={{ scale: 1.15, y: -10, rotate: index % 2 === 0 ? 5 : -5 }}
-        className="flex size-14 md:size-24 items-center justify-center rounded-xl md:rounded-[2rem] border bg-background/80 shadow-2xl backdrop-blur-xl cursor-pointer group transition-colors hover:border-orange-500/30"
+        initial={{ opacity: 0, scale: 0 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        animate={{
+          x: [Math.cos(angle) * (radius - 5), Math.cos(angle) * (radius + 5), Math.cos(angle) * (radius - 5)],
+          y: [Math.sin(angle) * (radius - 5), Math.sin(angle) * (radius + 5), Math.sin(angle) * (radius - 5)],
+        }}
+        transition={{
+          opacity: { delay: item.delay, duration: 0.6 },
+          scale: { delay: item.delay, duration: 0.6, type: 'spring' },
+          x: { duration: 10 + index, repeat: Infinity, ease: "linear" },
+          y: { duration: 10 + index, repeat: Infinity, ease: "linear" },
+        }}
+        className="will-change-transform"
       >
-        <div className="absolute -inset-4 scale-125 bg-orange-500/5 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
+        <motion.div
+          whileHover={{ scale: 1.1, y: -5, rotate: index % 2 === 0 ? 3 : -3 }}
+          className="flex size-14 md:size-24 items-center justify-center rounded-xl md:rounded-[2rem] border bg-background shadow-xl cursor-pointer group transition-colors hover:border-orange-500/30"
+        >
+          <div className="absolute -inset-4 scale-125 bg-orange-500/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
 
-        {item.component ? (
-          <div className="*:size-7 md:*:size-11">{item.component}</div>
-        ) : (
-          <Image
-            src={item.icon}
-            alt={item.name}
-            width={item.size}
-            height={item.size}
-            className="size-7 md:size-11 object-contain filter transition-all group-hover:drop-shadow-[0_0_15px_rgba(234,88,12,0.4)]"
-          />
-        )}
+          {item.component ? (
+            <div className="*:size-7 md:*:size-11">{item.component}</div>
+          ) : (
+            <Image
+              src={item.icon}
+              alt={item.name}
+              width={item.size}
+              height={item.size}
+              className="size-7 md:size-11 object-contain filter transition-all group-hover:drop-shadow-[0_0_15px_rgba(234,88,12,0.4)]"
+            />
+          )}
 
-        {/* Label on Hover */}
-        <div className="absolute -bottom-14 opacity-0 group-hover:opacity-100 transition-all scale-75 group-hover:scale-100 duration-300">
-          <div className="px-3 py-1.5 rounded-full border bg-background shadow-lg text-[11px] font-black uppercase tracking-widest text-orange-600">
-            {item.name}
+          {/* Label on Hover */}
+          <div className="absolute -bottom-14 opacity-0 group-hover:opacity-100 transition-all scale-75 group-hover:scale-100 duration-300">
+            <div className="px-3 py-1.5 rounded-full border bg-background shadow-lg text-[11px] font-black uppercase tracking-widest text-orange-600">
+              {item.name}
+            </div>
           </div>
-        </div>
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </div>
   )
 }
 
@@ -204,9 +208,9 @@ function FloatingFeature({ icon, text, className, delay }: { icon: React.ReactNo
       transition={{
         opacity: { delay, duration: 1 },
         x: { delay, duration: 1 },
-        y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay }
+        y: { duration: 6, repeat: Infinity, ease: "easeInOut", delay }
       }}
-      className={cn("absolute z-10 flex items-center gap-3 px-5 py-3 rounded-2xl border bg-background/50 backdrop-blur-md shadow-xl border-foreground/5", className)}
+      className={cn("absolute z-10 flex items-center gap-3 px-5 py-3 rounded-2xl border bg-background shadow-lg border-foreground/5 will-change-transform", className)}
     >
       <div className="size-10 rounded-xl border bg-background flex items-center justify-center shadow-inner">
         {icon}
