@@ -34,4 +34,3 @@
 ## Scope of jira:  const scope =
     "read:jira-work write:jira-work manage:jira-project manage:jira-configuration read:jira-user offline_access";
 
-
