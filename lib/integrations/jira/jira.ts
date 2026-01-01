@@ -1,3 +1,5 @@
+import { ActionItemData } from "../types";
+
 export class JiraAPI {
   private baseUrl = "https://api.atlassian.com/ex/jira";
 
@@ -16,6 +18,167 @@ export class JiraAPI {
       const errorText = await response.text();
       console.error("Jira project error: ", response.status, errorText);
       throw new Error(`Failed to fetch project ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async getAccessibleResources(token: string) {
+    const reesponse = await fetch(
+      "https://api.atlassian.com/oauth/token/accessible-resources",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (!reesponse.ok) {
+      const errorText = await reesponse.text();
+      console.error("Jira resources error:", reesponse.status, errorText);
+      throw new Error(`Failed to fetch resources: ${reesponse.status}`);
+    }
+    return reesponse.json();
+  }
+
+  async getProjects(token: string, cloudId: string) {
+    const response = await fetch(
+      `${this.baseUrl}/${cloudId}/rest/api/3/project/search`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Jira projects error: ", response.status, errorText);
+      throw new Error(`Failed to fetch projects ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async getCurrentUser(token: string, cloudId: string) {
+    const response = await fetch(
+      `${this.baseUrl}/${cloudId}/rest/api/3/myself`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Jira user error: ", response.status, errorText);
+      throw new Error(`Failed to fetch user ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async createProject(
+    token: string,
+    cloudId: string,
+    name: string,
+    key: string
+  ) {
+    const currentUser = await this.getCurrentUser(token, cloudId);
+
+    const response = await fetch(
+      `${this.baseUrl}/${cloudId}/rest/api/3/project`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          key: key,
+          name: name,
+          projectTypeKey: "software",
+          projectTemplateKey:
+            "com.pyxis.greenhopper.jira:basic-software-development-template",
+          description: "Create via auris",
+          leadAccountId: currentUser.accountId,
+          assigneeType: "PROJECT_LEAD",
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(
+        "Error in creating project on Jira: ",
+        response.status,
+        errorText
+      );
+      throw new Error(
+        `Failed to create project: ${response.status} - ${errorText}`
+      );
+    }
+
+    return response.json();
+  }
+
+  async createIssue(
+    token: string,
+    cloudId: string,
+    projectKey: string,
+    data: ActionItemData
+  ) {
+    const response = await fetch(
+      `${this.baseUrl}/${cloudId}/rest/api/3/issue`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fields: {
+            project: {
+              key: projectKey,
+            },
+            summary: data.title,
+            description: {
+              type: "doc",
+              version: 1,
+              content: [
+                {
+                  type: "paragraph",
+                  content: [
+                    {
+                      type: "text",
+                      text: data.description || "Action item from meeting",
+                    },
+                  ],
+                },
+              ],
+            },
+            issuetype: {
+              name: "Task",
+            },
+          },
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(
+        "Error in creating issue in Jira: ",
+        response.status,
+        errorText
+      );
+      throw new Error(
+        `Failed to create issue: ${response.status} - ${errorText}`
+      );
     }
 
     return response.json();
