@@ -59,8 +59,8 @@ export default function IntegrationsSection() {
   return (
     <section className="relative w-full overflow-hidden bg-background py-16 md:py-10">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[600px] md:size-[800px] bg-orange-500/5 blur-[60px] md:blur-[100px] rounded-full will-change-[filter]" />
-        <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:48px_48px] md:bg-size-[64px_64px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-50" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-150 md:size-200 bg-orange-500/5 blur-[60px] md:blur-[100px] rounded-full will-change-[filter]" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-size-[48px_48px] md:bg-size-[64px_64px] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-50" />
       </div>
 
       <div className="container relative mx-auto px-6">
@@ -89,11 +89,11 @@ export default function IntegrationsSection() {
             </motion.p>
           </div>
 
-          <div className="relative flex flex-col items-center justify-center min-h-[500px] md:min-h-[700px]">
+          <div className="relative flex flex-col items-center justify-center min-h-125 md:min-h-175">
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="size-[300px] md:size-[400px] border border-orange-500/10 rounded-full" />
-              <div className="absolute size-[500px] md:size-[650px] border border-foreground/5 rounded-full" />
-              <div className="absolute size-[700px] md:size-[900px] border border-foreground/[0.02] rounded-full" />
+              <div className="size-75 md:size-100 border border-orange-500/10 rounded-full" />
+              <div className="absolute size-125 md:size-162.5 border border-foreground/5 rounded-full" />
+              <div className="absolute size-175 md:size-225 border border-foreground/2 rounded-full" />
 
               <motion.div
                 animate={{ scale: [1, 1.05, 1], opacity: [0.05, 0.1, 0.05] }}
@@ -102,7 +102,7 @@ export default function IntegrationsSection() {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="absolute size-[280px] md:size-[450px] border-2 border-orange-500/10 rounded-full blur-sm"
+                className="absolute size-70 md:size-112.5 border-2 border-orange-500/10 rounded-full blur-sm"
               />
             </div>
 
