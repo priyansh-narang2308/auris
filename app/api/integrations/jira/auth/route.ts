@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
   const { userId } = await auth();
   if (!userId) {
-    return NextResponse.json({ error: "User unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "User unauthorized." }, { status: 401 });
   }
 
   const clientId = process.env.JIRA_CLIENT_ID;
