@@ -3,7 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
+import { dark, neobrutalism, shadesOfPurple } from "@clerk/themes";
 import { UsageProvider } from "./contexts/usage-context";
 import { ConditionalLayout } from "@/components/conditional-layout";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
@@ -19,7 +19,6 @@ export const metadata: Metadata = {
     "An AI-Based Notetaker + Meeting Bot similar to Fireflies.ai and Otter.ai",
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,7 +27,7 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
-        theme: dark,
+        theme: "simple",
       }}
     >
       <html lang="en" suppressHydrationWarning>

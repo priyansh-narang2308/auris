@@ -121,7 +121,7 @@ export default function HeroSection() {
                         : "opacity-0 pointer-events-none absolute"
                     }`}
                   >
-                    <Link href="/demo">
+                    <Link href="/#">
                       <span className="text-nowrap">See how it works</span>
                     </Link>
                   </Button>
@@ -154,7 +154,7 @@ export default function HeroSection() {
                         : "opacity-0 pointer-events-none absolute"
                     }`}
                   >
-                    <Link href="/demo">
+                    <Link href="/#">
                       <span className="text-nowrap">See how it works</span>
                     </Link>
                   </Button>
