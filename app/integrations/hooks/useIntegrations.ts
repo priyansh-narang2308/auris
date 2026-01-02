@@ -4,8 +4,10 @@
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
+export type Platform = "google-calendar" | "trello" | "jira" | "asana" | "slack";
+
 export interface Integration {
-  platform: "google-calendar" | "trello" | "jira" | "asana" | "slack";
+  platform: Platform;
   name: string;
   description: string;
   connected: boolean;
@@ -64,7 +66,7 @@ export function useIntegrations() {
   ]);
 
   const [loading, setLoading] = useState(true);
-  const [setupMode, setSetupMode] = useState<string | null>(null);
+  const [setupMode, setSetupMode] = useState<Platform | null>(null);
   const [setupData, setSetupData] = useState<any>(null);
   const [setupLoading, setSetupLoading] = useState(false);
 
@@ -107,7 +109,7 @@ export function useIntegrations() {
     }
   };
 
-  const fetchSetupData = async (platform: string) => {
+  const fetchSetupData = async (platform: Platform) => {
     try {
       setSetupLoading(true);
       const res = await fetch(`/api/integrations/${platform}/setup`);
@@ -121,9 +123,7 @@ export function useIntegrations() {
     }
   };
 
-  const handleConnect = (
-    platform: "google-calendar" | "trello" | "jira" | "asana" | "slack"
-  ) => {
+  const handleConnect = (platform: Platform) => {
     if (platform === "slack") {
       window.location.href = "/api/slack/install?return=integrations";
       return;
@@ -137,9 +137,7 @@ export function useIntegrations() {
     window.location.href = `/api/integrations/${platform}/auth`;
   };
 
-  const handleDisconnect = async (
-    platform: "google-calendar" | "trello" | "jira" | "asana" | "slack"
-  ) => {
+  const handleDisconnect = async (platform: Platform) => {
     try {
       if (platform === "google-calendar") {
         await fetch("/api/auth/google/disconnect", {
@@ -157,10 +155,7 @@ export function useIntegrations() {
     }
   };
 
-  const handleSetupSubmit = async (
-    platform: "google-calendar" | "trello" | "jira" | "asana" | "slack",
-    config: any
-  ) => {
+  const handleSetupSubmit = async (platform: Platform, config: any) => {
     setSetupLoading(true);
     try {
       const response = await fetch(`/api/integrations/${platform}/setup`, {
@@ -176,7 +171,7 @@ export function useIntegrations() {
         setSetupData(null);
 
         fetchIntegrations();
-        window.history.replaceState({}, "/integrations");
+        window.history.replaceState({}, "", "/integrations");
       }
     } catch (error) {
       console.error("Error saving the setup of the user: ", error);
@@ -195,8 +190,9 @@ export function useIntegrations() {
       const setup = params.get("setup");
 
       if (setup && SETUP_PLATFORMS.includes(setup as any)) {
-        setSetupMode(setup);
-        fetchSetupData(setup);
+        const platform = setup as Platform;
+        setSetupMode(platform);
+        fetchSetupData(platform);
       }
     }
   }, [userId]);

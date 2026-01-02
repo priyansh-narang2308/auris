@@ -1,13 +1,13 @@
 import Image from "next/image";
-import { Integration } from "../hooks/useIntegrations";
+import { Integration, Platform } from "../hooks/useIntegrations";
 import { Check, ExternalLink, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface IntegrationCardProps {
   integration: Integration;
-  onConnect: (platform: string) => void;
-  onDisconnect: (platform: string) => void;
-  onSetup: (platform: string) => void;
+  onConnect: (platform: Platform) => void;
+  onDisconnect: (platform: Platform) => void;
+  onSetup: (platform: Platform) => void;
 }
 
 const IntegrationCard = ({
@@ -47,7 +47,7 @@ const IntegrationCard = ({
         {integration.description}
       </p>
 
-      {/* for other instead of calendar */}
+      {/* For other instead of calendar */}
       {integration.connected &&
         integration.platform !== "google-calendar" &&
         (integration.boardName ||

@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -12,12 +14,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import { Platform } from "../hooks/useIntegrations";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface SetupFormProps {
-  platform: string;
+  platform: Platform;
   data: any;
-  onSubmit: (platform: string, config: any) => void; //this all project name id andal will be config
+  onSubmit: (platform: Platform, config: any) => void; //this all project name id andal will be config
   onCancel: () => void;
   loading: boolean;
 }
@@ -39,17 +42,17 @@ const SetupForm = ({
     platform === "trello"
       ? data?.boards
       : platform === "slack"
-      ? data?.channels
-      : data?.projects;
+        ? data?.channels
+        : data?.projects;
 
   const itemLabel =
     platform === "trello"
       ? "board"
       : platform === "slack"
-      ? "channel"
-      : "project";
+        ? "channel"
+        : "project";
 
-    //  tO HAndle the config as well
+  //  tO HAndle the config as well
   const handleSubmit = () => {
     if (createNew) {
       onSubmit(platform, {

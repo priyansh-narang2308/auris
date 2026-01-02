@@ -16,6 +16,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
         wheelMultiplier: 1,
         touchMultiplier: 2,
         infinite: false,
+        syncTouch: false,
       }}
     >
       {children}
