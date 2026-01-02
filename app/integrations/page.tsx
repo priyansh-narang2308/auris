@@ -1,9 +1,8 @@
-import React from 'react'
+import React from "react";
+
 
 const IntegrationPage = () => {
-  return (
-    <div>IntegrationPage</div>
-  )
-}
+  return <div></div>;
+};
 
-export default IntegrationPage
+export default IntegrationPage;
