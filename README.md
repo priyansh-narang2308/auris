@@ -43,3 +43,6 @@ usage && limits.chatMessages !== -1
     "read:jira-work write:jira-work manage:jira-project manage:jira-configuration read:jira-user offline_access";
 
 ## jira url: https://api.atlassian.com/ex/jira base URL
+
+
+## 4:58

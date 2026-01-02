@@ -66,7 +66,7 @@ const IntegrationPage = () => {
       </div>
 
 
-      <div className="lg:w-[380px] shrink-0">
+      <div className="lg:w-95 shrink-0">
         <div className="lg:sticky lg:top-10">
           <div className="rounded-2xl bg-background border border-border p-6 sm:p-8 space-y-8">
 
