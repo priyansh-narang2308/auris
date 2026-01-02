@@ -46,6 +46,9 @@ const Home = () => {
             <h2 className="text-xl sm:text-2xl font-bold text-foreground">
               Past Meetings
             </h2>
+            <p className="text-muted-foreground max-w-2xl leading-relaxed italic">
+              Your completed meetings are stored here.
+            </p>
           </div>
 
           <PastMeetings

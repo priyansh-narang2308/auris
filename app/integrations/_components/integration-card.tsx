@@ -17,108 +17,112 @@ const IntegrationCard = ({
   onSetup,
 }: IntegrationCardProps) => {
   return (
-    <div className="bg-card rounded-lg p-6 border border-border">
-      <div className="flex items-start justify-between mb-4">
+    <div className="group flex flex-col h-full bg-card rounded-xl border border-border p-5 hover:bg-muted/50 transition-all duration-200">
+      <div className="flex items-start justify-between mb-5">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 relative shrink-0">
+          <div className="w-10 h-10 relative bg-muted rounded-lg p-2 border border-border shrink-0">
             <Image
               src={integration.logo}
               alt={`${integration.name} logo`}
               fill
-              className="object-contain rounded"
+              className="object-contain p-0.5"
             />
           </div>
-
-          <div>
-            <h3 className="font-semibold text-foreground">
+          <div className="flex flex-col min-w-0">
+            <h3 className="font-semibold text-sm text-foreground truncate">
               {integration.name}
             </h3>
-
             {integration.connected && (
-              <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full">
+              <span className="text-[10px] font-medium text-green-500 uppercase tracking-wider">
                 Connected
               </span>
             )}
           </div>
         </div>
-        {integration.connected && <Check className="h-5 w-5 text-green-500" />}
+        {integration.connected && (
+          <div className="h-5 w-5 rounded-full bg-blue-500/10 flex items-center justify-center">
+            <Check className="h-3 w-3 text-green-600 dark:text-green-400" />
+          </div>
+        )}
       </div>
-      <p className="text-sm text-muted-foreground mb-4">
+
+      <p className="text-xs text-muted-foreground leading-relaxed mb-6">
         {integration.description}
       </p>
 
-      {/* For other instead of calendar */}
-      {integration.connected &&
-        integration.platform !== "google-calendar" &&
-        (integration.boardName ||
-          integration.projectName ||
-          integration.channelName) && (
-          <div className="mb-4 p-3 bg-muted/50 rounded-lg">
-            <div className="text-xs text-muted-foreground mb-1">
-              Destination:
-            </div>
-            <div className="text-sm font-medium text-foreground">
-              {integration.platform === "slack" &&
-                integration.channelName &&
-                `#${integration.channelName}`}
-              {integration.platform === "trello" && integration.boardName}{" "}
-              {/*for eacch its different*/}
-              {integration.platform === "jira" && integration.projectName}
-              {integration.platform === "asana" && integration.projectName}
-            </div>
+      <div className="mt-auto space-y-4">
+        {integration.connected && (
+          <div className="space-y-2">
+            {integration.platform !== "google-calendar" &&
+              (integration.boardName ||
+                integration.projectName ||
+                integration.channelName) && (
+                <div className="p-2 bg-muted/50 rounded-lg border border-border">
+                  <div className="text-[9px] uppercase font-bold text-muted-foreground mb-0.5">
+                    Target
+                  </div>
+                  <div className="text-[11px] font-medium text-foreground flex items-center gap-1.5 min-w-0">
+                    <div className="w-1 h-1 rounded-full bg-blue-500 shrink-0" />
+                    <span className="truncate">
+                      {integration.platform === "slack" && integration.channelName ? `#${integration.channelName}` :
+                        integration.platform === "trello" ? integration.boardName :
+                          integration.platform === "jira" ? integration.projectName :
+                            integration.projectName}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+            {integration.platform === "google-calendar" && (
+              <div className="p-2 bg-muted/50 rounded-lg border border-border">
+                <div className="text-[9px] uppercase font-bold text-muted-foreground mb-0.5">
+                  Status
+                </div>
+                <div className="text-[11px] font-medium text-foreground flex items-center gap-1.5">
+                  <div className="w-1 h-1 rounded-full bg-blue-500" />
+                  Auto-sync active
+                </div>
+              </div>
+            )}
           </div>
         )}
 
-      {integration.connected && integration.platform === "google-calendar" && (
-        <div className="mb-4 p-3 bg-muted/50 rounded-lg">
-          <div className="text-xs text-muted-foreground mb-1">Status:</div>
-          <div className="text-sm font-medium text-foreground">
-            Lambda auto-sync anabled
-          </div>
-        </div>
-      )}
-
-      <div className="flex gap-2">
-        {integration.connected ? (
-          integration.platform === "google-calendar" ? (
-            <Button
-              variant="outline"
-              onClick={() => onDisconnect(integration.platform)}
-              className="flex-1 cursor-pointer"
-              type="button"
-            >
-              Disconnect
-            </Button>
-          ) : (
+        <div className="flex gap-2">
+          {integration.connected ? (
             <>
               <Button
                 variant="outline"
+                size="sm"
                 onClick={() => onDisconnect(integration.platform)}
-                className="flex-1 cursor-pointer"
+                className="flex-1 h-8 rounded-lg text-xs font-semibold hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 cursor-pointer"
                 type="button"
               >
                 Disconnect
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => onSetup(integration.platform)}
-                className="px-3 py-2 cursor-pointer"
-                type="button"
-              >
-                <Settings className="h-4 w-4" />
-              </Button>
+              {integration.platform !== "google-calendar" && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => onSetup(integration.platform)}
+                  className="w-8 h-8 rounded-lg border-border hover:bg-muted cursor-pointer"
+                  type="button"
+                >
+                  <Settings className="h-3.5 w-3.5 text-muted-foreground" />
+                </Button>
+              )}
             </>
-          )
-        ) : (
-          <Button
-            onClick={() => onConnect(integration.platform)}
-            className="flex-1 flex items-center justify-center gap-2 cursor-pointer"
-            type="button"
-          >
-            Connect
-            <ExternalLink className="h-4 w-4" />
-          </Button>
-        )}
+          ) : (
+            <Button
+              size="sm"
+              onClick={() => onConnect(integration.platform)}
+              className="flex-1 h-8 rounded-lg bg-foreground text-background hover:bg-foreground/90 transition-all font-semibold text-xs flex items-center justify-center gap-2 group/btn cursor-pointer"
+              type="button"
+            >
+              Connect
+              <ExternalLink className="h-3 w-3 transition-transform" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

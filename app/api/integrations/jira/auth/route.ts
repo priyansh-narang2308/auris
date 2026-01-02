@@ -8,15 +8,42 @@ export async function GET() {
   }
 
   const clientId = process.env.JIRA_CLIENT_ID;
-  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/integrations/jira/callback`;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+  if (!clientId) {
+    console.error("Missing JIRA_CLIENT_ID in environment variables");
+    return NextResponse.json(
+      { error: "Internal Configuration Error: Jira Client ID is missing." },
+      { status: 500 }
+    );
+  }
+
+  if (!appUrl) {
+    console.error("Missing NEXT_PUBLIC_APP_URL in environment variables");
+    return NextResponse.json(
+      { error: "Internal Configuration Error: App URL is missing." },
+      { status: 500 }
+    );
+  }
+
+  const redirectUri = `${appUrl}/api/integrations/jira/callback`;
 
   const scope =
     "read:jira-work write:jira-work manage:jira-project manage:jira-configuration read:jira-user offline_access";
 
   const state = userId;
 
-  //Doc reading
-  const authUrl = `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${clientId}&scope=${scope}&redirect_uri=${redirectUri}&state=${state}&response_type=code&prompt=consent`;
+  const params = new URLSearchParams({
+    audience: "api.atlassian.com",
+    client_id: clientId,
+    scope: scope,
+    redirect_uri: redirectUri,
+    state: state,
+    response_type: "code",
+    prompt: "consent",
+  });
+
+  const authUrl = `https://auth.atlassian.com/authorize?${params.toString()}`;
 
   return NextResponse.redirect(authUrl);
 }
