@@ -2,6 +2,18 @@ import Image from "next/image";
 import { Integration, Platform } from "../hooks/useIntegrations";
 import { Check, ExternalLink, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 interface IntegrationCardProps {
   integration: Integration;
@@ -16,6 +28,12 @@ const IntegrationCard = ({
   onDisconnect,
   onSetup,
 }: IntegrationCardProps) => {
+  const handleDisconnectConfirm = () => {
+    onDisconnect(integration.platform);
+
+    toast.warning(`${integration.name} has been disconnected successfully.`);
+  };
+
   return (
     <div className="group flex flex-col h-full bg-card rounded-xl border border-border p-5 hover:bg-muted/50 transition-all duration-200">
       <div className="flex items-start justify-between mb-5">
@@ -64,10 +82,14 @@ const IntegrationCard = ({
                   <div className="text-[11px] font-medium text-foreground flex items-center gap-1.5 min-w-0">
                     <div className="w-1 h-1 rounded-full bg-blue-500 shrink-0" />
                     <span className="truncate">
-                      {integration.platform === "slack" && integration.channelName ? `#${integration.channelName}` :
-                        integration.platform === "trello" ? integration.boardName :
-                          integration.platform === "jira" ? integration.projectName :
-                            integration.projectName}
+                      {integration.platform === "slack" &&
+                        integration.channelName
+                        ? `#${integration.channelName}`
+                        : integration.platform === "trello"
+                          ? integration.boardName
+                          : integration.platform === "jira"
+                            ? integration.projectName
+                            : integration.projectName}
                     </span>
                   </div>
                 </div>
@@ -90,15 +112,41 @@ const IntegrationCard = ({
         <div className="flex gap-2">
           {integration.connected ? (
             <>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onDisconnect(integration.platform)}
-                className="flex-1 h-8 rounded-lg text-xs font-semibold hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 cursor-pointer"
-                type="button"
-              >
-                Disconnect
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 h-8  rounded-lg text-xs font-semibold hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 cursor-pointer"
+                    type="button"
+                  >
+                    Disconnect
+                  </Button>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Disconnect {integration.name}?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will stop all syncing and remove the current
+                      configuration. You can reconnect anytime.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDisconnectConfirm}
+                      className="bg-destructive cursor-pointer text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Disconnect
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
               {integration.platform !== "google-calendar" && (
                 <Button
                   variant="outline"

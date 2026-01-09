@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export type Platform = "google-calendar" | "trello" | "jira" | "asana" | "slack";
 
@@ -68,7 +69,8 @@ export function useIntegrations() {
   const [loading, setLoading] = useState(true);
   const [setupMode, setSetupMode] = useState<Platform | null>(null);
   const [setupData, setSetupData] = useState<any>(null);
-  const [setupLoading, setSetupLoading] = useState(false);
+  const [isFetchingSetup, setIsFetchingSetup] = useState(false);
+  const [isSubmittingSetup, setIsSubmittingSetup] = useState(false);
 
   const fetchIntegrations = async () => {
     try {
@@ -111,7 +113,7 @@ export function useIntegrations() {
 
   const fetchSetupData = async (platform: Platform) => {
     try {
-      setSetupLoading(true);
+      setIsFetchingSetup(true);
       const res = await fetch(`/api/integrations/${platform}/setup`);
       const data = await res.json();
       setSetupData(data);
@@ -119,7 +121,7 @@ export function useIntegrations() {
       console.error(`Error fetching ${platform} setup data:`, err);
       setSetupData(null);
     } finally {
-      setSetupLoading(false);
+      setIsFetchingSetup(false);
     }
   };
 
@@ -156,7 +158,7 @@ export function useIntegrations() {
   };
 
   const handleSetupSubmit = async (platform: Platform, config: any) => {
-    setSetupLoading(true);
+    setIsSubmittingSetup(true);
     try {
       const response = await fetch(`/api/integrations/${platform}/setup`, {
         method: "POST",
@@ -165,18 +167,45 @@ export function useIntegrations() {
         },
         body: JSON.stringify(config),
       });
+
       if (response.ok) {
+        const itemName =
+          config.boardName || config.projectName || config.channelName;
+        const platformName =
+          platform.charAt(0).toUpperCase() + platform.slice(1);
+        const itemLabel =
+          platform === "trello"
+            ? "board"
+            : platform === "slack"
+            ? "channel"
+            : "project";
+
+        if (config.createNew) {
+          toast.success(
+            `New ${itemLabel} created in ${platformName} dashboard!`,
+            {
+              description: `Target: ${itemName}`,
+            }
+          );
+        } else {
+          toast.success(`${itemName} has been selected!`, {
+            description: `Successfully connected to ${platformName}`,
+          });
+        }
+
         setSetupMode(null);
-
         setSetupData(null);
-
         fetchIntegrations();
         window.history.replaceState({}, "", "/integrations");
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.error || `Failed to setup ${platform}`);
       }
     } catch (error) {
       console.error("Error saving the setup of the user: ", error);
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
-      setSetupLoading(false);
+      setIsSubmittingSetup(false);
     }
   };
 
@@ -204,8 +233,8 @@ export function useIntegrations() {
     setSetupMode,
     setupData,
     setSetupData,
-    setupLoading,
-    setSetupLoading,
+    isFetchingSetup,
+    isSubmittingSetup,
     fetchIntegrations,
     fetchSetupData,
     handleConnect,

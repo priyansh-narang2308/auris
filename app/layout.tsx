@@ -7,6 +7,7 @@ import { dark, neobrutalism, shadesOfPurple } from "@clerk/themes";
 import { UsageProvider } from "./contexts/usage-context";
 import { ConditionalLayout } from "@/components/conditional-layout";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
+import { Toaster } from "sonner";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -41,6 +42,7 @@ export default function RootLayout({
             <UsageProvider>
               <SmoothScrollProvider>
                 <ConditionalLayout>{children}</ConditionalLayout>
+                <Toaster />
               </SmoothScrollProvider>
             </UsageProvider>
           </ThemeProvider>

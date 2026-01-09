@@ -45,4 +45,3 @@ usage && limits.chatMessages !== -1
 ## jira url: https://api.atlassian.com/ex/jira base URL
 
 
-## 4:58

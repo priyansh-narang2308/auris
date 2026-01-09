@@ -13,7 +13,8 @@ const IntegrationPage = () => {
     setSetupMode,
     setupData,
     setSetupData,
-    setupLoading,
+    isFetchingSetup,
+    isSubmittingSetup,
     fetchSetupData,
     handleConnect,
     handleDisconnect,
@@ -148,7 +149,8 @@ const IntegrationPage = () => {
                 setSetupData(null);
                 window.history.replaceState({}, "", "/integrations");
               }}
-              loading={setupLoading}
+              loading={isSubmittingSetup}
+              isFetching={isFetchingSetup}
             />
           </div>
         </div>

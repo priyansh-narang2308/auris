@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Integration, Platform } from "../hooks/useIntegrations";
+import { Platform } from "../hooks/useIntegrations";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import {
@@ -22,6 +23,7 @@ interface SetupFormProps {
   onSubmit: (platform: Platform, config: any) => void;
   onCancel: () => void;
   loading: boolean;
+  isFetching?: boolean;
 }
 
 const SetupForm = ({
@@ -30,6 +32,7 @@ const SetupForm = ({
   onSubmit,
   onCancel,
   loading,
+  isFetching = false,
 }: SetupFormProps) => {
   const [selectedId, setSelectedId] = useState("");
   const [selectedName, setSelectedName] = useState("");
@@ -44,21 +47,47 @@ const SetupForm = ({
         : data?.projects;
 
   const itemLabel =
-    platform === "trello" ? "board" : platform === "slack" ? "channel" : "project";
+    platform === "trello"
+      ? "board"
+      : platform === "slack"
+        ? "channel"
+        : "project";
 
   const handleSubmit = () => {
-    if (createNew) {
-      onSubmit(platform, {
-        createNew: true,
-        name: newName,
-      });
-    } else {
-      onSubmit(platform, {
-        createNew: false,
-        id: selectedId,
-        name: selectedName,
-      });
+    const config: any = { createNew };
+
+    if (platform === "trello") {
+      if (createNew) {
+        config.boardName = newName;
+      } else {
+        config.boardId = selectedId;
+        config.boardName = selectedName;
+      }
+    } else if (platform === "asana") {
+      config.workspaceId = data?.workspaceId;
+      if (createNew) {
+        config.projectName = newName;
+      } else {
+        config.projectId = selectedId;
+        config.projectName = selectedName;
+      }
+    } else if (platform === "jira") {
+      if (createNew) {
+        config.projectName = newName;
+      } else {
+        config.projectId = selectedId;
+        config.projectName = selectedName;
+      }
+    } else if (platform === "slack") {
+      if (createNew) {
+        config.channelName = newName;
+      } else {
+        config.channelId = selectedId;
+        config.channelName = selectedName;
+      }
     }
+
+    onSubmit(platform, config);
   };
 
   return (
@@ -86,7 +115,7 @@ const SetupForm = ({
             }}
           >
             <SelectTrigger className="w-full h-9 bg-muted/30 border-border rounded-lg">
-              <SelectValue placeholder={`Select existing ${itemLabel}...`} />
+              <SelectValue placeholder={isFetching ? "Loading options..." : `Select existing ${itemLabel}...`} />
             </SelectTrigger>
             <SelectContent className="rounded-xl border-border shadow-2xl">
               <SelectGroup>
@@ -116,14 +145,20 @@ const SetupForm = ({
         )}
       </div>
 
-      <div className="flex items-center gap-2.5 p-3.5 bg-muted/20 border border-border rounded-lg group/check cursor-pointer hover:bg-muted/40 transition-colors" onClick={() => setCreateNew(!createNew)}>
+      <div
+        className="flex items-center gap-2.5 p-3.5 bg-muted/20 border border-border rounded-lg group/check cursor-pointer hover:bg-muted/40 transition-colors"
+        onClick={() => setCreateNew(!createNew)}
+      >
         <Checkbox
           id="create-new"
           checked={createNew}
           onCheckedChange={(checked) => setCreateNew(!!checked)}
           className="rounded border-border data-[state=checked]:bg-foreground data-[state=checked]:border-foreground transition-all"
         />
-        <Label htmlFor="create-new" className="text-[13px] text-muted-foreground font-medium group-hover/check:text-foreground transition-colors cursor-pointer select-none">
+        <Label
+          htmlFor="create-new"
+          className="text-[13px] text-muted-foreground font-medium group-hover/check:text-foreground transition-colors cursor-pointer select-none"
+        >
           Create a new {itemLabel} instead
         </Label>
       </div>
@@ -140,7 +175,9 @@ const SetupForm = ({
 
         <Button
           onClick={handleSubmit}
-          disabled={loading || (!createNew && !selectedId) || (createNew && !newName)}
+          disabled={
+            loading || (!createNew && !selectedId) || (createNew && !newName)
+          }
           className="flex-1 h-9 rounded-lg bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 transition-all font-semibold text-xs cursor-pointer"
           type="button"
         >
