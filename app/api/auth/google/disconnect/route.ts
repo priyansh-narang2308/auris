@@ -17,6 +17,7 @@ export async function POST() {
         clerkId: userId,
       },
       data: {
+        // make eveyrhting false for that
         calendarConnected: false,
         googleAccessToken: null,
         googleRefreshToken: null,
