@@ -45,3 +45,5 @@ usage && limits.chatMessages !== -1
 ## jira url: https://api.atlassian.com/ex/jira base URL
 
 
+
+# 5:45 TO 6:11 Read it from erasor like what is it and all 
