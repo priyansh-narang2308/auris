@@ -106,6 +106,7 @@ export function useChatCore({
     }
   };
 
+  // To show the suggestions
   const handleSuggestionClick = (suggestion: string) => {
     if (!canChat) {
       return;
