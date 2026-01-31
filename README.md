@@ -47,3 +47,5 @@ usage && limits.chatMessages !== -1
 
 
 # 5:45 TO 6:11 Read it from erasor like what is it and all 
+
+## USING PINECONE AS WELL

@@ -34,6 +34,7 @@ export function chunkTranscript(transcript: string) {
 }
 
 export function extractSpeaker(text: string) {
+  // to mach the each user for this
   const match = text.match(/^([A-Za-z\s]+):\s*/);
   return match ? match[1].trim() : null;
 }
