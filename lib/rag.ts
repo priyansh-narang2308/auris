@@ -54,7 +54,7 @@ export async function chatWithMeeting(
   const results = await searchVectors(
     questionEmbedding,
     { userId, meetingId },
-    5,  //limit to top 5 users like trans
+    5, //limit to top 5 users like trans
   );
 
   const meeting = await prisma.meeting.findUnique({
@@ -94,9 +94,8 @@ export async function chatWithMeeting(
 }
 
 export async function chatWithAllMeetings(userId: string, question: string) {
+  // To find with that partcuilar question
 
-    // To find with that partcuilar question
-    
   const questionEmbedding = await createEmbedding(question);
 
   const results = await searchVectors(questionEmbedding, { userId }, 8);
