@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
 
     await processTranscript(meetingId, userId, transcript, meetingTitle);
 
+    // Make it as rag has been proceessedd
     await prisma.meeting.update({
       where: {
         id: meetingId,
