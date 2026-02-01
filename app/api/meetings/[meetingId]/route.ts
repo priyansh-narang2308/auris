@@ -58,7 +58,7 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { meetingId: string } },
+  { params }: { params: Promise<{ meetingId: string }> },
 ) {
   try {
     const { userId } = await auth();
@@ -70,7 +70,7 @@ export async function DELETE(
       );
     }
 
-    const { meetingId } = params;
+    const { meetingId } = await params;
 
     const meeting = await prisma.meeting.findUnique({
       where: {

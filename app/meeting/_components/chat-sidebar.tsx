@@ -14,6 +14,9 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef } from "react";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 interface Message {
   id: number;
   content: string;
@@ -122,17 +125,21 @@ const ChatSidebar = ({
               transition={{ duration: 0.2 }}
               className={`flex ${message.isBot ? "justify-start" : "justify-end"} group`}
             >
-              <div className={`flex flex-col gap-1 max-w-[85%]`}>
+              <div className={`flex flex-col gap-1.5 max-w-[85%]`}>
                 <div
-                  className={`relative px-4 py-3 rounded-2xl shadow-sm text-sm ${message.isBot
-                    ? "bg-card border border-border/50 text-foreground rounded-tl-none"
-                    : "bg-primary text-primary-foreground rounded-tr-none"
+                  className={`relative px-4 py-3 rounded-[24px] shadow-sm text-sm leading-relaxed ${message.isBot
+                    ? "bg-card border border-border/50 text-foreground rounded-tl-none ring-1 ring-black/5 dark:ring-white/5"
+                    : "bg-gradient-to-br from-primary to-primary/90 text-primary-foreground rounded-tr-none shadow-[0_4px_12px_rgba(var(--primary),0.25)]"
                     }`}
                 >
-                  <p className="leading-relaxed">{message.content}</p>
+                  <div className="prose prose-sm dark:prose-invert prose-p:leading-relaxed prose-pre:bg-muted prose-pre:text-muted-foreground prose-pre:p-2 prose-pre:rounded-lg max-w-none">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {message.content}
+                    </ReactMarkdown>
+                  </div>
                 </div>
                 <span
-                  className={`text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity ${message.isBot ? "text-left ml-2" : "text-right mr-2"}`}
+                  className={`text-[9px] font-bold tracking-wider uppercase text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity ${message.isBot ? "text-left ml-3" : "text-right mr-3"}`}
                 >
                   {new Date(message.timestamp).toLocaleTimeString([], {
                     hour: "2-digit",

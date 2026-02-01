@@ -124,6 +124,9 @@ const CustomAudioPlayer = ({
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
           onEnded={() => setIsPlaying(false)}
+          onError={(e) => {
+            console.error("Audio Load Error. Current Source:", recordingUrl, e);
+          }}
           onListen={(e) => {
             const audio = e.target as HTMLAudioElement;
             if (audio && audio.currentTime) {
