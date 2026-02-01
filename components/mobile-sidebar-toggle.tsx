@@ -15,7 +15,7 @@ export default function MobileSidebarToggle() {
         size="icon"
         onClick={toggleSidebar}
         aria-label="Open sidebar"
-        className="fixed left-4 top-4 z-[60] bg-background shadow-md border-border/50 hover:bg-muted cursor-pointer"
+        className="fixed left-4 top-4 z-60 bg-background shadow-md border-border/50 hover:bg-muted cursor-pointer"
       >
         <PanelLeftIcon className="h-5 w-5 text-foreground" />
       </Button>

@@ -141,7 +141,7 @@ const MeetingHeader = ({
           </Button>
 
           <div className="flex flex-col min-w-0">
-            <h1 className="text-base md:text-lg font-bold text-foreground truncate max-w-40 xs:max-w-[200px] md:max-w-md">
+            <h1 className="text-base md:text-lg font-bold truncate text-foreground max-w-60 xs:max-w-[300px] md:max-w-2xl">
               {title} - Meeting Recap
             </h1>
             {/* <div className="flex items-center gap-2 text-[10px] text-muted-foreground uppercase tracking-widest font-medium">

@@ -41,12 +41,14 @@ const ChatSidebar = ({
   hideBorder = false,
 }: ChatSidebarProps) => {
   const { canChat } = useUsage();
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    scrollToBottom();
   }, [messages]);
 
   const chatSuggestions = [
@@ -72,16 +74,11 @@ const ChatSidebar = ({
       </div>
 
       <div
-        ref={scrollRef}
-        className="flex-1 p-4 overflow-y-auto space-y-6 scroll-smooth scrollbar-thin scrollbar-thumb-border"
+        className="flex-1 p-4 overflow-y-auto space-y-6 scroll-smooth no-scrollbar"
       >
         <AnimatePresence initial={false}>
           {messages.length === 0 && showSuggestions && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center justify-center h-full space-y-6 px-4 text-center"
-            >
+            <div className="flex flex-col items-center justify-center min-h-[400px] space-y-6 px-4 text-center">
               <div className="p-4 bg-muted/40 rounded-full border border-border/50 shadow-inner">
                 <MessageSquare className="h-8 w-8 text-muted-foreground/50" />
               </div>
@@ -114,7 +111,7 @@ const ChatSidebar = ({
                   </motion.button>
                 ))}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {messages.map((message) => (
@@ -161,6 +158,7 @@ const ChatSidebar = ({
             </motion.div>
           )}
         </AnimatePresence>
+        <div ref={messagesEndRef} />
       </div>
 
       <div className="p-5 border-t border-border/50 bg-card/30">

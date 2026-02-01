@@ -1,7 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ExternalLink, Trash2 } from "lucide-react";
-
+import { ChevronDown, ExternalLink, Trash2, Loader2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +27,7 @@ interface ActionItemRowProps {
   };
   integrations: Integration[];
   loading: { [key: string]: boolean };
+  isDeleting: boolean;
   addToIntegration: (
     platform: string,
     item: { id: number; text: string },
@@ -28,6 +39,7 @@ function ActionItemRow({
   item,
   integrations,
   loading,
+  isDeleting,
   addToIntegration,
   handleDeleteItem,
 }: ActionItemRowProps) {
@@ -42,7 +54,7 @@ function ActionItemRow({
         </p>
 
         {hasConnectedIntegrations && (
-          <div className="transition-opacity relative">
+          <div className="transition-opacity relative text-slate-100">
             {integrations.length === 1 ? (
               <Button
                 onClick={() => addToIntegration(integrations[0].platform, item)}
@@ -104,14 +116,43 @@ function ActionItemRow({
             )}
           </div>
         )}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => handleDeleteItem(item.id)}
-          className="opacity-0 group-hover:opacity-100 p-1 hover:bg-destructive/20 text-destructive rounded transition-all cursor-pointer"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              disabled={isDeleting}
+              className="p-1 text-destructive rounded transition-all cursor-pointer hover:bg-destructive/10"
+            >
+              {isDeleting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="h-4 w-4" />
+              )}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the
+                action item from this meeting recap.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="cursor-pointer">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => handleDeleteItem(item.id)}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

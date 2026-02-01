@@ -17,7 +17,7 @@ import "react-h5-audio-player/lib/styles.css";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Slider } from "@/components/ui/slider";
-import { Separator } from "@/components/ui/separator";
+import { useSidebar } from "@/components/ui/sidebar";
 
 interface CustomAudioPlayerProps {
   recordingUrl?: string;
@@ -28,6 +28,7 @@ const CustomAudioPlayer = ({
   recordingUrl,
   isOwner = true,
 }: CustomAudioPlayerProps) => {
+  const { state, isMobile } = useSidebar();
   const playerRef = useRef<any>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -37,6 +38,10 @@ const CustomAudioPlayer = ({
   const [isMuted, setIsMuted] = useState(false);
 
   const rates = [1, 1.25, 1.5, 2];
+
+  // Dynamic offsets based on sidebar state
+  const leftOffset = isMobile ? "0" : state === "expanded" ? "18rem" : "3rem";
+  const rightOffset = isOwner ? "24rem" : "0";
 
   if (!recordingUrl) return null;
 
@@ -106,15 +111,11 @@ const CustomAudioPlayer = ({
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="hidden md:block fixed bottom-0 z-40 bg-background/80 backdrop-blur-xl border-t border-border/50 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] p-4 md:p-6 transition-all duration-500"
-      style={
-        isOwner
-          ? {
-            left: "var(--sidebar-width, 16rem)",
-            right: "var(--chat-width, 24rem)",
-          }
-          : { left: 0, right: 0 }
-      }
+      className="hidden md:block fixed bottom-0 z-40 bg-background/95 backdrop-blur-xl border-t border-border/50 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] p-4 md:p-6 transition-all duration-300 ease-in-out"
+      style={{
+        left: leftOffset,
+        right: rightOffset,
+      }}
     >
       <div style={{ display: "none" }}>
         <AudioPlayer
@@ -175,7 +176,7 @@ const CustomAudioPlayer = ({
         </div>
 
         <div className="flex items-center justify-between gap-4 md:gap-8">
-          <div className="hidden lg:flex items-center gap-3 min-w-35">
+          <div className="hidden xl:flex items-center gap-3 min-w-[140px]">
             <div className="p-2.5 bg-primary/10 rounded-xl">
               <Mic2 className="h-4 w-4 text-primary" />
             </div>
@@ -220,7 +221,7 @@ const CustomAudioPlayer = ({
             </Button>
           </div>
 
-          <div className="flex items-center justify-end gap-3 md:gap-5 min-w-35 md:min-w-60">
+          <div className="flex items-center justify-end gap-3 md:gap-5 min-w-[140px] md:min-w-[200px]">
             <div className="flex items-center bg-muted/30 p-1 rounded-full border border-border/50">
               {rates.map((rate) => (
                 <button
@@ -236,7 +237,7 @@ const CustomAudioPlayer = ({
               ))}
             </div>
 
-            <div className="hidden sm:flex items-center gap-2 group w-24 md:w-32">
+            <div className="hidden lg:flex items-center gap-2 group w-24 md:w-32">
               <Button
                 variant="ghost"
                 size="icon"
@@ -253,7 +254,6 @@ const CustomAudioPlayer = ({
                 value={[isMuted ? 0 : volume]}
                 max={1}
                 step={0.01}
-
                 onValueChange={handleVolumeChange}
                 className="w-full cursor-pointer"
               />

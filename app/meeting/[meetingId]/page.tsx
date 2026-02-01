@@ -33,7 +33,7 @@ function MeetingDetail() {
   } = useMeetingDetail();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       <MeetingHeader
         title={meetingData?.title || "Meeting"}
         meetingId={meetingId}
@@ -46,16 +46,16 @@ function MeetingDetail() {
         isOwner={isOwner}
         isLoading={!userChecked}
       />
-      <div className="flex h-[calc(100vh-64px)] overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
         <div
           data-lenis-prevent
-          className={`flex-1 p-6 overflow-y-auto pb-32 no-scrollbar ${!userChecked ? "" : !isOwner ? "max-w-4xl mx-auto" : ""
+          className={`flex-1 overflow-y-auto pb-32 no-scrollbar ${!userChecked ? "" : !isOwner ? "max-w-4xl mx-auto" : ""
             }`}
         >
-          <MeetingInfo meetingData={meetingInfoData} />
+          <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-border/50 px-6 pt-8 mb-6">
+            <MeetingInfo meetingData={meetingInfoData} />
 
-          <div className="mb-8">
-            <div className="flex border-b border-border">
+            <div className="flex gap-2">
               <Button
                 variant="ghost"
                 onClick={() => setActiveTab("summary")}
@@ -83,10 +83,12 @@ function MeetingDetail() {
                 Transcript
               </Button>
             </div>
+          </div>
 
-            <div className="mt-6">
+          <div className="px-6">
+            <div className="mt-2">
               {activeTab === "summary" && (
-                <div>
+                <div className="pb-10">
                   {loading ? (
                     <div className="bg-card border border-border rounded-lg p-6 text-center">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
@@ -95,52 +97,55 @@ function MeetingDetail() {
                       </p>
                     </div>
                   ) : meetingData?.processed ? (
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                       {meetingData.summary && (
-                        <div className="bg-card border border-border rounded-lg p-6">
-                          <h3 className="text-lg font-semibold text-foreground mb-3">
+                        <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
+                          <h3 className="text-xl font-bold text-foreground mb-4">
                             Meeting Summary
                           </h3>
-                          <p className="text-muted-foreground leading-relaxed">
+                          <p className="text-muted-foreground leading-relaxed text-base">
                             {meetingData.summary}
                           </p>
                         </div>
                       )}
 
                       {!userChecked ? (
-                        <div className="bg-card border border-border rounded-lg p-6">
+                        <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
                           <div className="animate-pulse">
-                            <div className="h-4 bg-muted rounded w-1/4 mb-4"></div>
-                            <div className="space-y-2">
-                              <div className="h-3 bg-muted rounded w-3/4"></div>
-                              <div className="h-3 bg-muted rounded w-1/2"></div>
+                            <div className="h-5 bg-muted rounded w-1/4 mb-6"></div>
+                            <div className="space-y-3">
+                              <div className="h-4 bg-muted rounded w-full"></div>
+                              <div className="h-4 bg-muted rounded w-5/6"></div>
+                              <div className="h-4 bg-muted rounded w-4/6"></div>
                             </div>
                           </div>
                         </div>
                       ) : (
                         <>
                           {isOwner && displayActionItems.length > 0 && (
-                            <ActionItems
-                              actionItems={displayActionItems}
-                              onDeleteItem={deleteActionItem}
-                              onAddItem={addActionItem}
-                              meetingId={meetingId}
-                            />
+                            <div className="space-y-4">
+                              <ActionItems
+                                actionItems={displayActionItems}
+                                onDeleteItem={deleteActionItem}
+                                onAddItem={addActionItem}
+                                meetingId={meetingId}
+                              />
+                            </div>
                           )}
 
                           {!isOwner && displayActionItems.length > 0 && (
-                            <div className="bg-card rounded-lg p-6 border border-border">
-                              <h3 className="text-lg font-semibold text-foreground mb-4">
+                            <div className="bg-card rounded-2xl p-8 border border-border shadow-sm">
+                              <h3 className="text-xl font-bold text-foreground mb-6">
                                 Action Items
                               </h3>
-                              <div className="space-y-3">
+                              <div className="space-y-4">
                                 {displayActionItems.map((item) => (
                                   <div
                                     key={item.id}
-                                    className="flex items-start gap-3"
+                                    className="flex items-start gap-4 group"
                                   >
-                                    <div className="w-2 h-2 rounded-full bg-primary mt-2 shrink-0"></div>
-                                    <p className="text-sm text-foreground">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-primary mt-1.5 shrink-0 shadow-[0_0_8px_rgba(var(--primary),0.4)]"></div>
+                                    <p className="text-base text-foreground/90 group-hover:text-foreground transition-colors">
                                       {item.text}
                                     </p>
                                   </div>
@@ -152,13 +157,16 @@ function MeetingDetail() {
                       )}
                     </div>
                   ) : (
-                    <div className="bg-card border border-border rounded-lg p-6 text-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                      <p className="text-muted-foreground">
-                        Processing meeting with AI..
+                    <div className="bg-card border border-border rounded-2xl p-12 text-center shadow-sm">
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                      </div>
+                      <h3 className="text-lg font-bold text-foreground mb-2">Processing Meeting</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Our AI is currently analyzing your transcript...
                       </p>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        You&apos;ll receive an email when ready
+                      <p className="text-sm text-primary/60 font-medium">
+                        You&apos;ll receive an email the moment it&apos;s ready!
                       </p>
                     </div>
                   )}
@@ -166,20 +174,20 @@ function MeetingDetail() {
               )}
 
               {activeTab === "transcript" && (
-                <div>
+                <div className="pb-10">
                   {loading ? (
-                    <div className="bg-card border border-border rounded-lg p-6 text-center">
+                    <div className="bg-card border border-border rounded-2xl p-12 text-center">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                      <p className="text-muted-foreground">
-                        Loading meeting data..
-                      </p>
+                      <p className="text-muted-foreground">Loading transcript...</p>
                     </div>
                   ) : meetingData?.transcript ? (
-                    <DisplayTranscript transcript={meetingData.transcript} />
+                    <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
+                      <DisplayTranscript transcript={meetingData.transcript} />
+                    </div>
                   ) : (
-                    <div className="bg-card rounded-lg p-6 border border-border text-center">
-                      <p className="text-muted-foreground">
-                        No transcript avaialable
+                    <div className="bg-card rounded-2xl p-12 border border-border text-center shadow-sm">
+                      <p className="text-muted-foreground font-medium">
+                        No transcript available for this meeting.
                       </p>
                     </div>
                   )}
@@ -189,14 +197,15 @@ function MeetingDetail() {
           </div>
         </div>
 
+        {/* Sidebar Logic */}
         {!userChecked ? (
-          <div className="hidden md:block w-90 border-l border-border p-4 bg-card">
-            <div className="animate-pulse">
-              <div className="h-4 bg-muted rounded w-1/2 mb-4"></div>
-              <div className="space-y-3">
-                <div className="h-8 bg-muted rounded"></div>
-                <div className="h-8 bg-muted rounded"></div>
-                <div className="h-8 bg-muted rounded"></div>
+          <div className="hidden md:block w-96 shrink-0 border-l border-border p-6 bg-card">
+            <div className="animate-pulse space-y-6">
+              <div className="h-6 bg-muted rounded w-1/2 mb-8"></div>
+              <div className="space-y-4">
+                <div className="h-12 bg-muted rounded-xl"></div>
+                <div className="h-24 bg-muted rounded-xl"></div>
+                <div className="h-12 bg-muted rounded-xl"></div>
               </div>
             </div>
           </div>
@@ -204,7 +213,7 @@ function MeetingDetail() {
           isOwner && (
             <>
               {/* Desktop Sidebar */}
-              <div className="hidden md:flex">
+              <div className="hidden md:flex h-full shrink-0">
                 <ChatSidebar
                   messages={messages.map((msg) => ({
                     ...msg,

@@ -29,17 +29,16 @@ function ActionItems({
     setShowAddInput,
     newItemText,
     setNewItemText,
-  } = useActionItems(meetingId);
+    isAdding,
+    setIsAdding,
+    deletingIds,
+    setDeletingIds,
+  } = useActionItems();
 
   const addToIntegration = async (platform: string, actionItem: ActionItem) => {
     setLoading((prev) => ({ ...prev, [`${platform}-${actionItem.id}`]: true }));
     try {
-      toast(`Action item added to ${platform}`, {
-        action: {
-          label: "OK",
-          onClick: () => {},
-        },
-      });
+      toast.success(`Action item added to ${platform}`);
       await fetch("/api/integrations/action-items", {
         method: "POST",
         headers: {
@@ -60,17 +59,12 @@ function ActionItems({
   };
 
   const handleAddNewItem = async () => {
-    if (!newItemText.trim()) {
+    if (!newItemText.trim() || isAdding) {
       return;
     }
 
+    setIsAdding(true);
     try {
-      toast(`Action item added`, {
-        action: {
-          label: "OK",
-          onClick: () => {},
-        },
-      });
       const response = await fetch(`/api/meetings/${meetingId}/action-items`, {
         method: "POST",
         headers: {
@@ -82,23 +76,23 @@ function ActionItems({
       });
 
       if (response.ok) {
+        toast.success("Action item added")
         onAddItem(newItemText);
         setNewItemText("");
         setShowAddInput(false);
       }
     } catch (error) {
       console.error("failed to add action item:", error);
+    } finally {
+      setIsAdding(false);
     }
   };
 
   const handleDeleteItem = async (id: number) => {
+    if (deletingIds.includes(id)) return;
+
+    setDeletingIds((prev) => [...prev, id]);
     try {
-      toast(`Action item deleted`, {
-        action: {
-          label: "OK",
-          onClick: () => {},
-        },
-      });
       const response = await fetch(
         `/api/meetings/${meetingId}/action-items/${id}`,
         {
@@ -107,10 +101,13 @@ function ActionItems({
       );
 
       if (response.ok) {
+        toast.error("Action item deleted")
         onDeleteItem(id);
       }
     } catch (error) {
       console.error("failed to delete action item:", error);
+    } finally {
+      setDeletingIds((prev) => prev.filter((dId) => dId !== id));
     }
   };
 
@@ -162,6 +159,7 @@ function ActionItems({
         actionItems={actionItems}
         integrations={integrations}
         loading={loading}
+        deletingIds={deletingIds}
         addToIntegration={addToIntegration}
         handleDeleteItem={handleDeleteItem}
       />
@@ -171,6 +169,7 @@ function ActionItems({
         setShowAddInput={setShowAddInput}
         newItemText={newItemText}
         setNewItemText={setNewItemText}
+        isAdding={isAdding}
         onAddItem={handleAddNewItem}
       />
 

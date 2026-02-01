@@ -14,7 +14,7 @@ export interface Integration {
   logo: string;
 }
 
-export function useActionItems(meetingId: string) {
+export function useActionItems() {
   const { userId } = useAuth();
 
   const [integrations, setIntegrations] = useState<Integration[]>([]);
@@ -22,6 +22,8 @@ export function useActionItems(meetingId: string) {
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
   const [showAddInput, setShowAddInput] = useState(false);
   const [newItemText, setNewItemText] = useState("");
+  const [isAdding, setIsAdding] = useState(false);
+  const [deletingIds, setDeletingIds] = useState<number[]>([]);
 
   useEffect(() => {
     if (userId) {
@@ -59,5 +61,9 @@ export function useActionItems(meetingId: string) {
     setShowAddInput,
     newItemText,
     setNewItemText,
+    isAdding,
+    setIsAdding,
+    deletingIds,
+    setDeletingIds,
   };
 }
