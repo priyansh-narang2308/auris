@@ -41,10 +41,12 @@ export async function GET() {
     const asana = new AsanaAPI();
 
     const workspaces = await asana.getWorkspaces(validToken); //get the workspace for the current token
+    console.log("[Asana Setup] Available Workspaces:", JSON.stringify(workspaces, null, 2));
     const workspaceId = workspaces.data[0]?.gid;   //this is the globalId: gid that asana holds thats in it workspace itself 
 
 
     if (!workspaceId) {
+      console.warn("[Asana Setup] No workspaceId found for user");
       return NextResponse.json(
         { error: "No workspace found" },
         { status: 400 }
@@ -95,12 +97,15 @@ export async function POST(request: NextRequest) {
     const validToken = await getValidToken(integration);
     const asaanaa = new AsanaAPI();
 
+    console.log("[Asana Setup] Request Data:", { projectId, projectName, workspaceId, createNew });
+
     // using let as we have to reassign
     let finalProjectId = projectId;
     let finalProjectName = projectName;
 
     // if the user wants to create a new project create it and update the current id and name 
     if (createNew && projectName) {
+      console.log("[Asana Setup] Creating new project:", projectName, "in workspace:", workspaceId);
       const newProject = await asaanaa.createProject(
         validToken,
         workspaceId,

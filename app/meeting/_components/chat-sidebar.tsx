@@ -9,6 +9,7 @@ import {
   MessageSquare,
   AlertCircle,
   Loader2,
+  Bot,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef } from "react";
@@ -27,6 +28,7 @@ interface ChatSidebarProps {
   onInputChange: (value: string) => void;
   onSendMessage: () => void;
   onSuggestionClick: (suggestion: string) => void;
+  hideBorder?: boolean;
 }
 
 const ChatSidebar = ({
@@ -36,6 +38,7 @@ const ChatSidebar = ({
   onInputChange,
   onSendMessage,
   onSuggestionClick,
+  hideBorder = false,
 }: ChatSidebarProps) => {
   const { canChat } = useUsage();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -54,22 +57,16 @@ const ChatSidebar = ({
   ];
 
   return (
-    <div className="w-full md:w-96 border-l border-border/50 bg-background/50 backdrop-blur-xl flex flex-col h-full overflow-hidden shadow-2xl">
+    <div className={`w-full md:w-96 ${hideBorder ? "" : "border-l border-border/50"} bg-background/50 backdrop-blur-xl flex flex-col h-full overflow-hidden shadow-2xl`}>
       <div className="p-5 border-b border-border/50 bg-card/30">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-primary/10 rounded-xl">
-            <Sparkles className="h-5 w-5 text-primary" />
+            <Bot className="h-5 w-5 text-primary" />
           </div>
           <div>
             <h3 className="font-bold text-foreground text-sm tracking-tight">
               Meeting Assistant
             </h3>
-            <div className="flex items-center gap-1.5">
-              <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
-                AI Powered
-              </p>
-            </div>
           </div>
         </div>
       </div>
@@ -106,7 +103,7 @@ const ChatSidebar = ({
                     whileTap={{ scale: 0.98 }}
                     onClick={() => onSuggestionClick(suggestion)}
                     disabled={!canChat}
-                    className="group flex items-center gap-3 w-full p-3 text-left rounded-xl border border-border/50 bg-card hover:bg-muted/50 transition-all shadow-sm disabled:opacity-50"
+                    className="group flex items-center gap-3 w-full p-3 text-left rounded-xl border border-border/50 bg-card hover:bg-muted/50 transition-all shadow-sm cursor-pointer disabled:opacity-50"
                   >
                     <div className="p-1.5 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
                       <Sparkles className="h-3 w-3 text-primary" />
@@ -130,11 +127,10 @@ const ChatSidebar = ({
             >
               <div className={`flex flex-col gap-1 max-w-[85%]`}>
                 <div
-                  className={`relative px-4 py-3 rounded-2xl shadow-sm text-sm ${
-                    message.isBot
-                      ? "bg-card border border-border/50 text-foreground rounded-tl-none"
-                      : "bg-primary text-primary-foreground rounded-tr-none"
-                  }`}
+                  className={`relative px-4 py-3 rounded-2xl shadow-sm text-sm ${message.isBot
+                    ? "bg-card border border-border/50 text-foreground rounded-tl-none"
+                    : "bg-primary text-primary-foreground rounded-tr-none"
+                    }`}
                 >
                   <p className="leading-relaxed">{message.content}</p>
                 </div>
@@ -223,7 +219,7 @@ const ChatSidebar = ({
         <p className="mt-3 text-[10px] text-center text-muted-foreground font-medium opacity-50">
           Press Enter to send
         </p>
-      </div>ll
+      </div>
     </div>
   );
 };

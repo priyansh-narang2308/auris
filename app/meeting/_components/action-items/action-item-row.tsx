@@ -48,7 +48,7 @@ function ActionItemRow({
                 onClick={() => addToIntegration(integrations[0].platform, item)}
                 disabled={loading[`${integrations[0].platform}-${item.id}`]}
                 size="sm"
-                className="px-3 py-1 text-xs flex items-center gap-1"
+                className="px-3 py-1  text-xs flex items-center gap-1 cursor-pointer"
               >
                 {loading[`${integrations[0].platform}-${item.id}`] ? (
                   "Adding..."
@@ -79,7 +79,7 @@ function ActionItemRow({
                       onClick={() =>
                         addToIntegration(integration.platform, item)
                       }
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 cursor-pointer"
                     >
                       <div className="w-4 h-4 relative shrink-0">
                         <img

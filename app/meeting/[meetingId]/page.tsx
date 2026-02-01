@@ -8,6 +8,8 @@ import ActionItems from "../_components/action-items/action-items";
 import DisplayTranscript from "../_components/display-transcript";
 import ChatSidebar from "../_components/chat-sidebar";
 import CustomAudioPlayer from "../_components/audio-player";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Bot } from "lucide-react";
 
 function MeetingDetail() {
   const {
@@ -44,11 +46,11 @@ function MeetingDetail() {
         isOwner={isOwner}
         isLoading={!userChecked}
       />
-      <div className="flex h-[calc(100vh-73px)]">
+      <div className="flex h-[calc(100vh-64px)] overflow-hidden">
         <div
-          className={`flex-1 p-6 overflow-auto pb-24 ${
-            !userChecked ? "" : !isOwner ? "max-w-4xl mx-auto" : ""
-          }`}
+          data-lenis-prevent
+          className={`flex-1 p-6 overflow-y-auto pb-32 no-scrollbar ${!userChecked ? "" : !isOwner ? "max-w-4xl mx-auto" : ""
+            }`}
         >
           <MeetingInfo meetingData={meetingInfoData} />
 
@@ -57,12 +59,11 @@ function MeetingDetail() {
               <Button
                 variant="ghost"
                 onClick={() => setActiveTab("summary")}
-                className={`px-4 py-2 text-sm font-medium border-b-2 rounded-none shadow-none transition-colors
-                                ${
-                                  activeTab === "summary"
-                                    ? "border-primary text-primary"
-                                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/50"
-                                }`}
+                className={`px-6 py-3 text-sm font-semibold border-b-2 rounded-none shadow-none transition-all cursor-pointer
+                                ${activeTab === "summary"
+                    ? "border-primary text-primary bg-primary/5"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  }`}
                 style={{ boxShadow: "none" }}
                 type="button"
               >
@@ -71,12 +72,11 @@ function MeetingDetail() {
               <Button
                 variant="ghost"
                 onClick={() => setActiveTab("transcript")}
-                className={`px-4 py-2 text-sm font-medium border-b-2 rounded-none shadow-none transition-colors
-                                ${
-                                  activeTab === "transcript"
-                                    ? "border-primary text-primary"
-                                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/50"
-                                }`}
+                className={`px-6 py-3 text-sm font-semibold border-b-2 rounded-none shadow-none transition-all cursor-pointer
+                                ${activeTab === "transcript"
+                    ? "border-primary text-primary bg-primary/5"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  }`}
                 style={{ boxShadow: "none" }}
                 type="button"
               >
@@ -190,7 +190,7 @@ function MeetingDetail() {
         </div>
 
         {!userChecked ? (
-          <div className="w-90 border-l border-border p-4 bg-card">
+          <div className="hidden md:block w-90 border-l border-border p-4 bg-card">
             <div className="animate-pulse">
               <div className="h-4 bg-muted rounded w-1/2 mb-4"></div>
               <div className="space-y-3">
@@ -202,17 +202,54 @@ function MeetingDetail() {
           </div>
         ) : (
           isOwner && (
-            <ChatSidebar
-              messages={messages.map((msg) => ({
-                ...msg,
-                timestamp: new Date(),
-              }))}
-              chatInput={chatInput}
-              showSuggestions={showSuggestions}
-              onInputChange={handleInputChange}
-              onSendMessage={handleSendMessage}
-              onSuggestionClick={handleSuggestionClick}
-            />
+            <>
+              {/* Desktop Sidebar */}
+              <div className="hidden md:flex">
+                <ChatSidebar
+                  messages={messages.map((msg) => ({
+                    ...msg,
+                    timestamp: new Date(),
+                  }))}
+                  chatInput={chatInput}
+                  showSuggestions={showSuggestions}
+                  onInputChange={handleInputChange}
+                  onSendMessage={handleSendMessage}
+                  onSuggestionClick={handleSuggestionClick}
+                />
+              </div>
+
+              {/* Mobile Floating Trigger & Sheet */}
+              <div className="md:hidden">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button
+                      size="icon"
+                      className="fixed bottom-32 right-6 h-14 w-14 rounded-full shadow-2xl z-50 bg-primary text-primary-foreground hover:scale-110 active:scale-95 transition-all"
+                    >
+                      <Bot className="h-6 w-6" />
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-4 w-4 bg-primary border-2 border-background"></span>
+                      </span>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="p-0 w-full sm:max-w-md border-none">
+                    <ChatSidebar
+                      messages={messages.map((msg) => ({
+                        ...msg,
+                        timestamp: new Date(),
+                      }))}
+                      chatInput={chatInput}
+                      showSuggestions={showSuggestions}
+                      onInputChange={handleInputChange}
+                      onSendMessage={handleSendMessage}
+                      onSuggestionClick={handleSuggestionClick}
+                      hideBorder
+                    />
+                  </SheetContent>
+                </Sheet>
+              </div>
+            </>
           )
         )}
       </div>

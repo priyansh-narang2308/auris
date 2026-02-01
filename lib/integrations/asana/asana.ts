@@ -13,7 +13,8 @@ export class AsanaAPI {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch workspaces");
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.errors?.[0]?.message || "Failed to fetch workspaces");
     }
 
     return response.json();
@@ -30,7 +31,8 @@ export class AsanaAPI {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch projects");
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.errors?.[0]?.message || "Failed to fetch projects");
     }
 
     return response.json();
@@ -51,7 +53,9 @@ export class AsanaAPI {
       }),
     });
     if (!response.ok) {
-      throw new Error("Failed to create a project");
+      const errorData = await response.json().catch(() => ({}));
+      console.error("Asana Create Project Error:", JSON.stringify(errorData, null, 2));
+      throw new Error(errorData.errors?.[0]?.message || "Failed to create a project");
     }
 
     return response.json();
@@ -73,7 +77,8 @@ export class AsanaAPI {
       }),
     });
     if (!response.ok) {
-      throw new Error("Failed to create a task");
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.errors?.[0]?.message || "Failed to create a task");
     }
 
     return response.json();

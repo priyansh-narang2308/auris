@@ -6,15 +6,25 @@ import {
   Eye,
   Share2,
   Trash2,
-  Slack,
   ChevronLeft,
   Loader2,
-  Calendar
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface MeetingHeaderProps {
   title: string;
@@ -125,19 +135,19 @@ const MeetingHeader = ({
             variant="ghost"
             size="icon"
             onClick={() => router.back()}
-            className="hidden md:flex shrink-0 text-muted-foreground hover:text-foreground"
+            className="hidden md:flex cursor-pointer shrink-0 text-muted-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>
 
           <div className="flex flex-col min-w-0">
             <h1 className="text-base md:text-lg font-bold text-foreground truncate max-w-40 xs:max-w-[200px] md:max-w-md">
-              {title}
+              {title} - Meeting Recap
             </h1>
-            <div className="flex items-center gap-2 text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
+            {/* <div className="flex items-center gap-2 text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
               <Calendar className="h-3 w-3" />
               <span>Meeting Recap</span>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -159,17 +169,17 @@ const MeetingHeader = ({
                   disabled={isPosting || !meetingId}
                   variant="outline"
                   size="sm"
-                  className="hidden sm:flex items-center gap-2 bg-slack/5 border-slack/20 text-foreground hover:bg-slack/10 hover:border-slack/30 transition-all duration-200"
+                  className="hidden sm:flex items-center gap-2 bg-slack/5 border-slack/20 text-foreground hover:bg-slack/10 hover:border-slack/30 transition-all duration-200 cursor-pointer"
                 >
-                  <Slack className="h-4 w-4 text-[#4A154B]" />
-                  <span>{isPosting ? "Posting..." : "Slack"}</span>
+                  <Image src="/slack.png" alt="Slack" width={18} height={18} />
+                  <span>{isPosting ? "Posting..." : "Post to Slack"}</span>
                 </Button>
 
                 <Button
                   onClick={handleShare}
                   variant="secondary"
                   size="sm"
-                  className="flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95"
+                  className="flex items-center gap-2 hover:bg-secondary/80 transition-all active:scale-95 cursor-pointer"
                 >
                   {copied ? (
                     <>
@@ -184,16 +194,36 @@ const MeetingHeader = ({
                   )}
                 </Button>
 
-                <Button
-                  onClick={handleDelete}
-                  disabled={isDeleting}
-                  variant="ghost"
-                  size="sm"
-                  className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  <span className="sr-only">Delete</span>
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      disabled={isDeleting}
+                      variant="ghost"
+                      size="sm"
+                      className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">Delete</span>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Meeting?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete this meeting recap? This action cannot be undone and will permanently remove all associated transcript data and summary.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDelete}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer"
+                      >
+                        Delete Permanently
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </motion.div>
             </AnimatePresence>
           ) : (

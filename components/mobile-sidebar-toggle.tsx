@@ -11,13 +11,13 @@ export default function MobileSidebarToggle() {
   return (
     <div className="md:hidden">
       <Button
-        variant="ghost"
+        variant="outline"
         size="icon"
         onClick={toggleSidebar}
         aria-label="Open sidebar"
-        className="fixed left-3 top-3 z-50 text-white/60 hover:text-white bg-white/5 border border-white/10 hover:bg-white/6"
+        className="fixed left-4 top-4 z-[60] bg-background shadow-md border-border/50 hover:bg-muted cursor-pointer"
       >
-        <PanelLeftIcon />
+        <PanelLeftIcon className="h-5 w-5 text-foreground" />
       </Button>
     </div>
   );

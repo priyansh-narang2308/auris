@@ -8,10 +8,15 @@ import MobileSidebarToggle from "./mobile-sidebar-toggle";
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathName = usePathname();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
 
-  const showSidebar =
-    pathName !== "/" && !(pathName.startsWith("/meeting/") && !isSignedIn);
+  // On initial load, isLoaded is false. We should assume the sidebar should be shown 
+  // if we are not on the landing page, to prevent layout shifts/flickering.
+  const showSidebar = pathName !== "/" && (
+    isLoaded
+      ? !(pathName.startsWith("/meeting/") && !isSignedIn)
+      : true // Keep it showing while loading to prevent unmount/remount
+  );
 
   if (!showSidebar) {
     return <div className="min-h-screen">{children}</div>;

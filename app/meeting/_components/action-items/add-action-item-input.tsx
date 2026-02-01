@@ -38,12 +38,13 @@ function AddActionItemInput({
           }}
           autoFocus
         />
-        <Button onClick={onAddItem} disabled={!newItemText.trim()} size="sm">
+        <Button onClick={onAddItem} className="cursor-pointer" disabled={!newItemText.trim()} size="sm">
           Add
         </Button>
         <Button
           variant="outline"
           size="sm"
+          className="cursor-pointer"
           onClick={() => {
             setShowAddInput(false);
             setNewItemText("");
@@ -56,8 +57,8 @@ function AddActionItemInput({
   }
   return (
     <Button
-      variant="ghost"
-      className="flex items-center gap-3 w-full py-2 px-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors group"
+      variant="secondary"
+      className="flex items-center mt-5 cursor-pointer gap-3 w-full py-2 px-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors group"
       onClick={() => setShowAddInput(true)}
     >
       <Plus className="h-4 w-4" />

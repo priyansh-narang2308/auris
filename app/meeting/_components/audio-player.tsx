@@ -17,6 +17,7 @@ import "react-h5-audio-player/lib/styles.css";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Slider } from "@/components/ui/slider";
+import { Separator } from "@/components/ui/separator";
 
 interface CustomAudioPlayerProps {
   recordingUrl?: string;
@@ -105,13 +106,13 @@ const CustomAudioPlayer = ({
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className={`fixed bottom-0 z-40 bg-background/80 backdrop-blur-xl border-t border-border/50 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] p-4 md:p-6 transition-all duration-500`}
+      className="hidden md:block fixed bottom-0 z-40 bg-background/80 backdrop-blur-xl border-t border-border/50 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] p-4 md:p-6 transition-all duration-500"
       style={
         isOwner
           ? {
-              left: "var(--sidebar-width, 16rem)",
-              right: "var(--chat-width, 24rem)",
-            }
+            left: "var(--sidebar-width, 16rem)",
+            right: "var(--chat-width, 24rem)",
+          }
           : { left: 0, right: 0 }
       }
     >
@@ -193,19 +194,19 @@ const CustomAudioPlayer = ({
               variant="ghost"
               size="icon"
               onClick={() => skip(-10)}
-              className="h-8 w-8 md:h-10 md:w-10 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all rounded-full"
+              className="h-8 w-8 md:h-10 cursor-pointer md:w-10 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all rounded-full"
             >
               <SkipBack className="h-4 w-4 md:h-5 md:w-5" />
             </Button>
 
             <Button
               onClick={handlePlayPause}
-              className="h-10 w-10 md:h-12 md:w-12 bg-primary text-primary-foreground rounded-full shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all p-0"
+              className="h-10 w-10 cursor-pointer md:h-12 md:w-12 bg-primary text-primary-foreground rounded-full shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all p-0"
             >
               {isPlaying ? (
-                <Pause className="h-5 w-5 md:h-6 md:w-6 fill-current" />
+                <Pause className="h-5 cursor-pointer w-5 md:h-6 md:w-6 fill-current" />
               ) : (
-                <Play className="h-5 w-5 md:h-6 md:w-6 fill-current translate-x-0.5" />
+                <Play className="h-5 cursor-pointer w-5 md:h-6 md:w-6 fill-current translate-x-0.5" />
               )}
             </Button>
 
@@ -213,23 +214,22 @@ const CustomAudioPlayer = ({
               variant="ghost"
               size="icon"
               onClick={() => skip(10)}
-              className="h-8 w-8 md:h-10 md:w-10 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all rounded-full"
+              className="h-8 w-8 md:h-10 cursor-pointer md:w-10 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all rounded-full"
             >
               <SkipForward className="h-4 w-4 md:h-5 md:w-5" />
             </Button>
           </div>
 
           <div className="flex items-center justify-end gap-3 md:gap-5 min-w-35 md:min-w-60">
-l            <div className="flex items-center bg-muted/30 p-1 rounded-full border border-border/50">
+            <div className="flex items-center bg-muted/30 p-1 rounded-full border border-border/50">
               {rates.map((rate) => (
                 <button
                   key={rate}
                   onClick={() => changeRate(rate)}
-                  className={`px-2 py-1 rounded-full text-[10px] font-bold transition-all ${
-                    playbackRate === rate
-                      ? "bg-background text-primary shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
+                  className={`px-2 py-1 cursor-pointer rounded-full text-[12px] font-bold transition-all ${playbackRate === rate
+                    ? "bg-background text-primary shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                    }`}
                 >
                   {rate}x
                 </button>
@@ -241,7 +241,7 @@ l            <div className="flex items-center bg-muted/30 p-1 rounded-full bord
                 variant="ghost"
                 size="icon"
                 onClick={toggleMute}
-                className="h-8 w-8 text-muted-foreground hover:text-foreground p-0"
+                className="h-8 w-8 text-muted-foreground cursor-pointer hover:text-foreground p-0"
               >
                 {isMuted || volume === 0 ? (
                   <VolumeX className="h-4 w-4" />
@@ -253,8 +253,9 @@ l            <div className="flex items-center bg-muted/30 p-1 rounded-full bord
                 value={[isMuted ? 0 : volume]}
                 max={1}
                 step={0.01}
+
                 onValueChange={handleVolumeChange}
-                className="w-full"
+                className="w-full cursor-pointer"
               />
             </div>
           </div>

@@ -42,7 +42,7 @@ export default function RootLayout({
             <UsageProvider>
               <SmoothScrollProvider>
                 <ConditionalLayout>{children}</ConditionalLayout>
-                <Toaster />
+                <Toaster richColors />
               </SmoothScrollProvider>
             </UsageProvider>
           </ThemeProvider>

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Search, Copy, Check, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -90,7 +89,7 @@ export default function DisplayTranscript({
   }
 
   return (
-    <div className="flex flex-col bg-card rounded-2xl border border-border overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md h-[calc(100vh-12rem)]">
+    <div className="flex flex-col bg-card rounded-2xl border border-border overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md h-full">
       <div className="p-4 border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -118,7 +117,7 @@ export default function DisplayTranscript({
         </div>
       </div>
 
-      <ScrollArea className="flex-1">
+      <div className="flex-1 overflow-visible"> {/** Removed internal ScrollArea to use page-level scroll */}
         <div className="p-4 space-y-8">
           {filteredTranscript.map((segment, index) => {
             const text = getSegmentText(segment);
@@ -146,13 +145,14 @@ export default function DisplayTranscript({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="w-7 h-7 ml-auto opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
+                      className="w-8 h-8 ml-auto opacity-0 group-hover:opacity-100 transition-all rounded-lg hover:bg-primary/10 hover:text-primary cursor-pointer active:scale-90"
                       onClick={() => handleCopy(text, index)}
+                      title="Copy segment text"
                     >
                       {copiedId === index ? (
-                        <Check className="w-3 h-3 text-green-500" />
+                        <Check className="w-3.5 h-3.5 text-emerald-500" />
                       ) : (
-                        <Copy className="w-3 h-3 text-muted-foreground" />
+                        <Copy className="w-3.5 h-3.5 text-muted-foreground transition-colors" />
                       )}
                     </Button>
                   </div>
@@ -165,19 +165,19 @@ export default function DisplayTranscript({
                   >
                     {searchQuery
                       ? text
-                          .split(new RegExp(`(${searchQuery})`, "gi"))
-                          .map((part, i) =>
-                            part.toLowerCase() === searchQuery.toLowerCase() ? (
-                              <mark
-                                key={i}
-                                className="bg-primary/20 text-foreground rounded-[2px] px-0.5 font-medium"
-                              >
-                                {part}
-                              </mark>
-                            ) : (
-                              part
-                            ),
-                          )
+                        .split(new RegExp(`(${searchQuery})`, "gi"))
+                        .map((part, i) =>
+                          part.toLowerCase() === searchQuery.toLowerCase() ? (
+                            <mark
+                              key={i}
+                              className="bg-primary/20 text-foreground rounded-[2px] px-0.5 font-medium"
+                            >
+                              {part}
+                            </mark>
+                          ) : (
+                            part
+                          ),
+                        )
                       : text}
                   </p>
                 </div>
@@ -204,14 +204,9 @@ export default function DisplayTranscript({
             </div>
           )}
         </div>
-      </ScrollArea>
-
-      {/* Footer Info */}
-      <div className="p-2.5 border-t border-border bg-muted/20 backdrop-blur-sm">
-        <p className="text-[9px] text-center text-muted-foreground uppercase tracking-widest font-bold">
-          Transcript powered by Auris AI Intelligence
-        </p>
       </div>
+
+
     </div>
   );
 }
