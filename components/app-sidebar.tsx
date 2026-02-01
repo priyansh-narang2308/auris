@@ -172,7 +172,7 @@ const AppSidebar = () => {
 
       <SidebarFooter className="mt-auto px-3 pb-8">
         {/** Stable height container for footer to prevent jumps during loading */}
-        <div className="min-h-[200px] flex flex-col justify-end">
+        <div className="min-h-50 flex flex-col justify-end">
           <div className="hidden group-data-[state=collapsed]:flex flex-col items-center gap-3 py-2">
             {usage ? (
               <Tooltip>
@@ -360,7 +360,7 @@ const AppSidebar = () => {
                 </div>
               </div>
             ) : (
-              <div className="rounded-xl border border-border bg-card/50 p-3 h-[100px] animate-pulse" />
+              <div className="rounded-xl border border-border bg-card/50 p-3 h-25 animate-pulse" />
             )}
 
             {upgradeInfo ? (
@@ -387,7 +387,7 @@ const AppSidebar = () => {
                 </div>
               </div>
             ) : (
-              <div className="rounded-xl border border-border bg-muted/30 p-4 h-[80px] animate-pulse" />
+              <div className="rounded-xl border border-border bg-muted/30 p-4 h-20 animate-pulse" />
             )}
           </div>
         </div>
