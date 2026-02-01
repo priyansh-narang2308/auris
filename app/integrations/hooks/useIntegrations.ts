@@ -5,7 +5,12 @@ import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export type Platform = "google-calendar" | "trello" | "jira" | "asana" | "slack";
+export type Platform =
+  | "google-calendar"
+  | "trello"
+  | "jira"
+  | "asana"
+  | "slack";
 
 export interface Integration {
   platform: Platform;
@@ -91,9 +96,11 @@ export function useIntegrations() {
             };
           }
 
-          const status = integrationData.find(
-            (d: any) => d.platform === integration.platform
-          );
+          const status = Array.isArray(integrationData)
+            ? integrationData.find(
+                (d: any) => d.platform === integration.platform,
+              )
+            : undefined;
 
           return {
             ...integration,
@@ -102,7 +109,7 @@ export function useIntegrations() {
             projectName: status?.projectName,
             channelName: status?.channelName,
           };
-        })
+        }),
       );
     } catch (err) {
       console.error("Error fetching integrations:", err);
@@ -132,7 +139,7 @@ export function useIntegrations() {
     }
 
     if (platform === "google-calendar") {
-      window.location.href = "/api/auth.google/direct-connect";
+      window.location.href = "/api/auth/google/direct-connect";
       return;
     }
 
@@ -177,15 +184,15 @@ export function useIntegrations() {
           platform === "trello"
             ? "board"
             : platform === "slack"
-            ? "channel"
-            : "project";
+              ? "channel"
+              : "project";
 
         if (config.createNew) {
           toast.success(
             `New ${itemLabel} created in ${platformName} dashboard!`,
             {
               description: `Target: ${itemName}`,
-            }
+            },
           );
         } else {
           toast.success(`${itemName} has been selected!`, {

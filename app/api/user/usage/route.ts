@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/db";
 import { auth, createClerkClient } from "@clerk/nextjs/server";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const { userId } = await auth();
 
@@ -13,10 +13,23 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    console.log("Fetching usage for userId:", userId);
+
+    // Explicitly check connection
+    try {
+      await prisma.$connect();
+    } catch (connErr) {
+      console.error("Database connection failed in usage route:", connErr);
+      return NextResponse.json(
+        { error: "Database connection failed.", detail: String(connErr) },
+        { status: 500 }
+      );
+    }
+
     // Fetching the user from the database
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: {
-        clerkId: userId,
+        id: userId,
       },
       select: {
         currentPlan: true,
@@ -58,7 +71,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(user);
   } catch (error) {
     return NextResponse.json(
-      { error: `Failed to fetch the user, ${error}` },
+      { 
+        error: `Failed to fetch the user`, 
+        detail: error instanceof Error ? error.message : String(error) 
+      },
       { status: 500 }
     );
   }

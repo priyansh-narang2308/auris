@@ -13,9 +13,13 @@ export async function GET() {
       );
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: {
-        clerkId: userId,
+        id: userId,
+      },
+      select: {
+        id: true,
+        calendarConnected: true,
       },
     });
 
@@ -37,7 +41,7 @@ export async function GET() {
     });
 
     // this is from the calendarEvents
-    const events = upcomingMeetings.map((meeting) => ({
+    const events = upcomingMeetings.map((meeting: any) => ({
       id: meeting.calendarEventId || meeting.id,
       summary: meeting.title,
       start: {

@@ -19,7 +19,7 @@ export async function POST(
     const { meetingId } = await params;
     const { botScheduled } = await request.json();
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: {
         clerkId: userId,
       },

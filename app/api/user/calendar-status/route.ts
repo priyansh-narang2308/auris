@@ -10,9 +10,9 @@ export async function GET() {
       return NextResponse.json({ connected: false });
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: {
-        clerkId: userId,
+        id: userId,
       },
       select: {
         calendarConnected: true,
