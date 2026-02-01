@@ -1,14 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Check,
-  Eye,
-  Share2,
-  Trash2,
-  ChevronLeft,
-  Loader2,
-} from "lucide-react";
+import { Check, Eye, Share2, Trash2, ChevronLeft, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -198,23 +191,27 @@ const MeetingHeader = ({
                   <AlertDialogTrigger asChild>
                     <Button
                       disabled={isDeleting}
-                      variant="ghost"
+                      variant="destructive"
                       size="sm"
-                      className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+                      className="cursor-pointer"
                     >
                       <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Delete</span>
+                      <span>Delete</span>
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
                       <AlertDialogTitle>Delete Meeting?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to delete this meeting recap? This action cannot be undone and will permanently remove all associated transcript data and summary.
+                        Are you sure you want to delete this meeting recap? This
+                        action cannot be undone and will permanently remove all
+                        associated transcript data and summary.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+                      <AlertDialogCancel className="cursor-pointer">
+                        Cancel
+                      </AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleDelete}
                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer"

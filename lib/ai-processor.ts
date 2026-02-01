@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import OpenAI from "openai";
+import { GoogleGenAI } from "@google/genai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
+const client = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY!,
 });
 
 export async function processMeetingTranscript(transcript: any) {
@@ -26,12 +26,7 @@ export async function processMeetingTranscript(transcript: any) {
       throw new Error("No transcript content found");
     }
 
-    const complettionn = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: `You are an AI assistant that analyzes meeting transcripts and provides concise summaries and action items.
+    const prompt = `You are an AI assistant that analyzes meeting transcripts and provides concise summaries and action items.
 
                     Please analyze the meeting transcript and provide:
                     1. A clear, concise summary (2-3 sentences) of the main discussion points and decisions
@@ -47,19 +42,20 @@ export async function processMeetingTranscript(transcript: any) {
                     }
 
                     Return only the action item text as strings.
-                    If no clear action items are mentioned, return an empty array for actionItems.`,
-        },
-        {
-          role: "user",
-          content: `Please analyze this meeting transcript:\n\n${transcriptText}`,
-        },
-      ],
+                    If no clear action items are mentioned, return an empty array for actionItems.
 
-      temperature: 0.3,
-      max_tokens: 1000,
+                    Transcript:
+                    ${transcriptText}`;
+
+    const result = await client.models.generateContent({
+      model: "gemini-flash-latest",
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      config: {
+        responseMimeType: "application/json",
+      },
     });
 
-    const response = complettionn.choices[0].message.content;
+    const response = result.text;
 
     if (!response) {
       throw new Error("No response from the AI. Please try again later.");

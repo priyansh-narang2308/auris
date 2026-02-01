@@ -1,7 +1,7 @@
 import { ActionItemData } from "../types";
 
 
-// Asana documentation reading all the endpoints there..
+
 export class AsanaAPI {
   private baseUrl = "https://app.asana.com/api/1.0";
 

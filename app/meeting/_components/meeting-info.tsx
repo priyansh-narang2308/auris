@@ -11,10 +11,13 @@ interface MeetingData {
 
 interface MeetingInfoProps {
   meetingData: MeetingData;
+  isOwner?: boolean;
 }
 
-function MeetingInfo({ meetingData }: MeetingInfoProps) {
+function MeetingInfo({ meetingData, isOwner }: MeetingInfoProps) {
   const { user } = useUser();
+
+  const displayName = isOwner ? (user?.fullName || meetingData.userName) : meetingData.userName;
 
   return (
     <div className="mb-8">
@@ -25,22 +28,22 @@ function MeetingInfo({ meetingData }: MeetingInfoProps) {
       <div className="text-sm text-muted-foreground mb-8 flex items-center gap-4 flex-wrap">
         <span className="flex items-center gap-2">
           <div className="w-5 h-5 rounded-full overflow-hidden shrink-0 ring-1 ring-border">
-            {user?.imageUrl ? (
+            {user?.imageUrl && isOwner ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={user.imageUrl}
-                alt={`${meetingData.userName}'s profile`}
+                alt={`${displayName}'s profile`}
                 className="w-5 h-5 rounded-full object-cover"
               />
             ) : (
               <div className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center">
                 <span className="text-xs text-primary font-medium">
-                  {meetingData.userName.charAt(0).toUpperCase()}
+                  {displayName.charAt(0).toUpperCase()}
                 </span>
               </div>
             )}
           </div>
-          {meetingData.userName}
+          {displayName}
         </span>
         <span className="flex items-center gap-1">📅 {meetingData.date}</span>
 

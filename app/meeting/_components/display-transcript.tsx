@@ -93,14 +93,14 @@ export default function DisplayTranscript({
       <div className="p-4 border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <MessageSquare className="w-4 h-4 text-primary" />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-foreground">
+              <h3 className="font-bold text-lg text-foreground">
                 Meeting Transcript
               </h3>
-              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">
+              <p className="text-[12px] text-muted-foreground font-medium uppercase tracking-tight">
                 {transcript.length} Segments
               </p>
             </div>
@@ -117,7 +117,7 @@ export default function DisplayTranscript({
         </div>
       </div>
 
-      <div className="flex-1 overflow-visible"> {/** Removed internal ScrollArea to use page-level scroll */}
+      <div className="flex-1 overflow-visible">
         <div className="p-4 space-y-8">
           {filteredTranscript.map((segment, index) => {
             const text = getSegmentText(segment);
@@ -128,20 +128,21 @@ export default function DisplayTranscript({
                 style={{ animationDelay: `${index * 30}ms` }}
               >
                 <Avatar className="w-9 h-9 border border-border/50 shadow-sm shrink-0">
-                  <AvatarFallback className="text-[10px] font-bold bg-muted text-muted-foreground">
+                  <AvatarFallback className="text-[14px] font-bold bg-muted text-muted-foreground">
                     {getInitials(segment.speaker)}
                   </AvatarFallback>
                 </Avatar>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-xs text-foreground tracking-tight">
-                      {segment.speaker}
-                    </span>
-                    <span className="text-[9px] font-medium text-muted-foreground tabular-nums">
-                      {getSpeakerSegmentTime(segment)}
-                    </span>
-
+                    <div className="group flex items-center gap-3">
+                      <span className="text-md font-bold tracking-tight text-foreground/90">
+                        {segment.speaker}
+                      </span>
+                      <span className="flex items-center rounded-md bg-secondary/50 px-1.5 py-0.5 text-[12px] font-medium tabular-nums text-muted-foreground ring-1 ring-inset ring-border/50 transition-all group-hover:bg-secondary group-hover:text-foreground">
+                        {getSpeakerSegmentTime(segment)}
+                      </span>
+                    </div>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -165,19 +166,19 @@ export default function DisplayTranscript({
                   >
                     {searchQuery
                       ? text
-                        .split(new RegExp(`(${searchQuery})`, "gi"))
-                        .map((part, i) =>
-                          part.toLowerCase() === searchQuery.toLowerCase() ? (
-                            <mark
-                              key={i}
-                              className="bg-primary/20 text-foreground rounded-[2px] px-0.5 font-medium"
-                            >
-                              {part}
-                            </mark>
-                          ) : (
-                            part
-                          ),
-                        )
+                          .split(new RegExp(`(${searchQuery})`, "gi"))
+                          .map((part, i) =>
+                            part.toLowerCase() === searchQuery.toLowerCase() ? (
+                              <mark
+                                key={i}
+                                className="bg-primary/20 text-foreground rounded-[2px] px-0.5 font-medium"
+                              >
+                                {part}
+                              </mark>
+                            ) : (
+                              part
+                            ),
+                          )
                       : text}
                   </p>
                 </div>
@@ -205,8 +206,6 @@ export default function DisplayTranscript({
           )}
         </div>
       </div>
-
-
     </div>
   );
 }

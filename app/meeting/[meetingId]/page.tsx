@@ -53,7 +53,7 @@ function MeetingDetail() {
             }`}
         >
           <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-border/50 px-6 pt-8 mb-6">
-            <MeetingInfo meetingData={meetingInfoData} />
+            <MeetingInfo meetingData={meetingInfoData} isOwner={isOwner} />
 
             <div className="flex gap-2">
               <Button
