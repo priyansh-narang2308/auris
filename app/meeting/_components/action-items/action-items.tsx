@@ -34,13 +34,13 @@ function ActionItems({
   const addToIntegration = async (platform: string, actionItem: ActionItem) => {
     setLoading((prev) => ({ ...prev, [`${platform}-${actionItem.id}`]: true }));
     try {
-      toast(`jjAction item added to ${platform}`, {
+      toast(`Action item added to ${platform}`, {
         action: {
           label: "OK",
           onClick: () => {},
         },
       });
-      const response = await fetch("/api/integrations/action-items", {
+      await fetch("/api/integrations/action-items", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,8 +51,6 @@ function ActionItems({
           meetingId,
         }),
       });
-
-      //   await response.json();l
     } finally {
       setLoading((prev) => ({
         ...prev,
