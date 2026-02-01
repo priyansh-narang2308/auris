@@ -17,7 +17,6 @@ export async function GET() {
 
     // Explicitly check connection
     try {
-      await prisma.$connect();
     } catch (connErr) {
       console.error("Database connection failed in usage route:", connErr);
       return NextResponse.json(
@@ -29,7 +28,7 @@ export async function GET() {
     // Fetching the user from the database
     const user = await prisma.user.findFirst({
       where: {
-        id: userId,
+        clerkId: userId,
       },
       select: {
         currentPlan: true,

@@ -12,7 +12,7 @@ export async function GET() {
 
     const user = await prisma.user.findFirst({
       where: {
-        id: userId,
+        clerkId: userId,
       },
       select: {
         calendarConnected: true,

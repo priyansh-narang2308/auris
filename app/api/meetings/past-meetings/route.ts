@@ -15,7 +15,7 @@ export async function GET() {
 
     const user = await prisma.user.findFirst({
       where: {
-        id: userId,
+        clerkId: userId,
       },
     });
 
@@ -40,6 +40,7 @@ export async function GET() {
     return NextResponse.json(
       {
         error: "Failed to fetch the past meetings of the user.",
+        detail: error instanceof Error ? error.message : String(error),
         meetings: [],
       },
       { status: 500 }
