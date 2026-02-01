@@ -50,5 +50,4 @@ function MeetingInfo({ meetingData }: MeetingInfoProps) {
   );
 }
 
-
-export default MeetingInfo
+export default MeetingInfo;
