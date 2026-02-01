@@ -58,11 +58,7 @@ const ITEMS = [
     url: "/integrations",
     icon: Layers3,
   },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
-  },
+
   {
     title: "AI Assistant",
     url: "/chat",
@@ -72,6 +68,11 @@ const ITEMS = [
     title: "Pricing",
     url: "/pricing",
     icon: DollarSign,
+  },
+  {
+    title: "Settings",
+    url: "/settings",
+    icon: Settings,
   },
 ];
 
@@ -290,7 +291,10 @@ const AppSidebar = () => {
                       </div>
 
                       {upgradeInfo?.showButton ? (
-                        <Button asChild className="w-full text-xs font-semibold cursor-pointer">
+                        <Button
+                          asChild
+                          className="w-full text-xs font-semibold cursor-pointer"
+                        >
                           <Link href="/pricing">{upgradeInfo.title}</Link>
                         </Button>
                       ) : (
@@ -376,7 +380,10 @@ const AppSidebar = () => {
                   </div>
 
                   {upgradeInfo.showButton ? (
-                    <Button asChild className="w-full text-xs font-semibold cursor-pointer">
+                    <Button
+                      asChild
+                      className="w-full text-xs font-semibold cursor-pointer"
+                    >
                       <Link href="/pricing">{upgradeInfo.title}</Link>
                     </Button>
                   ) : (

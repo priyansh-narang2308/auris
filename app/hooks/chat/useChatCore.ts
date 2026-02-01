@@ -112,16 +112,11 @@ export function useChatCore({
       return;
     }
 
-    setShowSuggestions(false);
     setChatInput(suggestion);
   };
 
   const handleInputChange = (value: string) => {
     setChatInput(value);
-
-    if (value.length > 0 && showSuggestions) {
-      setShowSuggestions(false);
-    }
   };
 
   return {

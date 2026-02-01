@@ -81,7 +81,7 @@ const ChatSidebar = ({
       >
         <AnimatePresence initial={false}>
           {messages.length === 0 && showSuggestions && (
-            <div className="flex flex-col items-center justify-center min-h-[400px] space-y-6 px-4 text-center">
+            <div className="flex flex-col items-center justify-center min-h-100 space-y-6 px-4 text-center">
               <div className="p-4 bg-muted/40 rounded-full border border-border/50 shadow-inner">
                 <MessageSquare className="h-8 w-8 text-muted-foreground/50" />
               </div>
@@ -129,7 +129,7 @@ const ChatSidebar = ({
                 <div
                   className={`relative px-4 py-3 rounded-[24px] shadow-sm text-sm leading-relaxed ${message.isBot
                     ? "bg-card border border-border/50 text-foreground rounded-tl-none ring-1 ring-black/5 dark:ring-white/5"
-                    : "bg-gradient-to-br from-primary to-primary/90 text-primary-foreground rounded-tr-none shadow-[0_4px_12px_rgba(var(--primary),0.25)]"
+                    : "bg-linear-to-br from-primary to-primary/90 text-primary-foreground rounded-tr-none shadow-[0_4px_12px_rgba(var(--primary),0.25)]"
                     }`}
                 >
                   <div className="prose prose-sm dark:prose-invert prose-p:leading-relaxed prose-pre:bg-muted prose-pre:text-muted-foreground prose-pre:p-2 prose-pre:rounded-lg max-w-none">
