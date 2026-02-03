@@ -24,10 +24,10 @@ export async function POST(req: NextRequest) {
 
     try {
         const body = await req.text()
+
         const bodyJson = JSON.parse(body)
 
         if (bodyJson.type === 'url_verification') {
-            // its like a test challenge works the route
             return NextResponse.json({ challenge: bodyJson.challenge })
         }
 

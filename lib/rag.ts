@@ -114,7 +114,11 @@ export async function chatWithAllMeetings(userId: string, question: string) {
     Here's what was discussed across their meetings:
     ${context}
 
-    Answer the user's question based only on the meeting content above. When you reference something, mention which meetings its from.`;
+    Answer the user's question based on the meeting content above. When you reference something, mention which meeting it's from.
+    
+    IMPORTANT:
+    - If the answer is not in the context, but the user is just saying "hello", "thanks", "how are you", or asking what you can do, feel free to answer politely as an AI assistant named Aurisia.
+    - If it is a specific question about meeting details and the answer is NOT in the context, explicitly say you couldn't find that information in the meetings.`;
 
   const answer = await chatWithAI(systemPrompt, question);
 

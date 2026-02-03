@@ -114,7 +114,7 @@ const SetupForm = ({
               setSelectedName(selected?.name || "");
             }}
           >
-            <SelectTrigger className="w-full h-9 bg-muted/30 border-border rounded-lg">
+            <SelectTrigger className="w-full h-9 cursor-pointer bg-muted/30 border-border rounded-lg">
               <SelectValue placeholder={isFetching ? "Loading options..." : `Select existing ${itemLabel}...`} />
             </SelectTrigger>
             <SelectContent className="rounded-xl border-border shadow-2xl">
@@ -126,7 +126,7 @@ const SetupForm = ({
                   <SelectItem
                     key={item.id || item.key || item.gid}
                     value={item.id || item.key || item.gid}
-                    className="cursor-pointer focus:bg-blue-500/5 focus:text-blue-600 py-2 rounded-md"
+                    className="cursor-pointer focus:bg-orange-500/5 focus:text-orange-600 py-2 rounded-md"
                   >
                     {item.name}
                   </SelectItem>

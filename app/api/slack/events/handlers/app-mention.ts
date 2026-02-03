@@ -4,17 +4,13 @@ import { isDuplicateEvent } from "../utils/deduplication"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function handleAppMention({ event, say, client }: any) {
 
-
-
     try {
         const eventId = `app_mention-${event.channel}-${event.user}`
         const eventTs = event.event_ts || event.ts
 
-
         if (isDuplicateEvent(eventId, eventTs)) {
             return
         }
-
 
         const authTest = await client.auth.test()
         if (event.user === authTest.user_id) {
@@ -26,7 +22,6 @@ export async function handleAppMention({ event, say, client }: any) {
         if (!slackUserId) {
             return
         }
-
 
         const text = event.text || ""
 
@@ -59,14 +54,23 @@ export async function handleAppMention({ event, say, client }: any) {
         const userInfo = await client.users.info({ user: slackUserId })
         const userEmail = userInfo.user?.profile?.email
 
+
         if (!userEmail) {
             await say("Sorry, I cant access your email. Please make sure your slack email is visible on your profile settings.")
             return
         }
 
+
         const user = await prisma.user.findFirst({
-            where: { email: userEmail }
+            where: {
+                email: {
+                    equals: userEmail.trim(),
+                    mode: 'insensitive'
+                }
+            }
         })
+
+        console.log(`🔍 app-mention: Search Result for '${userEmail}':`, user ? `Found User ${user.id}` : "NULL (Not Found)");
 
         if (!user) {
             await say({
@@ -91,8 +95,6 @@ export async function handleAppMention({ event, say, client }: any) {
             return
         }
 
-
-
         const { team_id: teamId } = await client.auth.test()
 
         await prisma.user.update({
@@ -105,30 +107,27 @@ export async function handleAppMention({ event, say, client }: any) {
                 slackConnected: true
             }
         })
-        await say({
-            text: "Searching through your meetings...",
-            blocks: [
-                {
-                    type: "section",
-                    text: {
-                        type: "mrkdwn",
-                        text: "🔍 *Searching through your meetings...*"
+        // REMOVED 'Searching...' block
+
+        const greetings = ['hello', 'hi', 'hey', 'greetings', 'sup', 'yo', 'thanks', 'thank you']
+        const isGreeting = greetings.some(g => cleanText.toLowerCase().includes(g) && cleanText.length < 20)
+
+        if (!isGreeting) {
+            await say({
+                text: "Searching through your meetings...",
+                blocks: [
+                    {
+                        type: "context",
+                        elements: [
+                            {
+                                type: "mrkdwn",
+                                text: "🔍 *Searching through your meetings...*"
+                            }
+                        ]
                     }
-                },
-                {
-                    type: "context",
-                    elements: [
-                        {
-                            type: "mrkdwn",
-                            text: "I'm scanning your recent transcripts and summaries to find the best answer."
-                        }
-                    ]
-                }
-            ]
-        })
-
-
-
+                ]
+            })
+        }
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/rag/chat-all`, {
             method: 'POST',
@@ -149,10 +148,12 @@ export async function handleAppMention({ event, say, client }: any) {
         const data = await response.json()
 
         if (data.answer) {
-            const answer = data.answer
+            // Fix Slack Markdown: Replace **bold** with *bold*
+            const answer = data.answer.replace(/\*\*(.*?)\*\*/g, '*$1*')
 
             await say({
                 thread_ts: event.ts,
+                text: answer, // Fallback
                 blocks: [
                     {
                         type: "section",
@@ -166,7 +167,7 @@ export async function handleAppMention({ event, say, client }: any) {
                         elements: [
                             {
                                 type: "mrkdwn",
-                                text: "✨ _Answer generated from your meeting history. Feel free to ask follow-up questions!_"
+                                text: "_Answer generated from your meeting history. Feel free to ask follow-up questions!_"
                             }
                         ]
                     }
@@ -176,7 +177,8 @@ export async function handleAppMention({ event, say, client }: any) {
 
         } else {
             await say({
-                thread_ts: event.ts,
+
+                text: "I couldn't find any relevant information.",
                 blocks: [
                     {
                         type: "section",
@@ -203,7 +205,7 @@ export async function handleAppMention({ event, say, client }: any) {
         console.error("Error handling app mention:", error)
 
         await say({
-            thread_ts: event.ts,
+            text: "Something went wrong",
             blocks: [
                 {
                     type: "section",
@@ -224,5 +226,4 @@ export async function handleAppMention({ event, say, client }: any) {
             ]
         })
     }
-
 }

@@ -8,6 +8,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { toast } from "sonner";
 
 export interface PlanLimits {
   meetings: number;
@@ -90,7 +91,7 @@ export function UsageProvider({ children }: { children: ReactNode }) {
   // increment the chat usage by the user
   const incrementChatUsage = async () => {
     if (!canChat) {
-      // todo:add toast
+      toast.error("You have reached your chat limit. Please upgrade to continue.");
       return;
     }
     try {
@@ -121,7 +122,7 @@ export function UsageProvider({ children }: { children: ReactNode }) {
 
   const incrementMeetingUsage = async () => {
     if (!canScheduleMeeting) {
-      // todo:add toast
+      toast.error("You have reached your meeting limit. Please upgrade to continue.");
       return;
     }
 

@@ -24,7 +24,7 @@ export async function authorizeSlack(source: { teamId?: string }) {
             }
         })
 
-        if (!installation || installation.active) {
+        if (!installation || !installation.active) {
             console.error('Installation not found or inactive for the team:', teamId)
             throw new Error(`Installation not found or inactive for the team: ${teamId}`)
         }

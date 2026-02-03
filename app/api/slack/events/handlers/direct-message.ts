@@ -81,7 +81,10 @@ export async function handleMessage({ message, say, client }: any) {
 
         const user = await prisma.user.findFirst({
             where: {
-                email: userEmail
+                email: {
+                    equals: userEmail,
+                    mode: 'insensitive'
+                }
             }
         })
 
@@ -123,29 +126,27 @@ export async function handleMessage({ message, say, client }: any) {
         })
 
 
-        await say({
-            text: "Searching through your meetings...",
-            blocks: [
-                {
-                    type: "section",
-                    text: {
-                        type: "mrkdwn",
-                        text: "🔍 *Searching through your meetings...*"
+        // Check if it's a greeting to decide whether to show "Searching..."
+        const greetings = ['hello', 'hi', 'hey', 'greetings', 'sup', 'yo', 'thanks', 'thank you']
+        const isGreeting = greetings.some(g => cleanText.toLowerCase().includes(g) && cleanText.length < 20)
+
+        // Only show "Searching..." if it's NOT a simple greeting
+        if (!isGreeting) {
+            await say({
+                text: "Searching through your meetings...",
+                blocks: [
+                    {
+                        type: "context",
+                        elements: [
+                            {
+                                type: "mrkdwn",
+                                text: "🔍 *Searching through your meetings...*"
+                            }
+                        ]
                     }
-                },
-                {
-                    type: "context",
-                    elements: [
-                        {
-                            type: "mrkdwn",
-                            text: "I'm scanning your recent transcripts and summaries to find the best answer."
-                        }
-                    ]
-                }
-            ]
-        })
-
-
+                ]
+            })
+        }
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/rag/chat-all`, {
             method: 'POST',
@@ -166,10 +167,11 @@ export async function handleMessage({ message, say, client }: any) {
         const data = await response.json()
 
         if (data.answer) {
-            const answer = data.answer
+            // Fix Slack Markdown: Replace **bold** with *bold*
+            const answer = data.answer.replace(/\*\*(.*?)\*\*/g, '*$1*')
 
             await say({
-                thread_ts: message.ts,
+                text: answer, // Fallback for notifications
                 blocks: [
                     {
                         type: "section",
@@ -183,7 +185,7 @@ export async function handleMessage({ message, say, client }: any) {
                         elements: [
                             {
                                 type: "mrkdwn",
-                                text: "✨ _Answer generated from your meeting history. Feel free to ask follow-up questions!_"
+                                text: "_Answer generated from your meeting history. Feel free to ask follow-up questions!_"
                             }
                         ]
                     }
@@ -191,7 +193,7 @@ export async function handleMessage({ message, say, client }: any) {
             })
         } else {
             await say({
-                thread_ts: message.ts,
+                text: "I couldn't find any relevant information.",
                 blocks: [
                     {
                         type: "section",
@@ -217,7 +219,7 @@ export async function handleMessage({ message, say, client }: any) {
         console.error('Error handling message:', error)
 
         await say({
-            thread_ts: message.ts,
+            text: "Something went wrong",
             blocks: [
                 {
                     type: "section",
