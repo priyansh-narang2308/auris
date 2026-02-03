@@ -96,14 +96,14 @@ export async function handleMessage({ message, say, client }: any) {
                         type: "section",
                         text: {
                             type: "mrkdwn",
-                            text: `👋 Hi! I cant find an account with email *${userEmail}*.\n\nPlease sign up first, then you can chat with me here!`
+                            text: `👋 Hi! I can't find an account linked to *${userEmail}*.\n\nPlease <${process.env.NEXT_PUBLIC_APP_URL}/sign-up|sign up on Auris> using this *same email address* to access your meeting assistant.`
                         }
                     },
                     {
                         type: "context",
                         elements: [{
                             type: "mrkdwn",
-                            text: "Once you have an account, I can help you with meeting summaries, action items, and many more!"
+                            text: "Once you've signed up, come back here and say hello! 👋"
                         }]
                     }
                 ]
