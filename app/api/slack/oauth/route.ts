@@ -53,6 +53,7 @@ export async function GET(request: NextRequest) {
       where: {
         teamId: tokenData.team.id,
       },
+      // all from  documentation
       update: {
         teamName: tokenData.team.name,
         botToken: tokenData.access_token,
@@ -72,7 +73,9 @@ export async function GET(request: NextRequest) {
     });
 
     try {
+      // Get the api token
       const slack = new WebClient(tokenData.access_token);
+      // fetch that particular info from slack
       const userInfo = await slack.users.info({
         user: tokenData.authed_user.id,
       });
