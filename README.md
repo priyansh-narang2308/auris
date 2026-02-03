@@ -51,3 +51,5 @@ usage && limits.chatMessages !== -1
 ## USING PINECONE AS WELL
 
 ## used slacks block kit builder!!
+
+## Storing bot avatar images in AWS images
