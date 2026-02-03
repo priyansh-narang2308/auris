@@ -18,7 +18,6 @@ export async function authorizeSlack(source: { teamId?: string }) {
 
         }
 
-
         const installation = await prisma.slackInstallation.findUnique({
             where: {
                 teamId: teamId
@@ -33,9 +32,6 @@ export async function authorizeSlack(source: { teamId?: string }) {
             botToken: installation.botToken,
             teamId: installation.teamId,
         }
-
-
-
 
     } catch (error) {
         console.error('Error authorizing Slack:', error)
