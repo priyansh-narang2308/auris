@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
         })
 
     } catch (error) {
-        console.log(error)
-        return NextResponse.json({ error: 'Failed to post meeting summary' }, { status: 500 })
+        console.log("Error posting information to slack: ",error)
+        return NextResponse.json({ error: 'Failed to post meeting summary to slack' }, { status: 500 })
     }
 }
