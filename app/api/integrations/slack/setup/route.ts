@@ -46,6 +46,7 @@ export async function GET() {
 
     const slack = new WebClient(installation.botToken);
 
+    //this to fetch the list of public channels from the Slack workspace using the bot token
     const channels = await slack.conversations.list({
       types: "public_channel",
       limit: 50,
@@ -67,7 +68,7 @@ export async function GET() {
   }
 }
 
-export async function Position(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
 
@@ -80,6 +81,7 @@ export async function Position(request: NextRequest) {
 
     const { channelId, channelName } = await request.json();
 
+    // update the databse with thiss databs
     await prisma.user.updateMany({
       where: {
         clerkId: userId,
