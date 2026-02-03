@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 export async function POST(request: NextRequest) {
-    let dbUser = null
+    let dbUser = null //use let as changed
 
 
     try {
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
         }
 
 
-
+        // fetch all the action items to display
         const { meetingId, summary, actionItems } = await request.json()
 
         if (!meetingId || !summary || !actionItems) {
@@ -57,7 +57,6 @@ export async function POST(request: NextRequest) {
         if (!meeting) {
             return NextResponse.json({ error: 'Meeting not found' }, { status: 404 })
         }
-
 
 
 
@@ -106,6 +105,21 @@ export async function POST(request: NextRequest) {
                     }
                 },
 
+                {
+                    type: "actions",
+                    elements: [
+                        {
+                            type: "button",
+                            text: {
+                                type: "plain_text",
+                                text: "View Full Meeting",
+                                emoji: true
+                            },
+                            style: "primary",
+                            url: `${process.env.NEXT_PUBLIC_APP_URL}/meetings/${meetingId}`
+                        }
+                    ]
+                },
                 {
                     type: "context",
                     elements: [
