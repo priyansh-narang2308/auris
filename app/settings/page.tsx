@@ -4,7 +4,7 @@ import { Loader } from "@/components/ui/loader";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Bot, Save, Upload, User, Zap, Shield, Crown } from "lucide-react";
+import { Bot, Save, Upload, User, Zap, Shield, Crown, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -129,11 +129,19 @@ const SettingsPage = () => {
         </div>
       );
     }
-    if (p === "pro" || p === "premium") {
+    if (p === "pro") {
       return (
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-900/30 border border-amber-500/30 text-amber-400 text-xs font-medium shadow-[0_0_10px_rgba(245,158,11,0.2)]">
           <Crown className="w-3 h-3" />
           Pro Plan
+        </div>
+      );
+    }
+    if (p === "premium") {
+      return (
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-fuchsia-900/30 border border-fuchsia-500/30 text-fuchsia-300 text-xs font-medium shadow-[0_0_15px_rgba(217,70,239,0.2)]">
+          <Sparkles className="w-3 h-3" />
+          Premium Plan
         </div>
       );
     }

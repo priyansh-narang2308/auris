@@ -13,9 +13,7 @@ export async function GET() {
       );
     }
 
-    console.log("Fetching usage for userId:", userId);
 
-    // Explicitly check connection
     try {
     } catch (connErr) {
       console.error("Database connection failed in usage route:", connErr);

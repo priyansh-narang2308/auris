@@ -17,7 +17,7 @@ import {
 
 const menuItems = [
   { name: "Features", href: "#features" },
-  { name: "Pricing", href: "#pricing" },
+  { name: "Pricing", href: "/pricing" },
   { name: "How It Works", href: "#howitworks" },
 ];
 

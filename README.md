@@ -53,3 +53,6 @@ usage && limits.chatMessages !== -1
 ## used slacks block kit builder!!
 
 ## Storing bot avatar images in AWS images
+
+
+# 6:40 to see the AWS cred
