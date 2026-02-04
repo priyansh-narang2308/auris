@@ -11,28 +11,22 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function POST(request: NextRequest) {
     try {
         const { userId } = await auth()
-
         const user = await currentUser()
-
 
         if (!userId || !user) {
             return NextResponse.json({ error: "User not authenticated" }, { status: 401 });
         }
-
 
         const { priceId, planName } = await request.json();
         if (!priceId || !planName) {
             return NextResponse.json({ error: "Missing priceId or planName" }, { status: 400 });
         }
 
-
-
         let dbUser = await prisma.user.findUnique({
             where: {
                 clerkId: userId
             }
         })
-
 
         if (!dbUser) {
             dbUser = await prisma.user.create({
@@ -46,7 +40,6 @@ export async function POST(request: NextRequest) {
         }
 
         let stripeCustomerId = dbUser?.stripeCustomerId
-
         if (!stripeCustomerId) {
             const customer = await stripe.customers.create({
                 email: user.primaryEmailAddress?.emailAddress,
@@ -68,9 +61,6 @@ export async function POST(request: NextRequest) {
             })
         }
 
-
-
-
         const session = await stripe.checkout.sessions.create({
             customer: stripeCustomerId,
             payment_method_types: ["card"],
@@ -82,7 +72,7 @@ export async function POST(request: NextRequest) {
             ],
             mode: "subscription",
             success_url: process.env.NEXT_PUBLIC_APP_URL + "/home?success=true",
-            cancel_url: process.env.NEXT_PUBLIC_APP_URL + "/pricing",
+            cancel_url: process.env.NEXT_PUBLIC_APP_URL + "/pricing", //dont go to the cancelled tru as will look bad
             metadata: {
                 clerkUserId: userId,
                 dbUserId: dbUser.id,
@@ -97,11 +87,7 @@ export async function POST(request: NextRequest) {
                 }
             }
         })
-
-
-
         return NextResponse.json({ url: session.url }, { status: 200 });
-
     } catch (error) {
         console.log("Stripe checkout error", error)
         return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
