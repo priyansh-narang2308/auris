@@ -27,27 +27,25 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Invalid webhook signature" }, { status: 400 })
         }
 
-        // switch (stripeEvent.type) {
-        //     case 'customer.subscription.created':
-        //         await handleSubscriptionCreated(stripeEvent.data.object)
-        //         break
-        //     case 'customer.subscription.updated':
-        //         await handleSubscriptionUpdated(stripeEvent.data.object)
-        //         break
-        //     case 'customer.subscription.deleted':
-        //         await handleSubscriptionCancelled(stripeEvent.data.object)
-        //         break
-        //     case 'invoice.payment_succeeded':
-        //         await handlePaymentSucceeded(stripeEvent.data.object)
-        //         break
+        switch (stripeEvent.type) {
+            case 'customer.subscription.created':
+                await handleSubscriptionCreated(stripeEvent.data.object)
+                break
+            case 'customer.subscription.updated':
+                await handleSubscriptionUpdated(stripeEvent.data.object)
+                break
+            case 'customer.subscription.deleted':
+                await handleSubscriptionCancelled(stripeEvent.data.object)
+                break
+            case 'invoice.payment_succeeded':
+                await handlePaymentSucceeded(stripeEvent.data.object)
+                break
 
-        //     default:
-        //         console.log(`unhandle type event: ${stripeEvent.type}`)
-        // }
-
+            default:
+                console.log(`Unhandled event type: ${stripeEvent.type}`)
+        }
 
         return NextResponse.json({ received: true })
-
     } catch (error) {
         console.error('Error in stripe webhook:', error)
         return NextResponse.json({ error: 'Webhook failed' }, { status: 500 })
@@ -85,6 +83,91 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
 
     } catch (error) {
         console.log("Error in handling stripe subscription creation", error)
+    }
+}
+
+async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
+    try {
+        const usr = await prisma.user.findFirst({
+            where: {
+                stripeSubscriptionId: subscription.id
+            }
+        })
+
+        if (usr) {
+            const planName = getPlanFromSubscription(subscription)
+
+            if (planName) {
+                await prisma.user.update({
+                    where: {
+                        id: usr.id
+                    },
+                    data: {
+                        currentPlan: planName,
+                        subscriptionStatus: subscription.status === 'active' ? 'active' : 'cancelled',
+                    }
+                })
+            }
+        }
+    } catch (error) {
+        console.log("Error in handling stripe subscription update", error)
+    }
+}
+
+async function handleSubscriptionCancelled(subscription: Stripe.Subscription) {
+    try {
+        const user = await prisma.user.findFirst({
+            where: {
+                stripeSubscriptionId: subscription.id
+            }
+        })
+
+        if (user) {
+            await prisma.user.update({
+                where: {
+                    id: user.id
+                },
+                data: {
+                    subscriptionStatus: 'cancelled',
+                }
+            })
+        }
+    } catch (error) {
+        console.log("Error in handling stripe subscription cancellation", error)
+    }
+}
+
+async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
+    try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const subscriptioNidd = (invoice as any).subscription as string | null
+
+        if (!subscriptioNidd) {
+            return;
+        }
+
+        if (subscriptioNidd) {
+            const userr = await prisma.user.findFirst({
+                where: {
+                    stripeSubscriptionId: subscriptioNidd
+                }
+            })
+
+            if (userr) {
+                await prisma.user.update({
+                    where: {
+                        id: userr.id
+                    },
+                    data: {
+                        subscriptionStatus: 'active',
+                        billingPeriodStart: new Date(),
+                        meetingsThisMonth: 0
+                    }
+                })
+            }
+        }
+    } catch (error) {
+        console.log("Error in handling stripe payment succession", error)
     }
 }
 
