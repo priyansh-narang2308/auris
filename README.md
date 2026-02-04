@@ -1,6 +1,6 @@
 # Auris - Your Intelligent Meeting Assistant
 
-![Auris Banner Placeholder](https://via.placeholder.com/1200x400?text=Auris+Banner+Image)
+![Auris Banner Placeholder](./public/auris-banner.png)
 
 **Auris** is a next-generation AI-powered meeting assistant designed to streamline your workflow by automating meeting documentation, integrating with your favorite tools, and providing intelligent insights. It doesn't just record meetings; it understands them.
 
@@ -21,20 +21,38 @@ Connect your calendar, let Auris join your calls, and get instant summaries, act
 - **Vector Database**: Uses Pinecone to store and index meeting transcripts for semantic search.
 - **Contextual Awareness**: The AI understands the context of previous meetings to provide relevant answers.
 
-### Advanced Integrations Ecosystem
-Auris acts as a central hub, connecting your meetings to your workflow tools.
+## Integrations Ecosystem
 
-- **Slack Integration**:
-  - **Notifications**: Receive instant meeting summaries and action items in dedicated channels or direct messages.
-  - **Interactive Bot**: "Chat" with Auris directly from Slack. Ask *"What are my tasks from the Product Sync?"* and get an instant response without leaving Slack.
-  - **Slash Commands**: Use commands to quickly retrieve meeting info or trigger actions.
+Auris acts as the central intelligence layer between your meetings and your daily workflow tools.
 
-- **Project Management (Trello, Jira, Asana)**:
-  - **Auto-Export Action Items**: Automatically convert meeting action items into tasks/cards in your preferred project management tool.
-  - **Context Syncing**: Attach meeting summaries and video clips directly to Jira tickets or Trello cards for full context.
-  - **Board Management**: Select specific boards or projects for different meeting types (e.g., "Engineering Sync" -> Jira, "Marketing Weekly" -> Trello).
+### Project Management
 
-- **Calendar Sync**: Two-way sync with Google Calendar ensures Auris never misses a meeting and updates your event descriptions with summaries.
+Auris creates a bridge between conversation and execution. It supports two-way syncing with the industry's leading project management platforms.
+
+#### **Atlassian Jira**
+- **Ticket Creation**: Automatically convert action items identified in meetings into Jira issues with proper types (Task, Bug, Story).
+- **Smart Context**: When a Jira ticket is created from a meeting, Auris attaches a link to the specific timestamp in the recording where that task was discussed.
+- **Sprint Alignment**: Assign tasks directly to active sprints based on meeting context.
+
+#### **Trello**
+- **Card Generation**: Turn meeting takeaways into Trello cards instantly.
+- **Checklists**: If a meeting results in a multi-step process, Auris populates the Trello card with a detailed checklist of sub-tasks.
+- **Labels & Members**: Automatically tag calls with relevant labels (e.g., "Urgent", "Marketing") and assign members based on who was spoken to in the meeting.
+
+#### **Asana**
+- **Task & Subtask Sync**: seamless hierarchy mapping; high-level decisions become Projects or Parent Tasks, while specific actions become Subtasks.
+- **Due Dates**: When a date is mentioned in the meeting (e.g., "Let's have this done by Friday"), Auris automatically sets the due date in Asana.
+- **Project Routing**: Configure rules to send Engineering tasks to one project and Sales tasks to another automatically.
+
+### Team Communication
+
+#### **Slack**
+- **Real-time Notifications**: Receive instant summaries as soon as a meeting ends.
+- **Interactive Assistant**: Use the `/auris` slash command to query your meeting database directly from Slack.
+- **Channel Routing**: Automatically route meeting notes to specific channels based on the meeting title (e.g., "Design Standup" notes go to `#design-team`).
+
+### Calendar Integration
+- **Google Calendar**: Full two-way synchronization. Auris reads your invite list to identify participants and updates the calendar event description with the meeting summary and recording link after the call.
 
 ### Customizable & Personal
 - **Custom Bot Identity**: Name your assistant and give it a custom avatar to fit your company culture.
@@ -67,11 +85,11 @@ Auris is built with a modern, scalable, and type-safe stack:
 
 | Dashboard | Pricing Page |
 |:---:|:---:|
-| ![Dashboard Placeholder](https://via.placeholder.com/600x400?text=Dashboard+UI) | ![Pricing Placeholder](https://via.placeholder.com/600x400?text=Pricing+Page) |
+| ![Dashboard Placeholder](./public/dashboard.png) | ![Pricing Placeholder](./public/pricing.png) |
 
 | Meeting Insights | Settings |
 |:---:|:---:|
-| ![Meeting View Placeholder](https://via.placeholder.com/600x400?text=Meeting+Insights) | ![Settings Placeholder](https://via.placeholder.com/600x400?text=Settings+Page) |
+| ![Meeting View Placeholder](./public/meeting.png) | ![Settings Placeholder](./public/settings.png) |
 
 ---
 
