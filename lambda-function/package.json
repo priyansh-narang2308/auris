@@ -1,0 +1,12 @@
+{
+    "name": "auris-lambda-bot-scheduler",
+    "version": "1.0.0",
+    "type": "module",
+    "dependencies": {
+        "@prisma/client": "^7.3.0",
+        "google-auth-library": "^10.5.0"
+    },
+    "devDependencies": {
+        "prisma": "^7.3.0"
+    }
+}
