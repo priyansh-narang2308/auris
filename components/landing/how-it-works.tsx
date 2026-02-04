@@ -46,7 +46,7 @@ const HowItWorks = () => {
         viewport={{ once: true, margin: "-120px" }}
       >
         <motion.div variants={item} className="text-center mb-24">
-          <h2 className="text-4xl md:text-5xl font-semibold text-white">
+          <h2 className="text-4xl md:text-5xl font-semibold text-black dark:text-white">
             How It {" "}
             <span className="bg-linear-to-r from-foreground via-orange-400/60 to-muted-foreground bg-clip-text text-transparent">
               Works

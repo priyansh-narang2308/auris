@@ -5,10 +5,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { useUser } from '@clerk/nextjs'
 import { Check, Loader2, Sparkles, Crown, Shield } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
 import { motion } from "framer-motion"
+import { toast } from "sonner"
 
 const plans = [
     {
@@ -76,6 +77,48 @@ const PricingPage = () => {
     const { user } = useUser()
     const [loading, setLoading] = useState<string | null>(null)
     const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
+    const [userPlan, setUserPlan] = useState<string | null>(null)
+    const [hasActiveSubscription, setHasActiveSubscription] = useState(false)
+
+    useEffect(() => {
+        const fetchSubscription = async () => {
+            if (!user) return
+            try {
+                const res = await fetch('/api/user/subscription')
+                const data = await res.json()
+                if (data.plan) {
+                    setUserPlan(data.plan.toLowerCase())
+                    // Check if status is active or trialing
+                    setHasActiveSubscription(
+                        data.status === 'active' ||
+                        data.status === 'trialing'
+                    )
+                }
+            } catch (error) {
+                console.error("Failed to fetch subscription", error)
+            }
+        }
+        fetchSubscription()
+    }, [user])
+
+    const handleManageSubscription = async () => {
+        setLoading("portal")
+        try {
+            const res = await fetch('/api/stripe/create-portal', {
+                method: 'POST'
+            })
+            const data = await res.json()
+            if (data.url) {
+                window.location.href = data.url
+            } else {
+                throw new Error("Failed to load billing portal")
+            }
+        } catch (error) {
+            toast.error("Something went wrong")
+        } finally {
+            setLoading(null)
+        }
+    }
 
     const handleSubscribe = async (priceId: string, planName: string) => {
         if (!user) return
@@ -158,8 +201,10 @@ const PricingPage = () => {
                         const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice
                         const priceId = isYearly ? plan.yearlyPriceId : plan.monthlyPriceId
 
-                        const isLoading = loading === priceId
+                        const isLoading = loading === priceId || loading === "portal"
                         const Icon = plan.icon
+
+                        const isCurrentPlan = hasActiveSubscription && userPlan === plan.id
 
                         return (
                             <Card
@@ -190,6 +235,11 @@ const PricingPage = () => {
                                             </div>
                                             {plan.name}
                                         </CardTitle>
+                                        {isCurrentPlan && (
+                                            <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
+                                                Active
+                                            </Badge>
+                                        )}
                                     </div>
                                     <CardDescription className="text-sm min-h-[40px] text-muted-foreground">
                                         {plan.description}
@@ -225,13 +275,20 @@ const PricingPage = () => {
 
                                 <CardFooter className="pt-4">
                                     <Button
-                                        onClick={() => handleSubscribe(priceId!, plan.name)}
+                                        onClick={() => {
+                                            if (hasActiveSubscription) {
+                                                handleManageSubscription()
+                                            } else {
+                                                handleSubscribe(priceId!, plan.name)
+                                            }
+                                        }}
                                         disabled={isLoading}
                                         className={cn(
                                             "w-full h-11 font-bold text-base transition-all duration-300 cursor-pointer shadow-md active:scale-[0.98]",
                                             plan.popular
                                                 ? "bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/25 border-b-4 border-orange-700 hover:border-b-2 hover:mt-[2px]"
-                                                : "shadow-sm"
+                                                : "shadow-sm",
+                                            isCurrentPlan && "opacity-80 cursor-default hover:bg-opacity-80 hover:border-b-4 hover:mt-0"
                                         )}
                                         variant={plan.popular ? "default" : "outline"}
                                     >
@@ -241,7 +298,11 @@ const PricingPage = () => {
                                                 <span>Processing...</span>
                                             </div>
                                         ) : (
-                                            plan.popular ? `Get Started` : `Choose ${plan.name}`
+                                            isCurrentPlan
+                                                ? "Manage Plan"
+                                                : hasActiveSubscription
+                                                    ? "Switch Plan"
+                                                    : (plan.popular ? `Get Started` : `Choose ${plan.name}`)
                                         )}
                                     </Button>
                                 </CardFooter>
