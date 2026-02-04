@@ -1,6 +1,7 @@
 import {
-    Body, Container, Head, Html, Preview, Section, Text, Button, Hr
+    Body, Container, Head, Html, Preview, Section, Text, Button, Hr, Heading, Img, Link
 } from '@react-email/components'
+import * as React from 'react'
 
 interface MeetingSummaryEmailProps {
     userName: string
@@ -22,217 +23,265 @@ export function MeetingSummaryEmailNew({
     meetingId,
     meetingDate
 }: MeetingSummaryEmailProps) {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://aurismeet.vercel.app'
 
     return (
         <Html>
             <Head />
-            <Preview>Your meeting summary is ready</Preview>
-            <Body style={bodyStyle}>
-                <Container style={containerStyle}>
-
-                    <Section style={headerStyle}>
-                        <Text style={headerTitleStyle}>
-                            📝 Meeting Summary Ready
-                        </Text>
-                        <Text style={headerSubtitleStyle}>
-                            {meetingTitle}
-                        </Text>
+            <Preview>Meeting Summary: {meetingTitle}</Preview>
+            <Body style={main}>
+                <Container style={container}>
+                    <Section style={header}>
+                        <Text style={brandText}>Auris</Text>
                     </Section>
 
-                    <Section style={contentStyle}>
+                    <Section style={heroSection}>
+                        <Heading style={heroTitle}>Meeting Processed</Heading>
+                        <Text style={heroSubtitle}>{meetingTitle}</Text>
+                        <Text style={heroDate}>{meetingDate}</Text>
+                    </Section>
 
-                        <Text style={greetingStyle}>
-                            Hi {userName},
+                    <Section style={content}>
+                        <Text style={greeting}>Hi {userName},</Text>
+                        <Text style={paragraph}>
+                            Here is the AI-generated summary and action items from your recent meeting.
                         </Text>
 
-                        <Text style={dateStyle}>
-                            Your meeting from {meetingDate} has been processed and is ready for review.
-                        </Text>
-
-                        <Section style={summaryContainerStyle}>
-                            <Text style={sectionTitleStyle}>
-                                📋 Summary
-                            </Text>
-                            <Text style={summaryTextStyle}>
+                        <Section style={card}>
+                            <Section style={cardHeader}>
+                                <Text style={cardTitle}>� Executive Summary</Text>
+                            </Section>
+                            <Text style={cardContent}>
                                 {summary}
                             </Text>
                         </Section>
 
-                        <Section style={actionItemsContainerStyle}>
-                            <Text style={sectionTitleStyle}>
-                                ✅ Action Items
-                            </Text>
-                            {actionItems.length > 0 ? (
-                                actionItems.map((item) => (
-                                    <Text key={item.id} style={actionItemStyle}>
-                                        • {item.text}
-                                    </Text>
-                                ))
+                        <Section style={card}>
+                            <Section style={cardHeader}>
+                                <Text style={cardTitle}>✅ Action Items</Text>
+                            </Section>
+                            {actionItems && actionItems.length > 0 ? (
+                                <Section style={actionList}>
+                                    {actionItems.map((item) => (
+                                        <Section key={item.id} style={actionRow}>
+                                            <Text style={bulletPoint}>•</Text>
+                                            <Text style={actionText}>{item.text}</Text>
+                                        </Section>
+                                    ))}
+                                </Section>
                             ) : (
-                                <Text style={noActionItemsStyle}>
-                                    No action items recorded
-                                </Text>
+                                <Text style={emptyState}>No specific action items detected.</Text>
                             )}
                         </Section>
 
-                        <Section style={buttonContainerStyle}>
-                            <Button
-                                href={`${baseUrl}/meeting/${meetingId}`}
-                                style={buttonStyle}
-                            >
-                                View Full Meeting Details
+                        <Section style={btnContainer}>
+                            <Button style={button} href={`${baseUrl}/meeting/${meetingId}`}>
+                                View Full Transcript & Recording
                             </Button>
                         </Section>
 
-                    </Section>
+                        <Hr style={hr} />
 
-                    <Hr style={hrStyle} />
-                    <Section style={footerStyle}>
-                        <Text style={footerTextStyle}>
-                            Sent by Meeting Bot • Automated meeting summary service
-                        </Text>
-                        <Text style={footerTextStyle}>
-                            Need help? Contact support
-                        </Text>
+                        <Section style={footer}>
+                            <Text style={footerText}>
+                                © {new Date().getFullYear()} Auris Inc. All rights reserved.
+                            </Text>
+                            <Text style={footerLinks}>
+                                <Link href={`${baseUrl}/dashboard`} style={link}>Dashboard</Link> •{" "}
+                                <Link href={`${baseUrl}/settings`} style={link}>Settings</Link> •{" "}
+                                <Link href={`${baseUrl}/support`} style={link}>Support</Link>
+                            </Text>
+                        </Section>
                     </Section>
-
                 </Container>
             </Body>
         </Html>
     )
 }
 
-const bodyStyle = {
-    margin: '0',
-    padding: '0',
-    fontFamily: 'Arial, sans-serif',
-    backgroundColor: '#ffffff'
-}
-
-const containerStyle = {
-    maxWidth: '600px',
-    margin: '0 auto',
-    backgroundColor: '#000000',
-    borderRadius: '8px',
-    overflow: 'hidden',
-    border: '1px solid #333333'
-}
-
-const headerStyle = {
-    background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-    padding: '30px',
-    textAlign: 'center' as const
-}
-
-const headerTitleStyle = {
-    color: 'white',
-    margin: '0',
-    fontSize: '24px',
-    fontWeight: 'bold'
-}
-
-const headerSubtitleStyle = {
-    color: '#e8e8e8',
-    margin: '10px 0 0 0',
-    fontSize: '16px'
-}
-
-const contentStyle = {
-    padding: '30px',
-    backgroundColor: '#000000'
-}
-
-const greetingStyle = {
-    color: '#ffffff',
-    fontSize: '16px',
-    lineHeight: '1.5',
-    marginTop: '0'
-}
-
-const dateStyle = {
-    color: '#cccccc',
-    fontSize: '14px',
-    lineHeight: '1.5'
-}
-
-const summaryContainerStyle = {
-    backgroundColor: '#1a1a1a',
-    borderLeft: '4px solid #3b82f6',
-    padding: '20px',
-    margin: '25px 0',
-    borderRadius: '4px'
-}
-
-const actionItemsContainerStyle = {
-    backgroundColor: '#1a1a1a',
-    borderLeft: '4px solid #10b981',
-    padding: '20px',
-    margin: '25px 0',
-    borderRadius: '4px'
-}
-
-const sectionTitleStyle = {
-    color: '#ffffff',
-    margin: '0 0 15px 0',
-    fontSize: '18px',
-    fontWeight: 'bold'
-}
-
-const summaryTextStyle = {
-    color: '#cccccc',
-    lineHeight: '1.6',
-    margin: '0',
-    fontSize: '14px'
-}
-
-const actionItemStyle = {
-    color: '#cccccc',
-    lineHeight: '1.5',
-    margin: '0 0 8px 0',
-    fontSize: '14px'
-}
-
-const noActionItemsStyle = {
-    color: '#888888',
-    fontStyle: 'italic',
-    lineHeight: '1.5',
-    margin: '0',
-    fontSize: '14px'
-}
-
-const buttonContainerStyle = {
-    textAlign: 'center' as const,
-    margin: '30px 0'
-}
-
-const buttonStyle = {
-    background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-    color: 'white',
-    padding: '14px 28px',
-    textDecoration: 'none',
-    borderRadius: '6px',
-    display: 'inline-block',
-    fontWeight: 'bold',
-    fontSize: '16px',
-    boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25)'
-}
-
-const hrStyle = {
-    borderColor: '#333333',
-    margin: '0'
-}
-
-const footerStyle = {
-    backgroundColor: '#000000',
-    padding: '20px',
-    textAlign: 'center' as const
-}
-
-const footerTextStyle = {
-    color: '#888888',
-    fontSize: '12px',
-    margin: '5px 0'
-}
-
 export default MeetingSummaryEmailNew
+
+
+const main = {
+    backgroundColor: '#000000',
+    fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+}
+
+const container = {
+    margin: '0 auto',
+    padding: '20px 0 48px',
+    maxWidth: '580px',
+}
+
+const header = {
+    padding: '24px',
+    textAlign: 'center' as const,
+}
+
+const brandText = {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#f97316', // Orange-500
+    letterSpacing: '-1px',
+    margin: '0',
+}
+
+const heroSection = {
+    padding: '24px',
+    textAlign: 'center' as const,
+    backgroundColor: '#0a0a0a',
+    borderRadius: '12px 12px 0 0',
+    border: '1px solid #262626',
+    borderBottom: 'none',
+}
+
+const heroTitle = {
+    fontSize: '20px',
+    fontWeight: '600',
+    color: '#ffffff',
+    margin: '0 0 8px',
+}
+
+const heroSubtitle = {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#f97316', // Orange Brand Color
+    margin: '0 0 8px',
+}
+
+const heroDate = {
+    fontSize: '14px',
+    color: '#a3a3a3',
+    margin: '0',
+}
+
+const content = {
+    backgroundColor: '#0a0a0a',
+    padding: '0 24px 24px',
+    borderRadius: '0 0 12px 12px',
+    border: '1px solid #262626',
+    borderTop: 'none',
+}
+
+const greeting = {
+    fontSize: '16px',
+    lineHeight: '26px',
+    color: '#ffffff',
+    margin: '16px 0 8px',
+}
+
+const paragraph = {
+    fontSize: '15px',
+    lineHeight: '24px',
+    color: '#a3a3a3',
+    margin: '0 0 24px',
+}
+
+const card = {
+    backgroundColor: '#171717', // Zinc-900
+    borderRadius: '8px',
+    border: '1px solid #262626',
+    marginBottom: '24px',
+    overflow: 'hidden',
+}
+
+const cardHeader = {
+    padding: '12px 20px',
+    backgroundColor: '#262626', // Zinc-800
+    borderBottom: '1px solid #262626',
+}
+
+const cardTitle = {
+    fontSize: '14px',
+    fontWeight: '600',
+    color: '#e5e5e5',
+    margin: '0',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.5px',
+}
+
+const cardContent = {
+    padding: '20px',
+    fontSize: '14px',
+    lineHeight: '24px',
+    color: '#d4d4d4',
+    margin: '0',
+}
+
+const actionList = {
+    padding: '16px 20px',
+}
+
+const actionRow = {
+    display: 'flex',
+    marginBottom: '12px',
+    alignItems: 'flex-start',
+}
+
+const bulletPoint = {
+    color: '#f97316',
+    fontSize: '18px',
+    lineHeight: '24px',
+    marginRight: '12px',
+    fontWeight: 'bold',
+}
+
+const actionText = {
+    fontSize: '14px',
+    lineHeight: '24px',
+    color: '#d4d4d4',
+    margin: '0',
+}
+
+const emptyState = {
+    padding: '20px',
+    fontSize: '14px',
+    color: '#737373',
+    fontStyle: 'italic',
+    textAlign: 'center' as const,
+    margin: '0',
+}
+
+const btnContainer = {
+    textAlign: 'center' as const,
+    marginBottom: '32px',
+}
+
+const button = {
+    backgroundColor: '#f97316', // Orange-500
+    borderRadius: '6px',
+    color: '#fff',
+    fontSize: '16px',
+    fontWeight: '600',
+    textDecoration: 'none',
+    textAlign: 'center' as const,
+    display: 'block',
+    padding: '14px 24px',
+    boxShadow: '0 4px 6px -1px rgba(249, 115, 22, 0.2), 0 2px 4px -1px rgba(249, 115, 22, 0.1)',
+}
+
+const hr = {
+    borderColor: '#262626',
+    margin: '32px 0',
+}
+
+const footer = {
+    textAlign: 'center' as const,
+}
+
+const footerText = {
+    fontSize: '12px',
+    color: '#737373',
+    margin: '0 0 12px',
+}
+
+const footerLinks = {
+    fontSize: '12px',
+    color: '#737373',
+    margin: '0',
+}
+
+const link = {
+    color: '#a3a3a3',
+    textDecoration: 'underline',
+}
