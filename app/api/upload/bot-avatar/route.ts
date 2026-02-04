@@ -20,17 +20,15 @@ export async function POST(request: NextRequest) {
         }
 
         const formData = await request.formData()
-        const file = formData.get("file") as File
 
+        const file = formData.get("file") as File
         if (!file) {
             return NextResponse.json({ error: "No file uploaded" }, { status: 400 })
         }
 
         const fileExtension = file.name.split(".").pop();
         const fileName = `bot-avatars/${userId}-${Date.now()}.${fileExtension}`
-
         const buffer = Buffer.from(await file.arrayBuffer())
-
 
         const uploadCommand = new PutObjectCommand({
             Bucket: process.env.S3_BUCKET_NAME!,
@@ -39,9 +37,7 @@ export async function POST(request: NextRequest) {
             ContentType: file.type
         })
 
-
         await s3Client.send(uploadCommand)
-
 
         const publicUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`
 
@@ -49,8 +45,6 @@ export async function POST(request: NextRequest) {
             success: true,
             url: publicUrl
         })
-
-
     } catch (error) {
         console.log("S3 Upload Error", error)
         return NextResponse.json({ error: "Internal server error" }, { status: 500 })
