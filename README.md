@@ -1,7 +1,5 @@
 # Auris - Your Intelligent Meeting Assistant
 
-![Auris Banner Placeholder](./public/auris-banner.png)
-
 **Auris** is a next-generation AI-powered meeting assistant designed to streamline your workflow by automating meeting documentation, integrating with your favorite tools, and providing intelligent insights. It doesn't just record meetings; it understands them.
 
 Connect your calendar, let Auris join your calls, and get instant summaries, action items, and the ability to "chat" with your entire meeting history using advanced RAG (Retrieval-Augmented Generation) technology.
