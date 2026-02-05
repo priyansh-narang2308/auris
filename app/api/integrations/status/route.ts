@@ -43,7 +43,7 @@ export async function GET() {
     const result: IntegrationStatus[] = allPlatformsIntegrated.map(
       (platform) => {
         const integration = integrations.find(
-          (inte) => inte.platform === platform.platform
+          (inte: UserIntegration) => inte.platform === platform.platform
         );
 
         return {
