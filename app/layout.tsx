@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   title: "auris",
   description:
     "An AI-Based Notetaker + Meeting Bot similar to Fireflies.ai and Otter.ai",
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({
