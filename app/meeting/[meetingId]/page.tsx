@@ -49,7 +49,7 @@ function MeetingDetail() {
       <div className="flex flex-1 overflow-hidden relative">
         <div
           data-lenis-prevent
-          className={`flex-1 overflow-y-auto pb-32 no-scrollbar ${!userChecked ? "" : !isOwner ? "max-w-4xl mx-auto" : ""
+          className={`flex-1 overflow-y-auto pb-32 ${!userChecked ? "" : !isOwner ? "max-w-4xl mx-auto" : ""
             }`}
         >
           <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-border/50 px-6 pt-8 mb-6">

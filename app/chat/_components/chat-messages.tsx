@@ -25,18 +25,24 @@ const ChatMessages = ({ messages, isLoading }: ChatMessagesProps) => {
   const [showScrollButton, setShowScrollButton] = useState(false);
 
   const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
-    endRef.current?.scrollIntoView({ behavior });
+    if (endRef.current) {
+      endRef.current.scrollIntoView({ behavior, block: "end" });
+    }
   };
 
   useEffect(() => {
-    scrollToBottom("auto");
+    // Initial scroll
+    const timer = setTimeout(() => scrollToBottom("auto"), 100);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     if (messages.length > 0) {
-      scrollToBottom();
+      // Use a small delay to ensure DOM has updated and animations are starting
+      const timer = setTimeout(() => scrollToBottom("smooth"), 100);
+      return () => clearTimeout(timer);
     }
-  }, [messages.length, isLoading]);
+  }, [messages, isLoading]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
@@ -45,9 +51,9 @@ const ChatMessages = ({ messages, isLoading }: ChatMessagesProps) => {
   };
 
   return (
-    <div className="relative flex-1 flex flex-col h-full min-h-0 overflow-hidden">
+    <div className="relative flex-1 flex flex-col min-h-0 overflow-hidden">
       <div
-        className="flex-1 overflow-y-auto px-4 py-8 md:px-8 scroll-smooth h-full"
+        className="flex-1 overflow-y-auto px-4 py-8 md:px-8 scroll-smooth"
         onScroll={handleScroll}
         ref={scrollRef}
       >
@@ -73,8 +79,8 @@ const ChatMessages = ({ messages, isLoading }: ChatMessagesProps) => {
                     }`}
                 >
                   <div className={`w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 border transition-all duration-300 ${message.isBot
-                      ? "bg-orange-500/10 border-orange-500/20 text-orange-500"
-                      : "bg-primary/10 border-primary/20 text-primary"
+                    ? "bg-orange-500/10 border-orange-500/20 text-orange-500"
+                    : "bg-primary/10 border-primary/20 text-primary"
                     } ${showAvatar ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
                   >
                     {message.isBot ? <Bot className="h-5 w-5" /> : <User className="h-5 w-5" />}
@@ -84,8 +90,8 @@ const ChatMessages = ({ messages, isLoading }: ChatMessagesProps) => {
                     }`}>
                     <div
                       className={`relative px-5 py-4 rounded-[26px] text-[15px] leading-[1.6] shadow-md ${message.isBot
-                          ? "bg-card border border-border/60 text-foreground rounded-tl-none ring-1 ring-black/5 dark:ring-white/5"
-                          : "bg-linear-to-br from-orange-500 to-amber-500 text-white rounded-tr-none shadow-orange-500/20"
+                        ? "bg-card border border-border/60 text-foreground rounded-tl-none ring-1 ring-black/5 dark:ring-white/5"
+                        : "bg-linear-to-br from-orange-500 to-amber-500 text-white rounded-tr-none shadow-orange-500/20"
                         }`}
                     >
                       <div className={`prose prose-sm max-w-none ${message.isBot ? "dark:prose-invert" : "prose-p:text-white prose-headings:text-white prose-strong:text-white"

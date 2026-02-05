@@ -46,13 +46,24 @@ const ChatSidebar = ({
   const { canChat } = useUsage();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior, block: "end" });
+    }
   };
 
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length > 0) {
+      const timer = setTimeout(() => scrollToBottom("smooth"), 100);
+      return () => clearTimeout(timer);
+    }
   }, [messages]);
+
+  useEffect(() => {
+    // Initial scroll
+    const timer = setTimeout(() => scrollToBottom("auto"), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const chatSuggestions = [
     "What deadlines were discussed?",
@@ -77,7 +88,7 @@ const ChatSidebar = ({
       </div>
 
       <div
-        className="flex-1 p-4 overflow-y-auto space-y-6 scroll-smooth no-scrollbar"
+        className="flex-1 p-4 overflow-y-auto space-y-6 scroll-smooth"
       >
         <AnimatePresence initial={false}>
           {messages.length === 0 && showSuggestions && (
