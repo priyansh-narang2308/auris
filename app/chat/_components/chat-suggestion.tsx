@@ -42,7 +42,7 @@ const ChatSuggestion = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={() => onSuggestionClick(suggestion)}
-            className="flex items-center justify-between p-5 bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl hover:bg-muted/50 hover:border-orange-500/30 transition-all text-left group cursor-pointer shadow-sm active:scale-98"
+            className="flex items-center justify-between p-5 bg-white dark:bg-card/50 backdrop-blur-sm border border-black/5 dark:border-white/5 rounded-2xl hover:bg-orange-50/50 dark:hover:bg-muted/50 hover:border-orange-500/30 transition-all text-left group cursor-pointer shadow-sm hover:shadow-md active:scale-98"
           >
             <div className="flex items-center gap-4">
               <div className="p-2.5 bg-orange-500/10 rounded-xl text-orange-500 group-hover:scale-110 transition-transform">

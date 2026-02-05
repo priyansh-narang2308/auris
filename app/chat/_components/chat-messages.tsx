@@ -89,8 +89,8 @@ const ChatMessages = ({ messages, isLoading }: ChatMessagesProps) => {
                   <div className={`flex flex-col gap-2 max-w-[85%] sm:max-w-[70%] ${message.isBot ? "items-start" : "items-end"
                     }`}>
                     <div
-                      className={`relative px-5 py-4 rounded-[26px] text-[15px] leading-[1.6] shadow-md ${message.isBot
-                        ? "bg-card border border-border/60 text-foreground rounded-tl-none ring-1 ring-black/5 dark:ring-white/5"
+                      className={`relative px-5 py-4 rounded-[26px] text-[15px] leading-[1.6] shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:shadow-md ${message.isBot
+                        ? "bg-white dark:bg-card border border-black/3 dark:border-border/60 text-foreground rounded-tl-none ring-1 ring-black/5 dark:ring-white/5"
                         : "bg-linear-to-br from-orange-500 to-amber-500 text-white rounded-tr-none shadow-orange-500/20"
                         }`}
                     >
@@ -160,7 +160,7 @@ const ChatMessages = ({ messages, isLoading }: ChatMessagesProps) => {
             <Button
               size="icon"
               variant="secondary"
-              className="h-10 w-10 rounded-full shadow-2xl bg-background/90 backdrop-blur-md border border-border/50 hover:bg-muted cursor-pointer transition-all active:scale-95"
+              className="h-10 w-10 rounded-full shadow-2xl bg-white/90 dark:bg-background/90 backdrop-blur-md border border-black/5 dark:border-border/50 hover:bg-muted cursor-pointer transition-all active:scale-95"
               onClick={() => scrollToBottom()}
             >
               <ChevronDown className="h-5 w-5 text-foreground" />
@@ -168,7 +168,7 @@ const ChatMessages = ({ messages, isLoading }: ChatMessagesProps) => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </div >
   );
 };
 

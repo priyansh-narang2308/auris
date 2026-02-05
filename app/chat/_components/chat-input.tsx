@@ -2,7 +2,7 @@
 
 import { useUsage } from "@/app/contexts/usage-context";
 import { Button } from "@/components/ui/button";
-import { Send, Sparkles, Zap } from "lucide-react";
+import { Send, Sparkles, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ChatInputProps {
@@ -28,14 +28,14 @@ const ChatInput = ({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="mb-4 p-4 bg-orange-500/5 rounded-2xl flex items-center gap-3 backdrop-blur-sm"
+            className="mb-4 p-4 bg-orange-500/10 dark:bg-orange-500/5 border border-orange-500/20 rounded-2xl flex items-center gap-3 backdrop-blur-md shadow-[0_8px_30px_rgb(249,115,22,0.05)]"
           >
-            <div className="p-2 bg-orange-500/10 rounded-full">
-              <Zap className="h-4 w-4 text-orange-500" />
+            <div className="p-2 bg-orange-500/20 rounded-full">
+              <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
             </div>
             <div className="flex-1">
               <p className="text-sm font-semibold text-foreground">
-                Daily Limit Reached
+                Daily Message Limit Reached
               </p>
               <p className="text-xs text-muted-foreground">
                 You&apos;ve used {usage.chatMessagesToday}/{limits.chatMessages}{" "}
@@ -45,7 +45,7 @@ const ChatInput = ({
             <Button
               size="sm"
               variant="outline"
-              className="rounded-full text-xs font-bold border-orange-500/20 hover:bg-orange-500/10 cursor-pointer"
+              className="rounded-full text-xs font-bold border-orange-500/30 hover:bg-orange-500/10 bg-background/50 cursor-pointer transition-all"
               asChild
             >
               <a href="/pricing">Upgrade Plan</a>
@@ -55,10 +55,10 @@ const ChatInput = ({
       </AnimatePresence>
 
       <div className="relative group">
-        <div className="absolute -inset-1 bg-linear-to-r from-orange-500 to-amber-500 rounded-[28px] blur opacity-15 group-hover:opacity-25 transition duration-500"></div>
-        <div className="relative flex items-center gap-2 p-1.5 bg-background/80 backdrop-blur-xl  rounded-[24px] shadow-2xl">
+        <div className="absolute -inset-1 bg-linear-to-r from-orange-500/20 to-amber-500/20 dark:from-orange-500/15 dark:to-amber-500/15 rounded-[30px] blur-xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
+        <div className="relative flex items-center gap-2 p-2 bg-white dark:bg-card/80 backdrop-blur-2xl border border-black/5 dark:border-white/5 rounded-[26px] shadow-[0_10px_40px_-5px_rgba(0,0,0,0.05)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] transition-all group-hover:shadow-[0_15px_50px_-10px_rgba(249,115,22,0.12)] group-focus-within:ring-2 ring-orange-500/20">
           <div className="pl-4 hidden sm:block">
-            <Sparkles className="h-5 w-5 " />
+            <Sparkles className="h-5 w-5 text-orange-500 dark:text-orange-400" />
           </div>
           <input
             type="text"
@@ -82,9 +82,9 @@ const ChatInput = ({
             }
             disabled={isLoading || !canChat}
             className="
-    flex-1 h-12 px-2 text-base
+    flex-1 h-12 px-3 text-base
     bg-transparent
-text-white
+    text-foreground placeholder:text-muted-foreground/50
     border-0 outline-none ring-0
     shadow-none
     focus:ring-0 focus-visible:ring-0
@@ -95,7 +95,7 @@ text-white
           <Button
             onClick={onSendMessage}
             disabled={isLoading || !canChat || !chatInput.trim()}
-            className="h-10 w-10 sm:w-auto sm:px-6 rounded-full bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/20 transition-all active:scale-95 flex items-center gap-2 cursor-pointer disabled:opacity-50"
+            className="h-11 w-11 sm:w-auto sm:px-7 rounded-[20px] bg-linear-to-br from-orange-500 to-amber-500 hover:shadow-lg hover:shadow-orange-500/30 text-white transition-all active:scale-95 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:grayscale"
           >
             {isLoading ? (
               <motion.div
