@@ -18,7 +18,7 @@ interface VenomBeamProps {
 
 const VenomBeam: React.FC<VenomBeamProps> = ({ children, className = "" }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | null>(null);
   const particlesRef = useRef<Particle[]>([]);
   const mouseRef = useRef({ x: 0, y: 0 });
   const isDarkRef = useRef(false);

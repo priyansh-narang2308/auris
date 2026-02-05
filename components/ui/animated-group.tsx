@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { ReactNode } from 'react';
 import { motion, Variants } from 'motion/react';
@@ -116,15 +117,16 @@ function AnimatedGroup({
   const itemVariants = variants?.item || selectedVariants.item;
 
   const MotionComponent = React.useMemo(
-    () => motion.create(as as keyof JSX.IntrinsicElements),
+    () => motion.create(as as string | React.ComponentType<any>),
     [as]
   );
   const MotionChild = React.useMemo(
-    () => motion.create(asChild as keyof JSX.IntrinsicElements),
+    () => motion.create(asChild as string | React.ComponentType<any>),
     [asChild]
   );
 
   return (
+    // eslint-disable-next-line react-hooks/static-components
     <MotionComponent
       initial='hidden'
       animate='visible'
