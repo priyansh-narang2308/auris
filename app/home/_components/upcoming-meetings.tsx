@@ -93,96 +93,96 @@ const UpcomingMeetings = ({
         </Card>
       )}
 
-      {!initialLoading && connected && upcomingEvents.length === 0 && (
-        <Card className="rounded-xl border-border bg-card">
-          <CardContent className="p-6 text-center space-y-2">
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-              <Calendar className="h-5 w-5 text-muted-foreground" />
-            </div>
-            <h3 className="text-sm font-medium text-foreground">
-              No upcoming meetings
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              Your calendar is clear for now.
-            </p>
-          </CardContent>
-        </Card>
-      )}
-
-      {!initialLoading && connected && upcomingEvents.length > 0 && (
+      {!initialLoading && connected && (
         <div className="space-y-4">
           <Button
             variant="outline"
             onClick={onRefresh}
             disabled={loading}
-            className="w-full flex items-center gap-2 cursor-pointer"
+            className="w-full flex items-center gap-2 cursor-pointer border-dashed hover:border-orange-500/50 hover:bg-orange-500/5 transition-all"
           >
             <RefreshCcw
               className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
             />
-            {loading ? "Refreshing…" : "Refresh"}
+            {loading ? "Syncing Calendar…" : "Refresh Calendar"}
           </Button>
 
-          {upcomingEvents.map((event) => (
-            <Card
-              key={event.id}
-              className="rounded-xl border-border transition hover:border-orange-500/30 hover:bg-orange-500/3"
-            >
-              <CardContent className="p-4 space-y-3 relative">
-                <div className="absolute top-4 right-4">
-                  <Switch
-                    checked={!!botToggles[event.id]} //negates the vlaue so give true or false
-                    onCheckedChange={() => onToggleBot(event.id)}
-                    aria-label="Toggle bot for the meeting"
-                    className="cursor-pointer"
-                  />
+          {upcomingEvents.length === 0 ? (
+            <Card className="rounded-xl border-border bg-card/50 backdrop-blur-sm border-dashed">
+              <CardContent className="p-6 text-center space-y-2">
+                <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted/50">
+                  <Calendar className="h-5 w-5 text-muted-foreground" />
                 </div>
-
-                <div className="pr-12">
-                  <h4 className="text-sm font-semibold text-foreground line-clamp-1">
-                    {event.summary || "Untitled meeting"}
-                  </h4>
-                </div>
-
-                <Separator />
-
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-3 w-3" />
-                    <span>
-                      {format(
-                        new Date(
-                          event.start?.dateTime || event.start?.date || ""
-                        ),
-                        "MMM d, h:mm a"
-                      )}
-                    </span>
-                  </div>
-
-                  {event.attendees && (
-                    <span>{event.attendees.length} attendees</span>
-                  )}
-                </div>
-
-                {(event.hangoutLink || event.location) && (
-                  <a
-                    href={event.hangoutLink || event.location || "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button
-                      size="sm"
-                      variant={"default"}
-                      className="w-full cursor-pointer  flex items-center gap-2"
-                    >
-                      <PlugZap className="h-4 w-4" />
-                      Join meeting
-                    </Button>
-                  </a>
-                )}
+                <h3 className="text-sm font-medium text-foreground">
+                  No upcoming meetings
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  Your calendar is clear for now. Click refresh if you just scheduled something!
+                </p>
               </CardContent>
             </Card>
-          ))}
+          ) : (
+            upcomingEvents.map((event) => (
+              <Card
+                key={event.id}
+                className="rounded-xl border-border transition hover:border-orange-500/30 hover:bg-orange-500/3"
+              >
+                <CardContent className="p-4 space-y-3 relative">
+                  <div className="absolute top-4 right-4">
+                    <Switch
+                      checked={!!botToggles[event.id]}
+                      onCheckedChange={() => onToggleBot(event.id)}
+                      aria-label="Toggle bot for the meeting"
+                      className="cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="pr-12">
+                    <h4 className="text-sm font-semibold text-foreground line-clamp-1">
+                      {event.summary || "Untitled meeting"}
+                    </h4>
+                  </div>
+
+                  <Separator />
+
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-3 w-3" />
+                      <span>
+                        {format(
+                          new Date(
+                            event.start?.dateTime || event.start?.date || ""
+                          ),
+                          "MMM d, h:mm a"
+                        )}
+                      </span>
+                    </div>
+
+                    {event.attendees && (
+                      <span>{event.attendees.length} attendees</span>
+                    )}
+                  </div>
+
+                  {(event.hangoutLink || event.location) && (
+                    <a
+                      href={event.hangoutLink || event.location || "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button
+                        size="sm"
+                        variant={"default"}
+                        className="w-full cursor-pointer  flex items-center gap-2"
+                      >
+                        <PlugZap className="h-4 w-4" />
+                        Join meeting
+                      </Button>
+                    </a>
+                  )}
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
       )}
     </div>
