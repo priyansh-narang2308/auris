@@ -180,7 +180,7 @@ const UpcomingMeetings = ({
                           Bot Joined
                         </span>
                       </div>
-                    ) : isOngoing(event.start?.dateTime || "", event.end?.dateTime || "") ? (
+                    ) : canJoin(event.start?.dateTime || "") ? (
                       <Button
                         size="sm"
                         variant="outline"
@@ -191,7 +191,9 @@ const UpcomingMeetings = ({
                         <RefreshCcw
                           className={`h-3 w-3 ${loading ? "animate-spin" : ""}`}
                         />
-                        Join Bot Now
+                        {isOngoing(event.start?.dateTime || "", event.end?.dateTime || "")
+                          ? "Join Bot Now"
+                          : "Join Bot Early"}
                       </Button>
                     ) : null}
 
@@ -229,6 +231,15 @@ const isOngoing = (startTime: string, endTime: string) => {
   const end = new Date(endTime);
   // Consider it ongoing if it's 10 mins before start or anytime before end
   return now >= new Date(start.getTime() - 10 * 60 * 1000) && now <= end;
+};
+
+const canJoin = (startTime: string) => {
+  if (!startTime) return false;
+  const now = new Date();
+  const start = new Date(startTime);
+
+  // Allow joining any time on the same day as the meeting
+  return now.toDateString() === start.toDateString();
 };
 
 export default UpcomingMeetings;
