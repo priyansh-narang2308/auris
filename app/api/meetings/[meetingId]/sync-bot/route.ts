@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { joinMeetingBot } from "@/lib/meeting-baas";
+import { syncMeetingStatus } from "@/lib/meeting-baas";
 
 export async function POST(
     request: Request,
@@ -16,11 +16,11 @@ export async function POST(
 
         const { meetingId } = await params;
 
-        const result = await joinMeetingBot(meetingId);
+        const result = await syncMeetingStatus(meetingId);
 
         return NextResponse.json(result);
     } catch (error: any) {
-        console.error("Join bot API error:", error.message);
+        console.error("Sync bot API error:", error.message);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

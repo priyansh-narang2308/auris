@@ -21,6 +21,7 @@ export interface CalendarEvent {
   botScheduled?: boolean;
   botSent?: boolean;
   botId?: string;
+  meetingEnded?: boolean;
   meetingId?: string;
 }
 
@@ -204,6 +205,34 @@ export function useMeetings() {
     }
   };
 
+  const syncBotStatus = async (meetingId: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/meetings/${meetingId}/sync-bot`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.error || "Failed to sync status");
+        return;
+      }
+
+      const data = await response.json();
+      if (data.updated) {
+        // Refresh meetings if updated
+        await fetchUpcomingEvents();
+        await fetchPastMeetings();
+      }
+      return data;
+    } catch (error) {
+      console.error("Error syncing bot status:", error);
+      setError("Failed to sync bot status.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // To make a new refresh token
   const directOAuth = async () => {
     setLoading(true);
@@ -273,6 +302,7 @@ export function useMeetings() {
     fetchPastMeetings,
     toggleBot,
     joinBot,
+    syncBotStatus,
     directOAuth,
     getAttendeeList,
     getInitialsOfTheUser,

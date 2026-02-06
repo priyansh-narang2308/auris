@@ -81,6 +81,50 @@ export async function joinMeetingBot(meetingId: string) {
     }
 }
 
+export async function getBotStatus(botId: string) {
+    const response = await fetch(`https://api.meetingbaas.com/bots/${botId}`, {
+        method: "GET",
+        headers: {
+            "x-meeting-baas-api-key": process.env.MEETING_BAAS_API_KEY!,
+        },
+    });
+
+    if (!response.ok) {
+        if (response.status === 404) return null;
+        throw new Error(`Failed to fetch bot status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+export async function syncMeetingStatus(meetingId: string) {
+    const meeting = await prisma.meeting.findUnique({
+        where: { id: meetingId },
+    });
+
+    if (!meeting || !meeting.botId) return { success: false, error: "No bot associated" };
+
+    const botData = await getBotStatus(meeting.botId);
+    if (!botData) return { success: false, error: "Bot not found on Meeting Baas" };
+
+    // If the bot is finished, update our DB
+    if (botData.bot?.status?.code === "complete" || botData.bot?.transcript) {
+        await prisma.meeting.update({
+            where: { id: meeting.id },
+            data: {
+                meetingEnded: true,
+                transcriptReady: true,
+                transcript: botData.bot.transcript || null,
+                recordingUrl: botData.bot.mp4 || null,
+                speakers: botData.bot.speakers || null,
+            },
+        });
+        return { success: true, status: "completed", updated: true };
+    }
+
+    return { success: true, status: botData.bot?.status?.code, updated: false };
+}
+
 async function canUserScheduleMeeting(user: any) {
     const PLAN_LIMITS: any = {
         free: { meetings: 3 },

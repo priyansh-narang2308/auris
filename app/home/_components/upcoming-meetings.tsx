@@ -17,6 +17,7 @@ interface UpcomingMeetingProps {
   onRefresh: () => void;
   onToggleBot: (eventId: string) => void;
   onJoinBot: (meetingId: string) => void;
+  onSyncBot: (meetingId: string) => void;
   onConnectCalendar: () => void;
 }
 
@@ -30,6 +31,7 @@ const UpcomingMeetings = ({
   onRefresh,
   onToggleBot,
   onJoinBot,
+  onSyncBot,
   onConnectCalendar,
 }: UpcomingMeetingProps) => {
   return (
@@ -109,7 +111,7 @@ const UpcomingMeetings = ({
             {loading ? "Syncing Calendar…" : "Refresh Calendar"}
           </Button>
 
-          {upcomingEvents.length === 0 ? (
+          {upcomingEvents.filter(e => !e.meetingEnded).length === 0 ? (
             <Card className="rounded-xl border-border bg-card/50 backdrop-blur-sm border-dashed">
               <CardContent className="p-6 text-center space-y-2">
                 <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted/50">
@@ -124,99 +126,119 @@ const UpcomingMeetings = ({
               </CardContent>
             </Card>
           ) : (
-            upcomingEvents.map((event) => (
-              <Card
-                key={event.id}
-                className="rounded-xl border-border transition hover:border-orange-500/30 hover:bg-orange-500/3"
-              >
-                <CardContent className="p-4 space-y-3 relative">
-                  <div className="absolute top-4 right-4">
-                    <Switch
-                      checked={!!botToggles[event.id]}
-                      onCheckedChange={() => onToggleBot(event.id)}
-                      aria-label="Toggle bot for the meeting"
-                      className="cursor-pointer"
-                    />
-                  </div>
-
-                  <div className="pr-12">
-                    <h4 className="text-sm font-semibold text-foreground line-clamp-1">
-                      {event.summary || "Untitled meeting"}
-                    </h4>
-                  </div>
-
-                  <Separator />
-
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-3 w-3" />
-                      <span>
-                        {format(
-                          new Date(
-                            event.start?.dateTime || event.start?.date || ""
-                          ),
-                          "MMM d, h:mm a"
-                        )}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {event.attendees && (
-                        <span>{event.attendees.length} attendees</span>
-                      )}
-                      {isOngoing(event.start?.dateTime || "", event.end?.dateTime || "") && (
-                        <Badge className="bg-green-500/10 text-green-500 border-green-500/20 text-[10px] h-5 animate-pulse">
-                          Ongoing
+            upcomingEvents
+              .filter(e => !e.meetingEnded)
+              .map((event) => (
+                <Card
+                  key={event.id}
+                  className="rounded-xl border-border transition hover:border-orange-500/30 hover:bg-orange-500/3"
+                >
+                  <CardContent className="p-4 space-y-3 relative">
+                    <div className="absolute top-4 right-4 flex items-center gap-2">
+                      {isProcessing(event) && (
+                        <Badge variant="secondary" className="bg-orange-500/10 text-orange-500 border-none animate-pulse text-[10px]">
+                          Processing
                         </Badge>
                       )}
+                      <Switch
+                        checked={!!botToggles[event.id]}
+                        onCheckedChange={() => onToggleBot(event.id)}
+                        aria-label="Toggle bot for the meeting"
+                        className="cursor-pointer"
+                      />
                     </div>
-                  </div>
 
-                  <div className="flex flex-col gap-2">
-                    {event.botSent ? (
-                      <div className="flex items-center gap-2 p-2 bg-orange-500/5 border border-orange-500/10 rounded-lg">
-                        <div className="h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
-                        <span className="text-[10px] font-medium text-orange-600 dark:text-orange-400">
-                          Bot Joined
+                    <div className="pr-12">
+                      <h4 className="text-sm font-semibold text-foreground line-clamp-1">
+                        {event.summary || "Untitled meeting"}
+                      </h4>
+                    </div>
+
+                    <Separator />
+
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-3 w-3" />
+                        <span>
+                          {format(
+                            new Date(
+                              event.start?.dateTime || event.start?.date || ""
+                            ),
+                            "MMM d, h:mm a"
+                          )}
                         </span>
                       </div>
-                    ) : canJoin(event.start?.dateTime || "") ? (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => onJoinBot(event.meetingId!)}
-                        disabled={loading}
-                        className="w-full cursor-pointer flex items-center gap-2 border-orange-500/30 text-orange-600 hover:bg-orange-500/10"
-                      >
-                        <Bot
-                          className={`h-3 w-3 ${loading ? "animate-spin" : ""}`}
-                        />
-                        {isOngoing(event.start?.dateTime || "", event.end?.dateTime || "")
-                          ? "Join Bot Now"
-                          : "Join Bot Early"}
-                      </Button>
-                    ) : null}
 
-                    {(event.hangoutLink || event.location) && (
-                      <a
-                        href={event.hangoutLink || event.location || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+                      <div className="flex items-center gap-2">
+                        {event.attendees && (
+                          <span>{event.attendees.length} attendees</span>
+                        )}
+                        {isOngoing(event.start?.dateTime || "", event.end?.dateTime || "") && (
+                          <Badge className="bg-green-500/10 text-green-500 border-green-500/20 text-[10px] h-5 animate-pulse">
+                            Ongoing
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      {event.botSent ? (
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center justify-between p-2 bg-orange-500/5 border border-orange-500/10 rounded-lg">
+                            <div className="flex items-center gap-2">
+                              <div className="h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
+                              <span className="text-[10px] font-medium text-orange-600 dark:text-orange-400">
+                                {isProcessing(event) ? "Processing Transcript" : "Bot Joined"}
+                              </span>
+                            </div>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => onSyncBot(event.meetingId!)}
+                              disabled={loading}
+                              className="h-6 w-6 text-orange-600 hover:bg-orange-500/10"
+                            >
+                              <RefreshCcw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
+                            </Button>
+                          </div>
+                        </div>
+                      ) : canJoin(event.start?.dateTime || "") ? (
                         <Button
                           size="sm"
-                          variant={"default"}
-                          className="w-full cursor-pointer flex items-center gap-2"
+                          variant="outline"
+                          onClick={() => onJoinBot(event.meetingId!)}
+                          disabled={loading}
+                          className="w-full cursor-pointer flex items-center gap-2 border-orange-500/30 text-orange-600 hover:bg-orange-500/10"
                         >
-                          <PlugZap className="h-4 w-4" />
-                          Join meeting
+                          <RefreshCcw
+                            className={`h-3 w-3 ${loading ? "animate-spin" : ""}`}
+                          />
+                          {isOngoing(event.start?.dateTime || "", event.end?.dateTime || "")
+                            ? "Join Bot Now"
+                            : "Join Bot Early"}
                         </Button>
-                      </a>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))
+                      ) : null}
+
+                      {(event.hangoutLink || event.location) && (
+                        <a
+                          href={event.hangoutLink || event.location || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button
+                            size="sm"
+                            variant={"default"}
+                            className="w-full cursor-pointer flex items-center gap-2"
+                          >
+                            <PlugZap className="h-4 w-4" />
+                            Join meeting
+                          </Button>
+                        </a>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
           )}
         </div>
       )}
@@ -240,6 +262,14 @@ const canJoin = (startTime: string) => {
 
   // Allow joining any time on the same day as the meeting
   return now.toDateString() === start.toDateString();
+};
+
+const isProcessing = (event: CalendarEvent) => {
+  if (!event.botSent || event.meetingEnded) return false;
+  const now = new Date();
+  const end = new Date(event.end?.dateTime || "");
+  // If bot was sent and the scheduled end time has passed, but meeting is not marked as ended
+  return now > end;
 };
 
 export default UpcomingMeetings;

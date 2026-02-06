@@ -77,6 +77,7 @@ export async function GET() {
       botScheduled: meeting.botScheduled,
       botSent: meeting.botSent,
       botId: meeting.botId,
+      meetingEnded: meeting.meetingEnded,
       meetingId: meeting.id,
     }));
 
