@@ -19,6 +19,8 @@ export interface CalendarEvent {
   hangoutLink?: string;
   conferenceData?: any;
   botScheduled?: boolean;
+  botSent?: boolean;
+  botId?: string;
   meetingId?: string;
 }
 
@@ -179,6 +181,29 @@ export function useMeetings() {
     }
   };
 
+  const joinBot = async (meetingId: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/meetings/${meetingId}/join-bot`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.error || "Failed to join bot");
+        return;
+      }
+
+      // Refresh to update botSent status
+      await fetchUpcomingEvents();
+    } catch (error) {
+      console.error("Error joining bot:", error);
+      setError("Failed to join bot. Please check your connection.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // To make a new refresh token
   const directOAuth = async () => {
     setLoading(true);
@@ -247,6 +272,7 @@ export function useMeetings() {
     fetchUpcomingEvents,
     fetchPastMeetings,
     toggleBot,
+    joinBot,
     directOAuth,
     getAttendeeList,
     getInitialsOfTheUser,

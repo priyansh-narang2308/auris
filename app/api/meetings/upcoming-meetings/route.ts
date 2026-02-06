@@ -32,7 +32,7 @@ export async function GET() {
     const upcomingMeetings = await prisma.meeting.findMany({
       where: {
         userId: user?.id,
-        startTime: { gte: now },
+        endTime: { gte: now },
         isFromCalendar: true,
       },
       orderBy: {
@@ -75,6 +75,8 @@ export async function GET() {
         ? { entryPoints: [{ uri: meeting.meetingUrl }] }
         : null,
       botScheduled: meeting.botScheduled,
+      botSent: meeting.botSent,
+      botId: meeting.botId,
       meetingId: meeting.id,
     }));
 

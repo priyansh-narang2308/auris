@@ -16,6 +16,7 @@ interface UpcomingMeetingProps {
   botToggles: { [key: string]: boolean };
   onRefresh: () => void;
   onToggleBot: (eventId: string) => void;
+  onJoinBot: (meetingId: string) => void;
   onConnectCalendar: () => void;
 }
 
@@ -28,6 +29,7 @@ const UpcomingMeetings = ({
   botToggles,
   onRefresh,
   onToggleBot,
+  onJoinBot,
   onConnectCalendar,
 }: UpcomingMeetingProps) => {
   return (
@@ -158,27 +160,58 @@ const UpcomingMeetings = ({
                       </span>
                     </div>
 
-                    {event.attendees && (
-                      <span>{event.attendees.length} attendees</span>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {event.attendees && (
+                        <span>{event.attendees.length} attendees</span>
+                      )}
+                      {isOngoing(event.start?.dateTime || "", event.end?.dateTime || "") && (
+                        <Badge className="bg-green-500/10 text-green-500 border-green-500/20 text-[10px] h-5 animate-pulse">
+                          Ongoing
+                        </Badge>
+                      )}
+                    </div>
                   </div>
 
-                  {(event.hangoutLink || event.location) && (
-                    <a
-                      href={event.hangoutLink || event.location || "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                  <div className="flex flex-col gap-2">
+                    {event.botSent ? (
+                      <div className="flex items-center gap-2 p-2 bg-orange-500/5 border border-orange-500/10 rounded-lg">
+                        <div className="h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
+                        <span className="text-[10px] font-medium text-orange-600 dark:text-orange-400">
+                          Bot Joined
+                        </span>
+                      </div>
+                    ) : isOngoing(event.start?.dateTime || "", event.end?.dateTime || "") ? (
                       <Button
                         size="sm"
-                        variant={"default"}
-                        className="w-full cursor-pointer  flex items-center gap-2"
+                        variant="outline"
+                        onClick={() => onJoinBot(event.meetingId!)}
+                        disabled={loading}
+                        className="w-full cursor-pointer flex items-center gap-2 border-orange-500/30 text-orange-600 hover:bg-orange-500/10"
                       >
-                        <PlugZap className="h-4 w-4" />
-                        Join meeting
+                        <RefreshCcw
+                          className={`h-3 w-3 ${loading ? "animate-spin" : ""}`}
+                        />
+                        Join Bot Now
                       </Button>
-                    </a>
-                  )}
+                    ) : null}
+
+                    {(event.hangoutLink || event.location) && (
+                      <a
+                        href={event.hangoutLink || event.location || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button
+                          size="sm"
+                          variant={"default"}
+                          className="w-full cursor-pointer flex items-center gap-2"
+                        >
+                          <PlugZap className="h-4 w-4" />
+                          Join meeting
+                        </Button>
+                      </a>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             ))
@@ -187,6 +220,15 @@ const UpcomingMeetings = ({
       )}
     </div>
   );
+};
+
+const isOngoing = (startTime: string, endTime: string) => {
+  if (!startTime || !endTime) return false;
+  const now = new Date();
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+  // Consider it ongoing if it's 10 mins before start or anytime before end
+  return now >= new Date(start.getTime() - 10 * 60 * 1000) && now <= end;
 };
 
 export default UpcomingMeetings;

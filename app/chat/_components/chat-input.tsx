@@ -35,11 +35,10 @@ const ChatInput = ({
             </div>
             <div className="flex-1">
               <p className="text-sm font-semibold text-foreground">
-                Daily Message Limit Reached
+                Upgrade to Starter
               </p>
               <p className="text-xs text-muted-foreground">
-                You&apos;ve used {usage.chatMessagesToday}/{limits.chatMessages}{" "}
-                messages today.
+                To use the chat function
               </p>
             </div>
             <Button
@@ -78,7 +77,7 @@ const ChatInput = ({
             placeholder={
               canChat
                 ? "Ask anything about your meetings..."
-                : "Daily limit reached - upgrade to continue"
+                : "Upgrade to Starter to use the chat function"
             }
             disabled={isLoading || !canChat}
             className="

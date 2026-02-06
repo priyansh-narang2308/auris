@@ -20,6 +20,7 @@ const Home = () => {
     fetchUpcomingEvents,
     fetchPastMeetings,
     toggleBot,
+    joinBot,
     directOAuth,
     getAttendeeList,
     getInitialsOfTheUser,
@@ -74,6 +75,7 @@ const Home = () => {
               botToggles={botToggles}
               onRefresh={fetchUpcomingEvents}
               onToggleBot={toggleBot}
+              onJoinBot={joinBot}
               onConnectCalendar={directOAuth}
             />
           </div>

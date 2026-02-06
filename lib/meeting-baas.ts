@@ -1,0 +1,107 @@
+import { prisma } from "./db";
+
+export async function joinMeetingBot(meetingId: string) {
+    try {
+        const meeting = await prisma.meeting.findUnique({
+            where: { id: meetingId },
+            include: { user: true },
+        });
+
+        if (!meeting) {
+            throw new Error("Meeting not found");
+        }
+
+        if (!meeting.meetingUrl) {
+            throw new Error("Meeting URL is missing");
+        }
+
+        // Check plan limits
+        const canSchedule = await canUserScheduleMeeting(meeting.user);
+        if (!canSchedule.allowed) {
+            throw new Error(canSchedule.reason);
+        }
+
+        const requestBody: any = {
+            meeting_url: meeting.meetingUrl,
+            bot_name: meeting.user.botName || 'Aurisia',
+            reserved: false,
+            recording_mode: 'speaker_view',
+            speech_to_text: { provider: "Default" },
+            webhook_url: process.env.WEBHOOK_URL,
+            extra: {
+                meeting_id: meeting.id,
+                user_id: meeting.userId
+            }
+        };
+
+        if (meeting.user.botImageUrl) {
+            requestBody.bot_image = meeting.user.botImageUrl;
+        }
+
+        const response = await fetch('https://api.meetingbaas.com/bots', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-meeting-baas-api-key': process.env.MEETING_BAAS_API_KEY!
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Meeting Baas API failed: ${response.status} - ${JSON.stringify(errorData)}`);
+        }
+
+        const data = await response.json();
+
+        await prisma.meeting.update({
+            where: { id: meeting.id },
+            data: {
+                botSent: true,
+                botId: data.bot_id,
+                botJoinedAt: new Date(),
+                botScheduled: true
+            }
+        });
+
+        // Increment usage
+        await prisma.user.update({
+            where: { id: meeting.userId },
+            data: {
+                meetingsThisMonth: {
+                    increment: 1
+                }
+            }
+        });
+
+        return { success: true, botId: data.bot_id };
+    } catch (error: any) {
+        console.error(`Error joining bot for meeting ${meetingId}:`, error.message);
+        throw error;
+    }
+}
+
+async function canUserScheduleMeeting(user: any) {
+    const PLAN_LIMITS: any = {
+        free: { meetings: 0 },
+        starter: { meetings: 10 },
+        pro: { meetings: 30 },
+        premium: { meetings: -1 }
+    };
+    const limits = PLAN_LIMITS[user.currentPlan] || PLAN_LIMITS.free;
+
+    if (user.currentPlan === 'free' || user.subscriptionStatus !== 'active') {
+        return {
+            allowed: false,
+            reason: `${user.currentPlan === 'free' ? 'Free plan' : 'Inactive subscription'} - upgrade required`
+        };
+    }
+
+    if (limits.meetings !== -1 && user.meetingsThisMonth >= limits.meetings) {
+        return {
+            allowed: false,
+            reason: `Monthly limit reached (${user.meetingsThisMonth}/${limits.meetings})`
+        };
+    }
+    return { allowed: true };
+}
