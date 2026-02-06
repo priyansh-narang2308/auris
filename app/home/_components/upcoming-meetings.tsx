@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { CalendarEvent } from "../hooks/useMeeting";
-import { Clock, RefreshCcw, Calendar, PlugZap } from "lucide-react";
+import { Clock, RefreshCcw, Calendar, PlugZap, Bot } from "lucide-react";
 import { format } from "date-fns";
 
 interface UpcomingMeetingProps {
@@ -188,7 +188,7 @@ const UpcomingMeetings = ({
                         disabled={loading}
                         className="w-full cursor-pointer flex items-center gap-2 border-orange-500/30 text-orange-600 hover:bg-orange-500/10"
                       >
-                        <RefreshCcw
+                        <Bot
                           className={`h-3 w-3 ${loading ? "animate-spin" : ""}`}
                         />
                         {isOngoing(event.start?.dateTime || "", event.end?.dateTime || "")

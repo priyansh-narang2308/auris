@@ -83,17 +83,17 @@ export async function joinMeetingBot(meetingId: string) {
 
 async function canUserScheduleMeeting(user: any) {
     const PLAN_LIMITS: any = {
-        free: { meetings: 0 },
+        free: { meetings: 3 },
         starter: { meetings: 10 },
         pro: { meetings: 30 },
         premium: { meetings: -1 }
     };
     const limits = PLAN_LIMITS[user.currentPlan] || PLAN_LIMITS.free;
 
-    if (user.currentPlan === 'free' || user.subscriptionStatus !== 'active') {
+    if (user.currentPlan !== 'free' && user.subscriptionStatus !== 'active') {
         return {
             allowed: false,
-            reason: `${user.currentPlan === 'free' ? 'Free plan' : 'Inactive subscription'} - upgrade required`
+            reason: "Inactive subscription - upgrade required"
         };
     }
 
