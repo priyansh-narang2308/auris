@@ -78,6 +78,11 @@ export function useMeetings() {
         return;
       }
 
+      // Trigger a sync if connected
+      if (statusData.connected) {
+        await fetch("/api/meetings/sync", { method: "POST" });
+      }
+
       const response = await fetch("/api/meetings/upcoming-meetings");
       const result = await response.json();
 
@@ -205,7 +210,7 @@ export function useMeetings() {
             .map((s) => s.trim())
             .filter(Boolean);
         }
-      } catch {}
+      } catch { }
 
       return attendees
         .split(",")
