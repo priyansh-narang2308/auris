@@ -38,14 +38,13 @@ export function useChatCore({
     setIsLoading(true);
 
     const newMessage: ChatMessage = {
-      id: messages.length + 1,
+      id: Date.now(),
       content: chatInput,
       isBot: false,
       timeStamp: new Date(),
     };
 
-    // note:Take the prev mess as well
-    setMessages([...messages, newMessage]);
+    setMessages((prev) => [...prev, newMessage]);
 
     const currInput = chatInput;
     setChatInput("");
@@ -65,7 +64,7 @@ export function useChatCore({
         await incrementChatUsage();
 
         const botMessage: ChatMessage = {
-          id: messages.length + 2,
+          id: Date.now() + 1,
           content: data.answer || data.response,
           isBot: true,
           timeStamp: new Date(),
@@ -74,7 +73,7 @@ export function useChatCore({
       } else {
         if (data.upgradeRequired) {
           const upgradeMessage: ChatMessage = {
-            id: messages.length + 2,
+            id: Date.now() + 1,
             content: `${data.error} Visit the Pricing page to upgrade your plan and continue chatting!`,
             isBot: true,
             timeStamp: new Date(),
@@ -82,7 +81,7 @@ export function useChatCore({
           setMessages((prev) => [...prev, upgradeMessage]);
         } else {
           const errorMessage: ChatMessage = {
-            id: messages.length + 2,
+            id: Date.now() + 1,
             content:
               data.error || "Sorry, I encountered an error. Please try again.",
             isBot: true,
@@ -94,7 +93,7 @@ export function useChatCore({
     } catch (error) {
       console.error("chat error:", error);
       const errorMessage: ChatMessage = {
-        id: messages.length + 2,
+        id: Date.now() + 1,
         content:
           "Sorry, I could not connect to the server. please check your connection and try again.",
         isBot: true,

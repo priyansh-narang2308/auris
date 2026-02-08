@@ -98,7 +98,7 @@ async function syncUserCalendar(user) {
         const googleEventIds = new Set()
         for (const event of events) {
             if (event.status === 'cancelled') {
-                await handleDeletedEvent(event)
+                await handleDeletedEvent(event.id)
                 continue
             }
             googleEventIds.add(event.id)
@@ -106,26 +106,16 @@ async function syncUserCalendar(user) {
         }
 
         const deletedEvents = existingEvents.filter(
-            dbEvent => !googleEventIds.has(dbEvent.calendarEventId)
+            dbEvent => dbEvent.calendarEventId && !googleEventIds.has(dbEvent.calendarEventId)
         )
 
         if (deletedEvents.length > 0) {
             for (const deletedEvent of deletedEvents) {
-                await handleDeletedEventFromDB(user, deletedEvent)
+                await handleDeletedEventFromDB(deletedEvent)
             }
         }
     } catch (error) {
         console.error(`Calendar sync error for ${user.id}:`, error.message)
-        if (error.message.includes('401') || error.message.includes('403')) {
-            await prisma.user.update({
-                where: {
-                    id: user.id
-                },
-                data: {
-                    calendarConnected: false
-                }
-            })
-        }
     }
 }
 
@@ -181,44 +171,33 @@ async function refreshGoogleToken(user) {
         })
         return tokens.access_token
     } catch (error) {
-        console.error(`token refresh error for ${user.clerkId}: `, error)
-        await prisma.user.update({
-            where: {
-                id: user.id
-            },
-            data: {
-                calendarConnected: false
-            }
-        })
+        console.error(`token refresh error for ${user.id}: `, error)
         return null
     }
 }
 
-async function handleDeletedEvent(event) {
+async function handleDeletedEvent(calendarEventId) {
     try {
-        const exsistingMeeting = await prisma.meeting.findUnique({
+        await prisma.meeting.deleteMany({
             where: {
-                calendarEventId: event.id
+                calendarEventId: calendarEventId
             }
         })
-        if (exsistingMeeting) {
-            await prisma.meeting.delete({
-                where: {
-                    calendarEventId: event.id
-                }
-            })
-        }
     } catch (error) {
         console.error('Error deleting event:', error.message)
     }
 }
 
 async function handleDeletedEventFromDB(dbEvent) {
-    await prisma.meeting.delete({
-        where: {
-            id: dbEvent.id
-        }
-    })
+    try {
+        await prisma.meeting.delete({
+            where: {
+                id: dbEvent.id
+            }
+        })
+    } catch (error) {
+        console.error('Error deleting event from DB:', error.message)
+    }
 }
 
 async function processEvent(user, event) {
@@ -235,7 +214,7 @@ async function processEvent(user, event) {
         meetingUrl: meetingUrl,
         startTime: new Date(event.start.dateTime),
         endTime: new Date(event.end.dateTime),
-        attendees: event.attendees ? JSON.stringify(event.attendees.map(a => a.email)) : null,
+        attendees: event.attendees ? event.attendees.map(a => a.email) : [],
         isFromCalendar: true,
         botScheduled: true
     }

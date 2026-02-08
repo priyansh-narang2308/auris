@@ -37,7 +37,7 @@ interface UsageContextType {
 
 // Key value type
 const PLAN_LIMITS: Record<string, PlanLimits> = {
-  free: { meetings: 0, chatMessages: 0 },
+  free: { meetings: 3, chatMessages: 5 },
   starter: { meetings: 10, chatMessages: 30 },
   pro: { meetings: 30, chatMessages: 100 },
   premium: { meetings: -1, chatMessages: -1 }, //unlimited plan
@@ -54,17 +54,14 @@ export function UsageProvider({ children }: { children: ReactNode }) {
     ? PLAN_LIMITS[usage.currentPlan] || PLAN_LIMITS.free
     : PLAN_LIMITS.free;
 
-  // Not on free plan
   const canChat = usage
-    ? usage.currentPlan !== "free" &&
-      usage.subscriptionStatus === "active" &&
-      (limits.chatMessages === -1 || usage.meetingsThisMonth < limits.meetings)
+    ? (usage.currentPlan === "free" || usage.subscriptionStatus === "active") &&
+    (limits.chatMessages === -1 || usage.chatMessagesToday < limits.chatMessages)
     : false;
 
   const canScheduleMeeting = usage
-    ? usage.currentPlan !== "free" &&
-      usage.subscriptionStatus === "active" &&
-      (limits.meetings === -1 || usage.meetingsThisMonth < limits.meetings)
+    ? (usage.currentPlan === "free" || usage.subscriptionStatus === "active") &&
+    (limits.meetings === -1 || usage.meetingsThisMonth < limits.meetings)
     : false;
 
   // Fetching the user from the database
@@ -104,9 +101,9 @@ export function UsageProvider({ children }: { children: ReactNode }) {
         setUsage((prev) =>
           prev
             ? {
-                ...prev,
-                chatMessagesToday: prev.chatMessagesToday + 1,
-              }
+              ...prev,
+              chatMessagesToday: prev.chatMessagesToday + 1,
+            }
             : null
         );
       } else {
@@ -136,9 +133,9 @@ export function UsageProvider({ children }: { children: ReactNode }) {
         setUsage((prev) =>
           prev
             ? {
-                ...prev,
-                meetingsThisMonth: prev.meetingsThisMonth + 1,
-              }
+              ...prev,
+              meetingsThisMonth: prev.meetingsThisMonth + 1,
+            }
             : null
         );
       }
@@ -160,7 +157,7 @@ export function UsageProvider({ children }: { children: ReactNode }) {
     } else if (isLoaded && !userId) {
       setLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, isLoaded]);
 
   return (

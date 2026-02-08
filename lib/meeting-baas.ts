@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from "./db";
 
 export async function joinMeetingBot(meetingId: string) {
@@ -97,6 +98,8 @@ export async function getBotStatus(botId: string) {
     return await response.json();
 }
 
+import { processCompletedMeeting } from "./meeting-processor";
+
 export async function syncMeetingStatus(meetingId: string) {
     const meeting = await prisma.meeting.findUnique({
         where: { id: meetingId },
@@ -107,19 +110,21 @@ export async function syncMeetingStatus(meetingId: string) {
     const botData = await getBotStatus(meeting.botId);
     if (!botData) return { success: false, error: "Bot not found on Meeting Baas" };
 
-    // If the bot is finished, update our DB
+    // If the bot is finished or has a transcript, use our centralized processor
     if (botData.bot?.status?.code === "complete" || botData.bot?.transcript) {
-        await prisma.meeting.update({
-            where: { id: meeting.id },
-            data: {
-                meetingEnded: true,
-                transcriptReady: true,
-                transcript: botData.bot.transcript || null,
-                recordingUrl: botData.bot.mp4 || null,
-                speakers: botData.bot.speakers || null,
-            },
-        });
-        return { success: true, status: "completed", updated: true };
+        const result = await processCompletedMeeting(
+            meeting.botId,
+            botData.bot.transcript,
+            botData.bot.mp4,
+            botData.bot.speakers
+        );
+
+        return {
+            success: result.success,
+            status: "completed",
+            updated: true,
+            error: result.error
+        };
     }
 
     return { success: true, status: botData.bot?.status?.code, updated: false };

@@ -79,9 +79,10 @@ const VenomBeam: React.FC<VenomBeamProps> = ({ children, className = "" }) => {
     initParticles();
 
     const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
       mouseRef.current = {
-        x: e.clientX,
-        y: e.clientY,
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
       };
     };
 
@@ -97,7 +98,7 @@ const VenomBeam: React.FC<VenomBeamProps> = ({ children, className = "" }) => {
       }
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      particlesRef.current.forEach((particle, index) => {
+      particlesRef.current.forEach((particle) => {
         particle.x += particle.vx;
         particle.y += particle.vy;
         particle.life++;
@@ -196,13 +197,13 @@ const VenomBeam: React.FC<VenomBeamProps> = ({ children, className = "" }) => {
   }, []);
 
   return (
-    <div className="relative  h-[24rem] md:h-screen w-full overflow-hidden bg-white dark:bg-black">
+    <div className="relative h-96 md:h-screen w-full overflow-hidden bg-white dark:bg-black">
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
+        className="absolute inset-0 w-full h-full bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
       />
 
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white/60 dark:via-black/20 dark:to-black/60" />
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-white/20 to-white/60 dark:via-black/20 dark:to-black/60" />
 
       <div className={`absolute inset-0 ${className}`}>{children}</div>
 

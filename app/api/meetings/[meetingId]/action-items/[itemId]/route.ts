@@ -20,7 +20,7 @@ export async function DELETE(
     const meeting = await prisma.meeting.findFirst({
       where: {
         id: meetingId,
-        userId: userId,
+        user: { clerkId: userId },
       },
     });
 

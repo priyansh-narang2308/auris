@@ -86,7 +86,7 @@ export function useMeetingDetail() {
           setMeetingData(data);
 
           if (isLoaded) {
-            const ownerStatus = userId === data.userId;
+            const ownerStatus = userId === data.user?.clerkId;
             setIsOwner(ownerStatus);
             setUserChecked(true);
           }
@@ -123,7 +123,7 @@ export function useMeetingDetail() {
         if (
           meeting.transcript &&
           !meeting.ragProcessed &&
-          userId == meeting.userId
+          userId == meeting.user?.clerkId
         ) {
           let transcriptText = "";
           if (typeof meeting.transcript === "string") {
@@ -133,7 +133,7 @@ export function useMeetingDetail() {
             transcriptText = meeting.transcript
               .map(
                 (segment: any) =>
-                  `${segment.speaker}: ${segment.words.map((w: any) => w.word).join(" ")}`,
+                  `${segment.speaker || "Speaker"}: ${segment.words.map((w: any) => w.word).join(" ")}`,
               )
               .join("\n");
           }
@@ -161,53 +161,43 @@ export function useMeetingDetail() {
 
   // Delete it from the db
   const deleteActionItem = async (id: number) => {
-    if (!isOwner) {
-      return;
-    }
-
-    // filter it out
+    // Already deleted from DB in the component, just update local state
     setLocalActionItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   // Add it
+  const addActionItem = (text: string) => {
+    // The actual API call is made in the ActionItems component
+    // We just need to sync the local state if needed, or we can refetch
+    // But let's just add it locally for snappiness
+    const nextId = localActionItems.length > 0
+      ? Math.max(...localActionItems.map(i => i.id)) + 1
+      : 1;
 
-  const addActionItem = async () => {
-    if (!isOwner) {
-      return;
-    }
-    try {
-      const response = await fetch(`/api/meetings/${meetingId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setMeetingData(data);
-        setLocalActionItems(data.actionItems || []);
-      }
-    } catch (error) {
-      console.error("Error in refetching meeting data: ", error);
-    }
+    setLocalActionItems(prev => [...prev, { id: nextId, text }]);
   };
 
   const displayActionItems =
     localActionItems.length > 0
       ? localActionItems.map((item: any) => ({
-          id: item.id,
-          text: item.text,
-        }))
+        id: item.id,
+        text: item.text,
+      }))
       : [];
 
   const meetingInfoData = meetingData
     ? {
-        title: meetingData.title,
-        date: new Date(meetingData.startTime).toLocaleDateString(),
-        time: `${new Date(meetingData.startTime).toLocaleTimeString()} - ${new Date(meetingData.endTime).toLocaleTimeString()}`,
-        userName: meetingData.user?.name || "User",
-      }
+      title: meetingData.title,
+      date: new Date(meetingData.startTime).toLocaleDateString(),
+      time: `${new Date(meetingData.startTime).toLocaleTimeString()} - ${new Date(meetingData.endTime).toLocaleTimeString()}`,
+      userName: meetingData.user?.name || "User",
+    }
     : {
-        title: "Loading...",
-        date: "Loading...",
-        time: "Loading...",
-        userName: "Loading...",
-      };
+      title: "Loading...",
+      date: "Loading...",
+      time: "Loading...",
+      userName: "Loading...",
+    };
 
   return {
     meetingId,

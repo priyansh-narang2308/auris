@@ -2,7 +2,7 @@ import { PlanLimits } from "@/app/contexts/usage-context";
 import { prisma } from "./db";
 
 const PLAN_LIMITS: Record<string, PlanLimits> = {
-  free: { meetings: 0, chatMessages: 0 },
+  free: { meetings: 3, chatMessages: 5 },
   starter: { meetings: 10, chatMessages: 30 },
   pro: { meetings: 30, chatMessages: 100 },
   premium: { meetings: -1, chatMessages: -1 }, //unlimited plan
@@ -19,7 +19,7 @@ export async function canUserChat(userId: string) {
     return { allowed: false, reason: "User not found" };
   }
 
-  if (user.currentPlan === "free" || user.subscriptionStatus === "expired") {
+  if (user.currentPlan !== "free" && user.subscriptionStatus !== "active") {
     return {
       allowed: false,
       reason: "Upgrade your plan to chat with the AI Bot.",

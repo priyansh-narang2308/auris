@@ -217,7 +217,7 @@ function MeetingDetail() {
                 <ChatSidebar
                   messages={messages.map((msg) => ({
                     ...msg,
-                    timestamp: new Date(),
+                    timestamp: msg.timeStamp,
                   }))}
                   chatInput={chatInput}
                   showSuggestions={showSuggestions}
@@ -246,7 +246,7 @@ function MeetingDetail() {
                     <ChatSidebar
                       messages={messages.map((msg) => ({
                         ...msg,
-                        timestamp: new Date(),
+                        timestamp: msg.timeStamp,
                       }))}
                       chatInput={chatInput}
                       showSuggestions={showSuggestions}
