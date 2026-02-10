@@ -37,7 +37,7 @@ const circle: Variants = {
 
 const HowItWorks = () => {
   return (
-    <section id="howitworks" className="relative  py-28 md:py-36">
+    <section id="how-it-works" className="relative  py-28 md:py-36">
       <motion.div
         className="mx-auto max-w-7xl px-6"
         variants={container}

@@ -6,6 +6,7 @@ import HeroSection from "@/components/landing/hero-section";
 import HowItWorks from "@/components/landing/how-it-works";
 import IntegrationSection from "@/components/landing/integration-section";
 import MoreFeaturesSection from "@/components/landing/more-features-section";
+import { PricingSection } from "@/components/landing/pricing-section";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <IntegrationSection />
       <HowItWorks />
       <MoreFeaturesSection />
+      <PricingSection />
       <CallToAction />
       <Footer />
     </div>
