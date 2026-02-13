@@ -15,7 +15,7 @@ function padVector(vector: number[], targetDim: number = 1536) {
 
 export async function createEmbedding(text: string) {
   const result = await client.models.embedContent({
-    model: "text-embedding-004",
+    model: "embedding-001",
     contents: [{ parts: [{ text }] }],
   });
 
@@ -25,7 +25,7 @@ export async function createEmbedding(text: string) {
 
 export async function createManyEmbeddings(texts: string[]) {
   const result = await client.models.embedContent({
-    model: "text-embedding-004",
+    model: "embedding-001",
     contents: texts.map((text) => ({ parts: [{ text }] })),
   });
 
@@ -34,7 +34,7 @@ export async function createManyEmbeddings(texts: string[]) {
 
 export async function chatWithAI(systemPrompt: string, userQuestion: string) {
   const result = await client.models.generateContent({
-    model: "gemini-flash-latest",
+    model: "gemini-1.5-flash",
     contents: [{ role: "user", parts: [{ text: userQuestion }] }],
     config: {
       systemInstruction: systemPrompt,
