@@ -4,6 +4,7 @@ const isPublicRoute = createRouteMatcher([
   "/",
   "/privacy",
   "/terms",
+  "/google7fe473b1a842148d.html",
   "/api/clerk-webhook(.*)",
   "/api/stripe-webhook(.*)",
   "/sign-in(.*)",
