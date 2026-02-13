@@ -179,7 +179,7 @@ const CustomAudioPlayer = ({
         </div>
 
         <div className="flex items-center justify-between gap-4 md:gap-8">
-          <div className="hidden xl:flex items-center gap-3 min-w-[140px]">
+          <div className="hidden xl:flex items-center gap-3 min-w-35">
             <div className="p-2.5 bg-primary/10 rounded-xl">
               <Mic2 className="h-4 w-4 text-primary" />
             </div>
@@ -224,7 +224,7 @@ const CustomAudioPlayer = ({
             </Button>
           </div>
 
-          <div className="flex items-center justify-end gap-3 md:gap-5 min-w-[140px] md:min-w-[200px]">
+          <div className="flex items-center justify-end gap-3 md:gap-5 min-w-35 md:min-w-50">
             <div className="flex items-center bg-muted/30 p-1 rounded-full border border-border/50">
               {rates.map((rate) => (
                 <button

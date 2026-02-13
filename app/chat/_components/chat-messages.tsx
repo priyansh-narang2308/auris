@@ -142,7 +142,7 @@ const ChatMessages = ({ messages, isLoading }: ChatMessagesProps) => {
                 <div className="w-8 h-8 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center shrink-0">
                   <Bot className="h-4 w-4 text-orange-500" />
                 </div>
-                <div className="bg-white dark:bg-zinc-900 border border-black/5 dark:border-white/5 rounded-[20px] rounded-tl-none px-5 py-3 shadow-sm flex items-center gap-3">
+                <div className="bg-white dark:bg-zinc-900 border border-black/5 dark:border-white/5 rounded-4xl rounded-tl-none px-5 py-3 shadow-sm flex items-center gap-3">
                   <div className="flex gap-1.5">
                     <motion.div
                       animate={{ y: [0, -3, 0] }}

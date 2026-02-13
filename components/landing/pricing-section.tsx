@@ -275,7 +275,7 @@ export const PricingSection = () => {
                                             </Badge>
                                         )}
                                     </div>
-                                    <CardDescription className="text-sm min-h-[40px] text-muted-foreground">
+                                    <CardDescription className="text-sm min-h-10 text-muted-foreground">
                                         {plan.description}
                                     </CardDescription>
                                 </CardHeader>
@@ -320,7 +320,7 @@ export const PricingSection = () => {
                                         className={cn(
                                             "w-full h-11 font-bold text-base transition-all duration-300 cursor-pointer shadow-md active:scale-[0.98]",
                                             plan.popular
-                                                ? "bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/25 border-b-4 border-orange-700 hover:border-b-2 hover:mt-[2px]"
+                                                ? "bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/25 border-b-4 border-orange-700 hover:border-b-2 hover:mt-0.5"
                                                 : isCurrentPlan
                                                     ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/20"
                                                     : "shadow-sm",

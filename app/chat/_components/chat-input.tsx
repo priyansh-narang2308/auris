@@ -54,7 +54,7 @@ const ChatInput = ({
       </AnimatePresence>
 
       <div className="relative group">
-        <div className="absolute -inset-1 bg-gradient-to-r from-orange-500/10 to-amber-500/10 rounded-[30px] blur-xl opacity-0 group-focus-within:opacity-100 transition duration-500"></div>
+        <div className="absolute -inset-1 bg-linear-to-r from-orange-500/10 to-amber-500/10 rounded-[30px] blur-xl opacity-0 group-focus-within:opacity-100 transition duration-500"></div>
         <div className="relative flex items-center gap-2 p-1.5 bg-white dark:bg-zinc-900/50 backdrop-blur-2xl border border-black/5 dark:border-white/5 rounded-[24px] shadow-sm transition-all group-focus-within:ring-1 ring-orange-500/20">
           <div className="pl-4 hidden sm:block">
             <Sparkles className="h-4 w-4 text-orange-500 dark:text-orange-400" />

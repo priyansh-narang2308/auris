@@ -12,7 +12,8 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
 
   // On initial load, isLoaded is false. We should assume the sidebar should be shown 
   // if we are not on the landing page, to prevent layout shifts/flickering.
-  const showSidebar = pathName !== "/" && (
+  const noSidebarRoutes = ["/", "/privacy", "/terms"];
+  const showSidebar = !noSidebarRoutes.includes(pathName) && (
     isLoaded
       ? !(pathName.startsWith("/meeting/") && !isSignedIn)
       : true // Keep it showing while loading to prevent unmount/remount
