@@ -21,12 +21,10 @@ import { useSidebar } from "@/components/ui/sidebar";
 
 interface CustomAudioPlayerProps {
   recordingUrl?: string;
-  isOwner?: boolean;
 }
 
 const CustomAudioPlayer = ({
   recordingUrl,
-  isOwner = true,
 }: CustomAudioPlayerProps) => {
   const { state, isMobile } = useSidebar();
   const playerRef = useRef<any>(null);
@@ -40,8 +38,8 @@ const CustomAudioPlayer = ({
   const rates = [1, 1.25, 1.5, 2];
 
   // Dynamic offsets based on sidebar state
-  const leftOffset = isMobile ? "0" : state === "expanded" ? "18rem" : "3rem";
-  const rightOffset = isOwner ? "24rem" : "0";
+  const leftOffset = isMobile ? "0" : state === "expanded" ? "280px" : "80px";
+  const rightOffset = "0";
 
   if (!recordingUrl) return null;
 
@@ -149,7 +147,7 @@ const CustomAudioPlayer = ({
         />
       </div>
 
-      <div className="max-w-6xl mx-auto flex flex-col gap-4">
+      <div className="max-w-[1600px] mx-auto flex flex-col gap-4">
         <div className="flex flex-col gap-1.5 group">
           <div className="flex justify-between text-[10px] font-bold text-muted-foreground tracking-widest uppercase">
             <div className="flex items-center gap-1.5">

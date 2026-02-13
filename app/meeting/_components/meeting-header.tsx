@@ -128,7 +128,7 @@ const MeetingHeader = ({
             variant="ghost"
             size="icon"
             onClick={() => router.back()}
-            className="hidden md:flex cursor-pointer shrink-0 text-muted-foreground hover:text-foreground"
+            className="flex cursor-pointer shrink-0 text-muted-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>

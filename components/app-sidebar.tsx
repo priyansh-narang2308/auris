@@ -142,7 +142,7 @@ const AppSidebar = () => {
           <Link href="/" className="flex items-center gap-2 overflow-hidden">
             <Logo />
           </Link>
-          <SidebarTrigger className="text-muted-foreground hover:text-foreground cursor-pointer transition" />
+          <SidebarTrigger className="hidden md:flex text-muted-foreground hover:text-foreground cursor-pointer transition" />
         </div>
       </SidebarHeader>
 

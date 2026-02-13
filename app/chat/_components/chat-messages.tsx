@@ -54,7 +54,7 @@ const ChatMessages = ({ messages, isLoading }: ChatMessagesProps) => {
   return (
     <div className="relative flex-1 flex flex-col min-h-0 overflow-hidden">
       <div
-        className="flex-1 overflow-y-auto px-4 pt-20 pb-12 md:px-8 scroll-smooth"
+        className="flex-1 overflow-y-auto no-scrollbar px-4 pt-20 pb-12 md:px-8 scroll-smooth"
         onScroll={handleScroll}
         ref={scrollRef}
       >
@@ -79,16 +79,14 @@ const ChatMessages = ({ messages, isLoading }: ChatMessagesProps) => {
                   initial={{ opacity: 0, y: 15, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.3 }}
-                  className={`flex items-start gap-3 md:gap-4 ${
-                    message.isBot ? "justify-start" : "flex-row-reverse"
-                  }`}
+                  className={`flex items-start gap-3 md:gap-4 ${message.isBot ? "justify-start" : "flex-row-reverse"
+                    }`}
                 >
                   <div
-                    className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border transition-all duration-300 ${
-                      message.isBot
+                    className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border transition-all duration-300 ${message.isBot
                         ? "bg-orange-500/10 border-orange-500/20 text-orange-500"
                         : "bg-primary/10 border-primary/20 text-primary"
-                    } ${showAvatar ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
+                      } ${showAvatar ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
                   >
                     {message.isBot ? (
                       <Bot className="h-4 w-4" />
@@ -98,23 +96,20 @@ const ChatMessages = ({ messages, isLoading }: ChatMessagesProps) => {
                   </div>
 
                   <div
-                    className={`flex flex-col gap-2 max-w-[85%] sm:max-w-[75%] ${
-                      message.isBot ? "items-start" : "items-end"
-                    }`}
+                    className={`flex flex-col gap-2 max-w-[85%] sm:max-w-[75%] ${message.isBot ? "items-start" : "items-end"
+                      }`}
                   >
                     <div
-                      className={`relative px-5 py-3.5 rounded-[22px] text-[15px] leading-[1.6] shadow-sm ${
-                        message.isBot
+                      className={`relative px-5 py-3.5 rounded-[22px] text-[15px] leading-[1.6] shadow-sm ${message.isBot
                           ? "bg-white dark:bg-zinc-900 border border-black/5 dark:border-white/5 text-foreground rounded-tl-none"
                           : "bg-orange-500 text-white rounded-tr-none shadow-md shadow-orange-500/10"
-                      }`}
+                        }`}
                     >
                       <div
-                        className={`prose prose-sm max-w-none ${
-                          message.isBot
+                        className={`prose prose-sm max-w-none ${message.isBot
                             ? "dark:prose-invert"
                             : "prose-p:text-white prose-headings:text-white prose-strong:text-white"
-                        }`}
+                          }`}
                       >
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                           {message.content}

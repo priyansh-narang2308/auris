@@ -9,9 +9,12 @@ import DisplayTranscript from "../_components/display-transcript";
 import ChatSidebar from "../_components/chat-sidebar";
 import CustomAudioPlayer from "../_components/audio-player";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Bot } from "lucide-react";
+import { useState } from "react";
+import { X, Bot } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 function MeetingDetail() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const {
     meetingId,
     isOwner,
@@ -49,11 +52,64 @@ function MeetingDetail() {
       <div className="flex flex-1 overflow-hidden relative">
         <div
           data-lenis-prevent
-          className={`flex-1 overflow-y-auto pb-32 ${!userChecked ? "" : !isOwner ? "max-w-4xl mx-auto" : ""
+          className={`flex-1 overflow-y-auto no-scrollbar pb-32 ${!userChecked ? "" : !isOwner ? "max-w-4xl mx-auto" : ""
             }`}
         >
           <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-border/50 px-6 pt-8 mb-6">
-            <MeetingInfo meetingData={meetingInfoData} isOwner={isOwner} />
+            <div className="flex justify-between items-start">
+              <MeetingInfo meetingData={meetingInfoData} isOwner={isOwner} />
+              {userChecked && isOwner && (
+                <div className="relative group mt-1 hidden md:block">
+                  <div className="absolute -inset-4 bg-primary/20 blur-2xl rounded-full animate-pulse group-hover:bg-primary/40 transition-all duration-700"></div>
+
+                  <Button
+                    onClick={() => setIsChatOpen(true)}
+                    size="icon"
+                    className="
+    group relative h-16 w-16 rounded-full cursor-pointer
+    bg-linear-to-tr from-orange-400 via-amber-500 to-orange-600
+    text-white
+    shadow-[0_0_30px_rgba(249,115,22,0.6)]
+    hover:shadow-[0_0_60px_rgba(249,115,22,0.9)]
+    hover:scale-110 active:scale-95
+    transition-all duration-300
+    border border-orange-300/40
+    overflow-visible
+  "
+                  >
+                    <span className="
+    absolute inset-0 rounded-full
+    bg-linear-to-tr from-orange-400 via-amber-500 to-orange-600
+    blur-2xl opacity-60
+    animate-pulse
+    -z-10
+  " />
+
+                    <Bot className="h-8 w-8 drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]" />
+
+                    <div className="absolute -top-1 -right-1 flex h-5 w-5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-300 opacity-80"></span>
+                      <span className="relative inline-flex rounded-full h-5 w-5 bg-yellow-300 border-2 border-white shadow-md"></span>
+                    </div>
+
+                    <div className="
+    absolute right-full mr-4 top-1/2 -translate-y-1/2
+    px-4 py-2 rounded-xl
+    bg-linear-to-r from-orange-500 via-amber-500 to-orange-600
+    text-white text-sm font-semibold
+    opacity-0 group-hover:opacity-100
+    translate-x-4 group-hover:translate-x-0
+    transition-all duration-300
+    whitespace-nowrap
+    shadow-2xl
+  ">
+                      Chat with AI
+                    </div>
+                  </Button>
+
+                </div>
+              )}
+            </div>
 
             <div className="flex gap-2">
               <Button
@@ -197,75 +253,93 @@ function MeetingDetail() {
           </div>
         </div>
 
-        {/* Sidebar Logic */}
-        {!userChecked ? (
-          <div className="hidden md:block w-96 shrink-0 border-l border-border p-6 bg-card">
-            <div className="animate-pulse space-y-6">
-              <div className="h-6 bg-muted rounded w-1/2 mb-8"></div>
-              <div className="space-y-4">
-                <div className="h-12 bg-muted rounded-xl"></div>
-                <div className="h-24 bg-muted rounded-xl"></div>
-                <div className="h-12 bg-muted rounded-xl"></div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          isOwner && (
-            <>
-              {/* Desktop Sidebar */}
-              <div className="hidden md:flex h-full shrink-0">
-                <ChatSidebar
-                  messages={messages.map((msg) => ({
-                    ...msg,
-                    timestamp: msg.timeStamp,
-                  }))}
-                  chatInput={chatInput}
-                  showSuggestions={showSuggestions}
-                  onInputChange={handleInputChange}
-                  onSendMessage={handleSendMessage}
-                  onSuggestionClick={handleSuggestionClick}
-                />
-              </div>
-
-              {/* Mobile Floating Trigger & Sheet */}
-              <div className="md:hidden">
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button
-                      size="icon"
-                      className="fixed bottom-32 right-6 h-14 w-14 rounded-full shadow-2xl z-50 bg-primary text-primary-foreground hover:scale-110 active:scale-95 transition-all"
-                    >
-                      <Bot className="h-6 w-6" />
-                      <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-4 w-4 bg-primary border-2 border-background"></span>
-                      </span>
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent side="right" className="p-0 w-full sm:max-w-md border-none">
-                    <ChatSidebar
-                      messages={messages.map((msg) => ({
-                        ...msg,
-                        timestamp: msg.timeStamp,
-                      }))}
-                      chatInput={chatInput}
-                      showSuggestions={showSuggestions}
-                      onInputChange={handleInputChange}
-                      onSendMessage={handleSendMessage}
-                      onSuggestionClick={handleSuggestionClick}
-                      hideBorder
+        {/* Center Modal Meeting Assistant (PC) */}
+        {userChecked && isOwner && (
+          <>
+            {/* Desktop Center Modal */}
+            <div className="hidden md:block">
+              <AnimatePresence>
+                {isChatOpen && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onClick={() => setIsChatOpen(false)}
+                      className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                     />
-                  </SheetContent>
-                </Sheet>
-              </div>
-            </>
-          )
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                      data-lenis-prevent
+                      className="relative w-full max-w-[700px] h-[85vh] rounded-[40px] overflow-hidden border border-white/20 dark:border-white/10 shadow-[0_32px_64px_rgba(0,0,0,0.5)] bg-white/70 dark:bg-zinc-900/40 backdrop-blur-3xl flex flex-col"
+                    >
+                      <div className="absolute top-6 right-8 z-50 flex items-center gap-3">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => setIsChatOpen(false)}
+                          className="h-10 w-10 rounded-full hover:bg-white/20 dark:hover:bg-black/20 text-foreground cursor-pointer transition-all active:scale-95"
+                        >
+                          <X className="h-6 w-6" />
+                        </Button>
+                      </div>
+
+                      <div className="flex-1 min-h-0 flex flex-col">
+                        <ChatSidebar
+                          messages={messages.map((msg) => ({
+                            ...msg,
+                            timestamp: msg.timeStamp,
+                          }))}
+                          chatInput={chatInput}
+                          showSuggestions={showSuggestions}
+                          onInputChange={handleInputChange}
+                          onSendMessage={handleSendMessage}
+                          onSuggestionClick={handleSuggestionClick}
+                        />
+                      </div>
+                    </motion.div>
+                  </div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="md:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button
+                    size="icon"
+                    className="fixed bottom-32 right-6 h-14 w-14 rounded-full shadow-2xl z-50 bg-primary text-primary-foreground hover:scale-110 active:scale-95 transition-all"
+                  >
+                    <Bot className="h-6 w-6" />
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-4 w-4 bg-primary border-2 border-background"></span>
+                    </span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="p-0 w-full sm:max-w-md border-none">
+                  <ChatSidebar
+                    messages={messages.map((msg) => ({
+                      ...msg,
+                      timestamp: msg.timeStamp,
+                    }))}
+                    chatInput={chatInput}
+                    showSuggestions={showSuggestions}
+                    onInputChange={handleInputChange}
+                    onSendMessage={handleSendMessage}
+                    onSuggestionClick={handleSuggestionClick}
+                  />
+                </SheetContent>
+              </Sheet>
+            </div>
+          </>
         )}
       </div>
 
       <CustomAudioPlayer
         recordingUrl={meetingData?.recordingUrl}
-        isOwner={isOwner}
       />
     </div>
   );

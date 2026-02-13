@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import {
   Send,
   Sparkles,
-  MessageSquare,
   AlertCircle,
   Loader2,
   Bot,
@@ -31,7 +30,6 @@ interface ChatSidebarProps {
   onInputChange: (value: string) => void;
   onSendMessage: () => void;
   onSuggestionClick: (suggestion: string) => void;
-  hideBorder?: boolean;
 }
 
 const ChatSidebar = ({
@@ -41,7 +39,6 @@ const ChatSidebar = ({
   onInputChange,
   onSendMessage,
   onSuggestionClick,
-  hideBorder = false,
 }: ChatSidebarProps) => {
   const { canChat } = useUsage();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -73,53 +70,59 @@ const ChatSidebar = ({
   ];
 
   return (
-    <div className={`w-full md:w-96 ${hideBorder ? "" : "border-l border-border/50"} bg-background/50 backdrop-blur-xl flex flex-col h-full overflow-hidden shadow-2xl`}>
-      <div className="p-5 border-b border-border/50 bg-card/30">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-xl">
+    <div className={`w-full h-full flex flex-col overflow-hidden bg-transparent`}>
+      <div className="p-6 border-b border-white/10 dark:border-white/5 bg-white/10 dark:bg-black/20 backdrop-blur-md">
+        <div className="flex items-center gap-4">
+          <div className="p-2.5 bg-primary/20 rounded-2xl shadow-[0_0_15px_rgba(var(--primary),0.3)]">
             <Bot className="h-5 w-5 text-primary" />
           </div>
           <div>
             <h3 className="font-bold text-foreground text-sm tracking-tight">
               Meeting Assistant
             </h3>
+
           </div>
         </div>
       </div>
 
       <div
-        className="flex-1 p-4 overflow-y-auto space-y-6 scroll-smooth"
+        className="flex-1 min-h-0 p-6 overflow-y-auto space-y-6 scroll-smooth custom-scrollbar"
       >
         <AnimatePresence initial={false}>
           {messages.length === 0 && showSuggestions && (
-            <div className="flex flex-col items-center justify-center min-h-100 space-y-6 px-4 text-center">
-              <div className="p-4 bg-muted/40 rounded-full border border-border/50 shadow-inner">
-                <MessageSquare className="h-8 w-8 text-muted-foreground/50" />
+            <div className="flex flex-col items-center justify-center min-h-[400px] space-y-8 px-6 text-center animate-in fade-in zoom-in duration-500">
+              <div className="relative">
+
+                
               </div>
-              <div className="space-y-2">
-                <p className="text-sm font-semibold text-foreground">
-                  No questions yet
-                </p>
-                <p className="text-xs text-muted-foreground max-w-50">
-                  Ask about summaries, action items, or specific details from
-                  the meeting.
+              <div className="space-y-3">
+                <h3 className="text-xl font-bold text-foreground tracking-tight">
+                  
+                  Hi, Did you miss me?
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-[240px] leading-relaxed mx-auto">
+                  Ask me anything about this meeting&apos;s summary, action items, or specific details.
                 </p>
               </div>
 
-              <div className="w-full grid grid-cols-1 gap-2 pt-4">
+              <div className="w-full flex flex-col gap-2 pt-2">
+
                 {chatSuggestions.map((suggestion, index) => (
                   <motion.button
                     key={index}
-                    whileHover={{ scale: 1.02 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ scale: 1.02, backgroundColor: "rgba(var(--primary), 0.1)" }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => onSuggestionClick(suggestion)}
                     disabled={!canChat}
-                    className="group flex items-center gap-3 w-full p-3 text-left rounded-xl border border-border/50 bg-card hover:bg-muted/50 transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                    className="group flex items-center gap-3 w-full p-3.5 text-left rounded-2xl border border-white/10 dark:border-white/5 bg-white/5 dark:bg-zinc-900/40 hover:border-primary/30 transition-all shadow-sm cursor-pointer disabled:opacity-50"
                   >
                     <div className="p-1.5 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
                       <Sparkles className="h-3 w-3 text-primary" />
                     </div>
-                    <p className="text-xs font-medium text-foreground truncate">
+                    <p className="text-xs font-semibold text-foreground/80 group-hover:text-foreground">
                       {suggestion}
                     </p>
                   </motion.button>
@@ -138,12 +141,12 @@ const ChatSidebar = ({
             >
               <div className={`flex flex-col gap-1.5 max-w-[85%]`}>
                 <div
-                  className={`relative px-4 py-3 rounded-[24px] shadow-sm text-sm leading-relaxed ${message.isBot
-                    ? "bg-card border border-border/50 text-foreground rounded-tl-none ring-1 ring-black/5 dark:ring-white/5"
-                    : "bg-linear-to-br from-primary to-primary/90 text-primary-foreground rounded-tr-none shadow-[0_4px_12px_rgba(var(--primary),0.25)]"
+                  className={`relative px-5 py-3.5 rounded-[28px] shadow-lg text-[14px] leading-relaxed ${message.isBot
+                    ? "bg-white/80 dark:bg-zinc-900/80 border border-white/20 dark:border-white/10 text-foreground rounded-tl-none backdrop-blur-sm"
+                    : "bg-orange-500 text-white rounded-tr-none shadow-[0_8px_20px_rgba(249,115,22,0.3)]"
                     }`}
                 >
-                  <div className="prose prose-sm dark:prose-invert prose-p:leading-relaxed prose-pre:bg-muted prose-pre:text-muted-foreground prose-pre:p-2 prose-pre:rounded-lg max-w-none">
+                  <div className="prose prose-sm dark:prose-invert prose-p:leading-relaxed prose-pre:bg-black/10 prose-pre:text-foreground prose-pre:p-3 prose-pre:rounded-xl max-w-none">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {message.content}
                     </ReactMarkdown>
@@ -179,17 +182,17 @@ const ChatSidebar = ({
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-5 border-t border-border/50 bg-card/30">
+      <div className="p-6 border-t border-white/10 dark:border-white/5 bg-white/5 dark:bg-black/10 backdrop-blur-md">
         {!canChat ? (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-xl flex items-center gap-3"
+            className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-2xl flex items-center gap-3"
           >
             <AlertCircle className="h-5 w-5 text-destructive" />
             <div className="flex-1">
               <p className="text-xs font-bold text-destructive">
-                Limit Reached
+                Daily Limit Reached
               </p>
               <p className="text-[10px] text-destructive/80">
                 Upgrade for unlimited assistant access.
@@ -198,7 +201,7 @@ const ChatSidebar = ({
             <Button
               size="sm"
               variant="destructive"
-              className="h-7 text-[10px]"
+              className="h-8 text-[10px] font-bold rounded-xl"
               asChild
             >
               <a href="/pricing">Upgrade</a>
@@ -217,8 +220,8 @@ const ChatSidebar = ({
                 onSendMessage();
               }
             }}
-            placeholder={canChat ? "Ask a question..." : "Daily limit reached"}
-            className="flex-1 bg-background/50 border-border/50 pr-12 h-12 rounded-2xl focus-visible:ring-primary/20 transition-all font-medium text-sm"
+            placeholder={canChat ? "Ask anything..." : "Limit reached"}
+            className="flex-1 bg-white/10 dark:bg-black/20 border-white/20 dark:border-white/10 pr-14 h-14 rounded-[20px] focus-visible:ring-primary/20 transition-all font-medium text-sm shadow-inner"
             disabled={!canChat}
           />
 
@@ -227,14 +230,12 @@ const ChatSidebar = ({
             size="icon"
             onClick={onSendMessage}
             disabled={!chatInput.trim() || !canChat}
-            className="absolute right-1.5 h-9 w-9 bg-primary text-primary-foreground rounded-xl shadow-lg hover:shadow-primary/20 transition-all active:scale-90"
+            className="absolute right-2 h-10 w-10 bg-primary text-primary-foreground rounded-2xl shadow-[0_4px_12px_rgba(var(--primary),0.4)] hover:shadow-primary/20 transition-all active:scale-90"
           >
             <Send className="h-4 w-4" />
           </Button>
         </div>
-        <p className="mt-3 text-[10px] text-center text-muted-foreground font-medium opacity-50">
-          Press Enter to send
-        </p>
+
       </div>
     </div>
   );

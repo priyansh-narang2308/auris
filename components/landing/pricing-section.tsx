@@ -181,7 +181,7 @@ export const PricingSection = () => {
     }
 
     return (
-        <section id="pricing" className='py-20 px-4 bg-background relative overflow-hidden'>
+        <section id="pricing" className=' px-4 bg-background relative overflow-hidden'>
             <div className='max-w-7xl mx-auto w-full'>
                 <div className='text-center mb-16 space-y-4'>
                     <h2 className='text-4xl  font-extrabold tracking-tight text-foreground sm:text-5xl'>
