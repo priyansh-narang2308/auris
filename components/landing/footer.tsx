@@ -1,6 +1,5 @@
 import { Logo } from "@/components/logo";
 import Link from "next/link";
-import { PrivacyPolicyDialog, TermsDialog } from "./legal-dialogs";
 
 const links = [
   { title: "Features", href: "#features" },
@@ -70,21 +69,19 @@ export default function Footer() {
             © {new Date().getFullYear()} auris, All rights reserved
           </p>
           <div className="flex gap-6 order-1 md:order-3">
-            <PrivacyPolicyDialog
-              trigger={
-                <button className="text-sm cursor-pointer text-muted-foreground hover:text-primary transition-colors">
-                  Privacy Policy
-                </button>
-              }
-            />
+            <Link
+              href="/privacy"
+              className="text-sm cursor-pointer text-muted-foreground hover:text-primary transition-colors"
+            >
+              Privacy Policy
+            </Link>
 
-            <TermsDialog
-              trigger={
-                <button className="text-sm cursor-pointer text-muted-foreground hover:text-primary transition-colors">
-                  Terms of Service
-                </button>
-              }
-            />
+            <Link
+              href="/terms"
+              className="text-sm cursor-pointer text-muted-foreground hover:text-primary transition-colors"
+            >
+              Terms of Service
+            </Link>
           </div>
         </div>
       </div>
