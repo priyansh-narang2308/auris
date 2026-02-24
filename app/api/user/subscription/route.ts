@@ -28,7 +28,7 @@ export async function GET() {
             customerId: user.stripeCustomerId
         });
 
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

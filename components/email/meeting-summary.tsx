@@ -1,5 +1,5 @@
 import {
-    Body, Container, Head, Html, Preview, Section, Text, Button, Hr, Heading, Img, Link
+    Body, Container, Head, Html, Preview, Section, Text, Button, Hr, Heading, Link
 } from '@react-email/components'
 import * as React from 'react'
 

@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft, Shield, Mail, Lock, Eye } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 
 export default function PrivacyPage() {
   const lastUpdated = "February 13, 2026";

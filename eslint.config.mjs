@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "lambda-chat/**",
+    "lambda-function/**",
+    "components/ui/**",
+    "tailwind.config.ts",
   ]),
 ]);
 

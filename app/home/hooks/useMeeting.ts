@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/immutability */
+ 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";

@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { CalendarEvent } from "../hooks/useMeeting";
-import { Clock, RefreshCcw, Calendar, PlugZap, Bot } from "lucide-react";
+import { Clock, RefreshCcw, Calendar, PlugZap } from "lucide-react";
 import { format } from "date-fns";
 
 interface UpcomingMeetingProps {
