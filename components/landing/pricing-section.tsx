@@ -229,7 +229,7 @@ export const PricingSection = () => {
                     </div>
                 </div>
 
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch'>
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch pt-6 pb-12'>
                     {plans.map((plan) => {
                         const isYearly = billingCycle === 'yearly'
                         const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice
@@ -320,7 +320,7 @@ export const PricingSection = () => {
                                         className={cn(
                                             "w-full h-11 font-bold text-base transition-all duration-300 cursor-pointer shadow-md active:scale-[0.98]",
                                             plan.popular
-                                                ? "bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/25 border-b-4 border-orange-700 hover:border-b-2 hover:mt-0.5"
+                                                ? "bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/25 border-b-4 border-b-orange-700 border-t-4 border-t-transparent hover:border-b-2 hover:border-t-[6px]"
                                                 : isCurrentPlan
                                                     ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/20"
                                                     : "shadow-sm",
@@ -347,6 +347,6 @@ export const PricingSection = () => {
                     })}
                 </div>
             </div>
-        </section>
+        </section >
     )
 }
